@@ -12,8 +12,8 @@ import { getActiveSubscription } from "@/server/services/subscriptions";
 import { todayKey } from "@/lib/time";
 
 export const metadata: Metadata = {
-  title: "Agendar horario",
-  description: "Escolha servico, profissional e horario na Mandu Barber.",
+  title: "Agendar horário",
+  description: "Escolha serviço, profissional e horário na Mandu Barber.",
 };
 
 export const dynamic = "force-dynamic";
@@ -49,7 +49,7 @@ export default async function BookingPage({
         <EmptyState
           icon={CalendarOff}
           title="Agendamento online pausado"
-          description="Estamos com a agenda online temporariamente fechada. Fale com a gente pelo WhatsApp que encaixamos voce."
+          description="Estamos com a agenda online temporariamente fechada. Fale com a gente pelo WhatsApp que encaixamos você."
           action={
             shop.whatsapp ? (
               <Button asChild>
@@ -74,10 +74,10 @@ export default async function BookingPage({
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
       <div className="mb-8">
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight sm:text-4xl">
-          Agendar horario
+          Agendar horário
         </h1>
         <p className="mt-2 text-[var(--text-muted)]">
-          Quatro passos rapidos. Voce ve o preco final antes de confirmar.
+          Quatro passos rápidos. Você vê o preço final antes de confirmar.
         </p>
       </div>
 

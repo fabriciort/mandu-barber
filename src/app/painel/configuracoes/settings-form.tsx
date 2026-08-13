@@ -56,10 +56,10 @@ export function SettingsForm({
 
   React.useEffect(() => {
     if (state.ok) {
-      toast.success("Configuracoes salvas");
+      toast.success("Configurações salvas");
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -98,7 +98,7 @@ export function SettingsForm({
           <Field label="E-mail" htmlFor="email" error={state.fieldErrors?.email}>
             <Input id="email" name="email" type="email" defaultValue={settings.email ?? ""} />
           </Field>
-          <Field label="Instagram" htmlFor="instagram" hint="Somente o usuario, sem @.">
+          <Field label="Instagram" htmlFor="instagram" hint="Somente o usuário, sem @.">
             <Input id="instagram" name="instagram" defaultValue={settings.instagram ?? ""} />
           </Field>
         </div>
@@ -107,7 +107,7 @@ export function SettingsForm({
       <Card className="p-6">
         <h2 className="flex items-center gap-2 font-semibold">
           <MapPin className="size-4 text-[var(--accent)]" />
-          Endereco
+          Endereço
         </h2>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -143,7 +143,7 @@ export function SettingsForm({
           Funcionamento
         </h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Este e o limite externo da agenda: nenhum profissional aparece disponivel fora dele.
+          Este é o limite externo da agenda: nenhum profissional aparece disponível fora dele.
         </p>
 
         <div className="mt-5 space-y-2">
@@ -171,14 +171,14 @@ export function SettingsForm({
                     onChange={(value) => updateDay(day.weekday, { openMinute: value })}
                     label={`Abertura de ${WEEKDAY_LABEL[day.weekday]}`}
                   />
-                  <span className="text-[var(--text-muted)]">as</span>
+                  <span className="text-[var(--text-muted)]">às</span>
                   <TimeSelect
                     value={day.closeMinute}
                     onChange={(value) => updateDay(day.weekday, { closeMinute: value })}
                     label={`Fechamento de ${WEEKDAY_LABEL[day.weekday]}`}
                   />
                   {day.closeMinute <= day.openMinute ? (
-                    <span className="text-xs text-rust-500">fim antes do inicio</span>
+                    <span className="text-xs text-rust-500">fim antes do início</span>
                   ) : null}
                 </div>
               ) : (
@@ -199,7 +199,7 @@ export function SettingsForm({
           <Field
             label="Passo da grade (min)"
             htmlFor="slotStepMinutes"
-            hint="De quanto em quanto tempo os horarios aparecem."
+            hint="De quanto em quanto tempo os horários aparecem."
           >
             <Select id="slotStepMinutes" name="slotStepMinutes" defaultValue={settings.slotStepMinutes}>
               {[5, 10, 15, 20, 30, 60].map((value) => (
@@ -211,7 +211,7 @@ export function SettingsForm({
           </Field>
 
           <Field
-            label="Antecedencia minima (min)"
+            label="Antecedência mínima (min)"
             htmlFor="minLeadMinutes"
             hint="Quanto tempo antes o cliente ainda pode reservar."
           >
@@ -227,9 +227,9 @@ export function SettingsForm({
           </Field>
 
           <Field
-            label="Antecedencia maxima (dias)"
+            label="Antecedência máxima (dias)"
             htmlFor="maxAdvanceDays"
-            hint="Ate quando a agenda fica aberta."
+            hint="Até quando a agenda fica aberta."
           >
             <Input
               id="maxAdvanceDays"
@@ -244,7 +244,7 @@ export function SettingsForm({
           <Field
             label="Prazo de cancelamento (h)"
             htmlFor="cancellationWindowHours"
-            hint="Depois disso, so a equipe cancela."
+            hint="Depois disso, só a equipe cancela."
           >
             <Input
               id="cancellationWindowHours"
@@ -276,7 +276,7 @@ export function SettingsForm({
       <div className="sticky bottom-20 flex justify-end lg:bottom-4">
         <Button type="submit" size="lg" loading={pending} disabled={Boolean(invalidDay)}>
           <Save className="size-4" />
-          Salvar configuracoes
+          Salvar configurações
         </Button>
       </div>
     </form>

@@ -50,17 +50,17 @@ export function SubscriptionControls({
       setOpen(false);
       router.refresh();
     } else if (cancelState.message) {
-      toast.error("Nao foi possivel cancelar", cancelState.message);
+      toast.error("Não foi possível cancelar", cancelState.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cancelState]);
 
   React.useEffect(() => {
     if (resumeState.ok) {
-      toast.success("Assinatura reativada", "Seus creditos continuam valendo.");
+      toast.success("Assinatura reativada", "Seus créditos continuam valendo.");
       router.refresh();
     } else if (resumeState.message) {
-      toast.error("Nao foi possivel reativar", resumeState.message);
+      toast.error("Não foi possível reativar", resumeState.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeState]);
@@ -88,8 +88,8 @@ export function SubscriptionControls({
         <DialogHeader>
           <DialogTitle>Cancelar assinatura</DialogTitle>
           <DialogDescription>
-            Voce continua com todos os beneficios ate {periodEnd}. Depois disso, a cobranca para e
-            os creditos nao renovam.
+            Você continua com todos os beneficios até {periodEnd}. Depois disso, a cobranca para e
+            os créditos não renovam.
           </DialogDescription>
         </DialogHeader>
 

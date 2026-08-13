@@ -57,11 +57,11 @@ export function ServiceFormDialog({
 
   React.useEffect(() => {
     if (state.ok) {
-      toast.success(service ? "Servico atualizado" : "Servico criado");
+      toast.success(service ? "Serviço atualizado" : "Serviço criado");
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -76,17 +76,17 @@ export function ServiceFormDialog({
         ) : (
           <Button size="sm">
             <Plus className="size-4" />
-            Novo servico
+            Novo serviço
           </Button>
         )}
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{service ? "Editar servico" : "Novo servico"}</DialogTitle>
+          <DialogTitle>{service ? "Editar serviço" : "Novo serviço"}</DialogTitle>
           <DialogDescription>
-            A duracao define o bloco reservado na agenda. O tempo de limpeza segura a proxima
-            marcacao sem alongar o atendimento do cliente.
+            A duração define o bloco reservado na agenda. O tempo de limpeza segura a próxima
+            marcação sem alongar o atendimento do cliente.
           </DialogDescription>
         </DialogHeader>
 
@@ -99,14 +99,14 @@ export function ServiceFormDialog({
               <Input id="name" name="name" defaultValue={service?.name} required maxLength={80} />
             </Field>
 
-            <Field label="Descricao" htmlFor="description">
+            <Field label="Descrição" htmlFor="description">
               <Textarea
                 id="description"
                 name="description"
                 defaultValue={service?.description ?? ""}
                 rows={2}
                 maxLength={400}
-                placeholder="Como o cliente ve este servico no site."
+                placeholder="Como o cliente ve este serviço no site."
               />
             </Field>
 
@@ -122,10 +122,10 @@ export function ServiceFormDialog({
               </Field>
 
               <Field
-                label="Preco"
+                label="Preço"
                 htmlFor="price"
                 required
-                error={priceInput && priceCents === null ? "Valor invalido." : undefined}
+                error={priceInput && priceCents === null ? "Valor inválido." : undefined}
                 hint={priceCents !== null ? formatMoney(priceCents) : "Ex.: 70,00"}
               >
                 <Input
@@ -141,7 +141,7 @@ export function ServiceFormDialog({
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
-                label="Duracao (min)"
+                label="Duração (min)"
                 htmlFor="durationMinutes"
                 required
                 error={state.fieldErrors?.durationMinutes}
@@ -161,7 +161,7 @@ export function ServiceFormDialog({
               <Field
                 label="Tempo de limpeza (min)"
                 htmlFor="bufferMinutes"
-                hint="Folga apos o atendimento antes do proximo."
+                hint="Folga após o atendimento antes do próximo."
               >
                 <Input
                   id="bufferMinutes"
@@ -178,7 +178,7 @@ export function ServiceFormDialog({
             <Field
               label="Profissionais habilitados"
               error={state.fieldErrors?.barberIds}
-              hint="Somente quem estiver marcado aparece no agendamento deste servico."
+              hint="Somente quem estiver marcado aparece no agendamento deste serviço."
             >
               <div className="grid gap-1.5 rounded-lg border border-[var(--border-subtle)] p-2 sm:grid-cols-2">
                 {barbers.map((barber) => (
@@ -202,7 +202,7 @@ export function ServiceFormDialog({
             <div className="grid gap-3 sm:grid-cols-2">
               <CheckboxField
                 name="active"
-                label="Servico ativo"
+                label="Serviço ativo"
                 hint="Inativo some do site e do painel de agendamento."
                 defaultChecked={service?.active ?? true}
               />
@@ -226,7 +226,7 @@ export function ServiceFormDialog({
               Cancelar
             </Button>
             <Button type="submit" loading={pending} disabled={priceCents === null}>
-              {service ? "Salvar" : "Criar servico"}
+              {service ? "Salvar" : "Criar serviço"}
             </Button>
           </DialogFooter>
         </form>
@@ -244,10 +244,10 @@ export function ToggleServiceButton({ id, active }: { id: string; active: boolea
 
   React.useEffect(() => {
     if (state.ok) {
-      toast.success(state.message ?? "Servico atualizado");
+      toast.success(state.message ?? "Serviço atualizado");
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel alterar", state.message);
+      toast.error("Não foi possível alterar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -260,7 +260,7 @@ export function ToggleServiceButton({ id, active }: { id: string; active: boolea
         size="icon-sm"
         variant="ghost"
         loading={pending}
-        aria-label={active ? "Desativar servico" : "Reativar servico"}
+        aria-label={active ? "Desativar serviço" : "Reativar serviço"}
       >
         {active ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
       </Button>

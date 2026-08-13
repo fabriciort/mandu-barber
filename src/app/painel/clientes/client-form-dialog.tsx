@@ -46,12 +46,12 @@ export function ClientFormDialog({
       const provisional = state.data?.provisionalPassword;
       toast.success(
         client ? "Cliente atualizado" : "Cliente cadastrado",
-        provisional ? `Senha provisoria: ${provisional}` : undefined,
+        provisional ? `Senha provisória: ${provisional}` : undefined,
       );
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -77,8 +77,8 @@ export function ClientFormDialog({
           <DialogTitle>{client ? "Editar cliente" : "Novo cliente"}</DialogTitle>
           <DialogDescription>
             {client
-              ? "Atualize os dados e as observacoes da ficha."
-              : "Cadastro de balcao. A senha provisoria e o telefone informado."}
+              ? "Atualize os dados e as observações da ficha."
+              : "Cadastro de balcão. A senha provisória é o telefone informado."}
           </DialogDescription>
         </DialogHeader>
 
@@ -101,9 +101,9 @@ export function ClientFormDialog({
             </div>
 
             <Field
-              label="Observacoes internas"
+              label="Observações internas"
               htmlFor="notes"
-              hint="Preferencias de corte, alergias, o que ajuda no atendimento."
+              hint="Preferências de corte, alergias, o que ajuda no atendimento."
             >
               <Textarea id="notes" name="notes" defaultValue={client?.notes ?? ""} maxLength={600} />
             </Field>
@@ -137,7 +137,7 @@ export function ClientFormDialog({
               Cancelar
             </Button>
             <Button type="submit" loading={pending}>
-              {client ? "Salvar alteracoes" : "Cadastrar cliente"}
+              {client ? "Salvar alterações" : "Cadastrar cliente"}
             </Button>
           </DialogFooter>
         </form>

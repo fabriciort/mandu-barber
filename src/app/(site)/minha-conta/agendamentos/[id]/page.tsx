@@ -74,8 +74,8 @@ export default async function AppointmentDetailPage({
               <h1 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold">
                 {appointment.services.map((s) => s.name).join(" + ")}
               </h1>
-              <p className="mt-1 text-sm capitalize text-[var(--text-muted)]">
-                {formatLongDate(appointment.startsAt, shop.timezone)} as{" "}
+              <p className="mt-1 text-sm first-letter:uppercase text-[var(--text-muted)]">
+                {formatLongDate(appointment.startsAt, shop.timezone)} às{" "}
                 {formatTime(appointment.startsAt, shop.timezone)}
               </p>
             </div>
@@ -113,13 +113,13 @@ export default async function AppointmentDetailPage({
               {appointment.barber.user.name}
             </span>
           </DataItem>
-          <DataItem label="Duracao">
+          <DataItem label="Duração">
             <span className="flex items-center gap-1.5">
               <Clock className="size-4 text-[var(--text-muted)]" />
               {formatDuration(duration)}
             </span>
           </DataItem>
-          <DataItem label="Termino previsto">
+          <DataItem label="Término previsto">
             {formatTime(appointment.endsAt, shop.timezone)}
           </DataItem>
           <DataItem label="Pagamento">
@@ -201,7 +201,7 @@ export default async function AppointmentDetailPage({
             <Card className="p-6">
               <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                 <MessageSquare className="size-4" />
-                Sua observacao
+                Sua observação
               </h2>
               <p className="mt-3 text-sm text-[var(--text-secondary)]">{appointment.clientNotes}</p>
             </Card>
@@ -211,7 +211,7 @@ export default async function AppointmentDetailPage({
             <Card className="p-6">
               <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                 <Star className="size-4" />
-                Sua avaliacao
+                Sua avaliação
               </h2>
               <div className="mt-3 flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, index) => (

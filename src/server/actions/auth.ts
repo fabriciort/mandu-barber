@@ -21,14 +21,14 @@ const emailSchema = z
   .string()
   .trim()
   .min(1, "Informe o e-mail.")
-  .email("E-mail invalido.")
+  .email("E-mail inválido.")
   .toLowerCase();
 
 const phoneSchema = z
   .string()
   .trim()
   .transform(onlyDigits)
-  .refine((v) => v === "" || v.length === 10 || v.length === 11, "Telefone invalido.");
+  .refine((v) => v === "" || v.length === 10 || v.length === 11, "Telefone inválido.");
 
 const signUpSchema = z.object({
   name: z.string().trim().min(3, "Informe seu nome completo.").max(120),
@@ -48,15 +48,15 @@ export async function signUpAction(_prev: ActionState, formData: FormData): Prom
 
     const existing = await prisma.user.findUnique({ where: { email: input.email } });
     if (existing) {
-      return failure("Ja existe uma conta com este e-mail.", {
-        email: "Este e-mail ja esta cadastrado. Tente entrar.",
+      return failure("Já existe uma conta com este e-mail.", {
+        email: "Este e-mail já esta cadastrado. Tente entrar.",
       });
     }
 
     if (input.phone) {
       const phoneTaken = await prisma.user.findUnique({ where: { phone: input.phone } });
       if (phoneTaken) {
-        return failure("Telefone ja cadastrado.", { phone: "Este telefone ja esta em uso." });
+        return failure("Telefone já cadastrado.", { phone: "Este telefone já esta em uso." });
       }
     }
 
@@ -129,7 +129,7 @@ export async function updateProfileAction(
         where: { phone: input.phone, id: { not: user.id } },
         select: { id: true },
       });
-      if (taken) return failure("Telefone ja cadastrado.", { phone: "Este telefone ja esta em uso." });
+      if (taken) return failure("Telefone já cadastrado.", { phone: "Este telefone já esta em uso." });
     }
 
     await prisma.user.update({
@@ -153,7 +153,7 @@ const passwordSchema = z
     confirm: z.string().min(1, "Confirme a nova senha."),
   })
   .refine((data) => data.next === data.confirm, {
-    message: "As senhas nao conferem.",
+    message: "As senhas não conferem.",
     path: ["confirm"],
   });
 
@@ -183,7 +183,7 @@ export async function changePasswordAction(
     await revokeAllSessions(user.id);
     await createSession(user.id, await requestMeta());
 
-    return success("Senha alterada. As outras sessoes foram encerradas.");
+    return success("Senha alterada. As outras sessões foram encerradas.");
   });
 }
 

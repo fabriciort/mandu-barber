@@ -88,9 +88,9 @@ export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
   SCHEDULED: "Agendado",
   CONFIRMED: "Confirmado",
   IN_PROGRESS: "Em atendimento",
-  COMPLETED: "Concluido",
+  COMPLETED: "Concluído",
   CANCELED: "Cancelado",
-  NO_SHOW: "Nao compareceu",
+  NO_SHOW: "Não compareceu",
 };
 
 export const APPOINTMENT_STATUS_TONE: Record<AppointmentStatus, string> = {
@@ -111,9 +111,9 @@ export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
 
 export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
   PIX: "Pix",
-  CARD: "Cartao",
+  CARD: "Cartão",
   CASH: "Dinheiro",
-  TRANSFER: "Transferencia",
+  TRANSFER: "Transferência",
   PLAN: "Assinatura",
 };
 
@@ -135,19 +135,19 @@ export const SERVICE_CATEGORY_LABEL: Record<ServiceCategory, string> = {
   CABELO: "Cabelo",
   BARBA: "Barba",
   COMBO: "Combo",
-  ESTETICA: "Estetica",
+  ESTETICA: "Estética",
   INFANTIL: "Infantil",
 };
 
 export const SOURCE_LABEL: Record<AppointmentSource, string> = {
   ONLINE: "Online",
   PANEL: "Painel",
-  WALK_IN: "Balcao",
+  WALK_IN: "Balcão",
 };
 
 export const TIME_OFF_TYPE_LABEL: Record<TimeOffType, string> = {
   BLOCK: "Bloqueio",
-  VACATION: "Ferias",
+  VACATION: "Férias",
   HOLIDAY: "Feriado",
   TRAINING: "Treinamento",
 };
@@ -161,11 +161,11 @@ export const ROLE_LABEL: Record<Role, string> = {
 export const WEEKDAY_LABEL = [
   "Domingo",
   "Segunda",
-  "Terca",
+  "Terça",
   "Quarta",
   "Quinta",
   "Sexta",
-  "Sabado",
+  "Sábado",
 ] as const;
 
 export const WEEKDAY_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"] as const;

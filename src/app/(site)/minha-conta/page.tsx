@@ -93,7 +93,7 @@ export default async function AccountOverviewPage() {
             </Button>
           }
         >
-          Proximo horario
+          Próximo horário
         </SectionTitle>
 
         {next ? (
@@ -162,8 +162,8 @@ export default async function AccountOverviewPage() {
         ) : (
           <EmptyState
             icon={CalendarDays}
-            title="Voce nao tem horario marcado"
-            description="Escolha um servico e reserve sua cadeira em menos de um minuto."
+            title="Você não tem horário marcado"
+            description="Escolha um serviço e reserve sua cadeira em menos de um minuto."
             action={
               <Button asChild>
                 <Link href="/agendar">
@@ -201,7 +201,7 @@ export default async function AccountOverviewPage() {
       {/* ------------------------------------------------ avaliacoes abertas */}
       {pendingReviews.length > 0 ? (
         <section>
-          <SectionTitle>Como foi seu ultimo corte?</SectionTitle>
+          <SectionTitle>Como foi seu último corte?</SectionTitle>
           <div className="grid gap-3 sm:grid-cols-2">
             {pendingReviews.map((appointment) => (
               <Card key={appointment.id} className="flex items-center gap-4 p-4">
@@ -296,8 +296,8 @@ export default async function AccountOverviewPage() {
         ) : (
           <EmptyState
             icon={Sparkles}
-            title="Voce ainda nao assina nenhum plano"
-            description="Quem corta todo mes economiza assinando. Franquia de cortes, desconto no resto e prioridade na agenda."
+            title="Você ainda não assina nenhum plano"
+            description="Quem corta todo mês economiza assinando. Franquia de cortes, desconto no resto e prioridade na agenda."
             action={
               <Button asChild variant="secondary">
                 <Link href="/planos">Ver planos</Link>
@@ -319,12 +319,12 @@ export default async function AccountOverviewPage() {
             </Button>
           }
         >
-          Historico recente
+          Histórico recente
         </SectionTitle>
 
         {history.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)]">
-            Seu historico aparece aqui depois do primeiro atendimento.
+            Seu histórico aparece aqui depois do primeiro atendimento.
           </p>
         ) : (
           <>
@@ -390,7 +390,7 @@ export default async function AccountOverviewPage() {
               ))}
             </ul>
             <p className="mt-2 text-xs text-[var(--text-muted)]">
-              {pluralize(totals._count, "atendimento concluido", "atendimentos concluidos")} no
+              {pluralize(totals._count, "atendimento concluído", "atendimentos concluídos")} no
               total.
             </p>
           </>

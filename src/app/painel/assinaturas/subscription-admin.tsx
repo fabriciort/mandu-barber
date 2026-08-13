@@ -48,7 +48,7 @@ export function AssignSubscriptionDialog({
       setQuery("");
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel criar", state.message);
+      toast.error("Não foi possível criar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -76,7 +76,7 @@ export function AssignSubscriptionDialog({
         <DialogHeader>
           <DialogTitle>Ativar plano para um cliente</DialogTitle>
           <DialogDescription>
-            A franquia fica disponivel na hora e a primeira fatura entra em aberto.
+            A franquia fica disponível na hora e a primeira fatura entra em aberto.
           </DialogDescription>
         </DialogHeader>
 
@@ -120,7 +120,7 @@ export function AssignSubscriptionDialog({
                     </ul>
                   ) : (
                     <p className="mt-2 text-sm text-[var(--text-muted)]">
-                      Nenhum cliente disponivel — todos ja possuem plano ativo.
+                      Nenhum cliente disponível — todos já possuem plano ativo.
                     </p>
                   )}
                 </>
@@ -134,7 +134,7 @@ export function AssignSubscriptionDialog({
                 </option>
                 {plans.map((plan) => (
                   <option key={plan.id} value={plan.id}>
-                    {plan.name} — {formatMoney(plan.priceCents)}/mes
+                    {plan.name} — {formatMoney(plan.priceCents)}/mês
                   </option>
                 ))}
               </Select>
@@ -143,9 +143,9 @@ export function AssignSubscriptionDialog({
             <Field label="Forma de pagamento" htmlFor="paymentMethod">
               <Select id="paymentMethod" name="paymentMethod" defaultValue="PIX">
                 <option value="PIX">Pix</option>
-                <option value="CARD">Cartao</option>
+                <option value="CARD">Cartão</option>
                 <option value="CASH">Dinheiro</option>
-                <option value="TRANSFER">Transferencia</option>
+                <option value="TRANSFER">Transferência</option>
               </Select>
             </Field>
 
@@ -185,7 +185,7 @@ export function PayInvoiceButton({ invoiceId }: { invoiceId: string }) {
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel baixar", state.message);
+      toast.error("Não foi possível baixar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -214,9 +214,9 @@ export function PayInvoiceButton({ invoiceId }: { invoiceId: string }) {
             <Field label="Forma de pagamento" htmlFor="method">
               <Select id="method" name="method" defaultValue="PIX">
                 <option value="PIX">Pix</option>
-                <option value="CARD">Cartao</option>
+                <option value="CARD">Cartão</option>
                 <option value="CASH">Dinheiro</option>
-                <option value="TRANSFER">Transferencia</option>
+                <option value="TRANSFER">Transferência</option>
               </Select>
             </Field>
           </DialogBody>

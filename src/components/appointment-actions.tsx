@@ -48,7 +48,7 @@ export function CancelAppointmentButton({
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao deu para cancelar", state.message);
+      toast.error("Não deu para cancelar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -66,7 +66,7 @@ export function CancelAppointmentButton({
         <DialogHeader>
           <DialogTitle>Cancelar agendamento</DialogTitle>
           <DialogDescription>
-            O horario de {when} sera liberado para outra pessoa. Se voce usou credito do plano, ele
+            O horário de {when} será liberado para outra pessoa. Se você usou crédito do plano, ele
             volta para o seu saldo.
           </DialogDescription>
         </DialogHeader>
@@ -82,7 +82,7 @@ export function CancelAppointmentButton({
               name="reason"
               className="mt-2"
               maxLength={300}
-              placeholder={staff ? "Ex.: cliente ligou pedindo remarcacao." : "Conta pra gente o que aconteceu."}
+              placeholder={staff ? "Ex.: cliente ligou pedindo remarcação." : "Conta pra gente o que aconteceu."}
             />
           </DialogBody>
 
@@ -117,11 +117,11 @@ export function ReviewButton({
 
   React.useEffect(() => {
     if (state.ok) {
-      toast.success("Avaliacao enviada", "Obrigado por ajudar a equipe a melhorar.");
+      toast.success("Avaliação enviada", "Obrigado por ajudar a equipe a melhorar.");
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao deu para avaliar", state.message);
+      toast.error("Não deu para avaliar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -138,7 +138,7 @@ export function ReviewButton({
       <DialogContent size="sm">
         <DialogHeader>
           <DialogTitle>Como foi o atendimento?</DialogTitle>
-          <DialogDescription>Sua nota fica visivel para {barberName} e para a gestao.</DialogDescription>
+          <DialogDescription>Sua nota fica visível para {barberName} e para a gestão.</DialogDescription>
         </DialogHeader>
 
         <form action={formAction}>
@@ -175,7 +175,7 @@ export function ReviewButton({
 
             <div>
               <label htmlFor="comentario" className="text-sm font-medium text-[var(--text-secondary)]">
-                Comentario (opcional)
+                Comentário (opcional)
               </label>
               <Textarea
                 id="comentario"
@@ -189,10 +189,10 @@ export function ReviewButton({
 
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Agora nao
+              Agora não
             </Button>
             <Button type="submit" loading={pending}>
-              Enviar avaliacao
+              Enviar avaliação
             </Button>
           </DialogFooter>
         </form>

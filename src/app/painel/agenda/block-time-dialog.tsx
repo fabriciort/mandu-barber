@@ -48,7 +48,7 @@ export function BlockTimeDialog({
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel bloquear", state.message);
+      toast.error("Não foi possível bloquear", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -66,7 +66,7 @@ export function BlockTimeDialog({
         <DialogHeader>
           <DialogTitle>Bloquear agenda</DialogTitle>
           <DialogDescription>
-            Nenhum agendamento novo entra no periodo bloqueado.
+            Nenhum agendamento novo entra no período bloqueado.
           </DialogDescription>
         </DialogHeader>
 
@@ -78,7 +78,7 @@ export function BlockTimeDialog({
                 name="title"
                 required
                 maxLength={120}
-                placeholder="Ex.: almoco estendido, dentista, manutencao"
+                placeholder="Ex.: almoço estendido, dentista, manutenção"
               />
             </Field>
 
@@ -86,7 +86,7 @@ export function BlockTimeDialog({
               <Field label="Tipo" htmlFor="type">
                 <Select id="type" name="type" defaultValue="BLOCK">
                   <option value="BLOCK">Bloqueio pontual</option>
-                  <option value="VACATION">Ferias</option>
+                  <option value="VACATION">Férias</option>
                   <option value="HOLIDAY">Feriado</option>
                   <option value="TRAINING">Treinamento</option>
                 </Select>
@@ -117,7 +117,7 @@ export function BlockTimeDialog({
             </label>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Inicio" htmlFor="startDate">
+              <Field label="Início" htmlFor="startDate">
                 <Input id="startDate" name="startDate" type="date" defaultValue={date} required />
                 {!allDay ? (
                   <TimeSelect name="startMinute" defaultMinutes={12 * 60} className="mt-2" />
@@ -157,7 +157,7 @@ export function BlockTimeDialog({
   );
 }
 
-/** Seletor de horario em passos de 15 minutos. */
+/** Seletor de horário em passos de 15 minutos. */
 function TimeSelect({
   name,
   defaultMinutes,

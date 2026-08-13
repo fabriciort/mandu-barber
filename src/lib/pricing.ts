@@ -135,7 +135,7 @@ function clampPercent(value: number): number {
 
 /**
  * Economia mensal estimada de um plano: o que a franquia cobriria pelo preco
- * cheio, menos a mensalidade. Alimenta o "voce economiza R$ X" da vitrine.
+ * cheio, menos a mensalidade. Alimenta o "você economiza R$ X" da vitrine.
  */
 export function planSavings(
   planPriceCents: number,

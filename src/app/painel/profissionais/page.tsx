@@ -43,7 +43,7 @@ export default async function BarbersPage() {
     <div className="space-y-6">
       <PageHeader
         title="Profissionais"
-        description="Equipe, jornada de trabalho e comissao."
+        description="Equipe, jornada de trabalho e comissão."
         actions={<BarberFormDialog />}
       />
 
@@ -126,7 +126,7 @@ export default async function BarbersPage() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-[var(--text-muted)]">Comissao</dt>
+                    <dt className="text-xs text-[var(--text-muted)]">Comissão</dt>
                     <dd className="font-semibold">{barber.commissionPercent}%</dd>
                   </div>
                 </dl>

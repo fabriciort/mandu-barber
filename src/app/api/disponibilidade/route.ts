@@ -9,9 +9,9 @@ export const dynamic = "force-dynamic";
 
 const querySchema = z.object({
   modo: z.enum(["dia", "periodo"]).default("dia"),
-  data: z.string().refine(isValidDateKey, "Data invalida.").optional(),
-  ate: z.string().refine(isValidDateKey, "Data invalida.").optional(),
-  servicos: z.string().min(1, "Informe os servicos."),
+  data: z.string().refine(isValidDateKey, "Data inválida.").optional(),
+  ate: z.string().refine(isValidDateKey, "Data inválida.").optional(),
+  servicos: z.string().min(1, "Informe os serviços."),
   profissional: z.string().optional(),
   ignorar: z.string().optional(),
 });
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { erro: parsed.error.errors[0]?.message ?? "Parametros invalidos." },
+      { erro: parsed.error.errors[0]?.message ?? "Parâmetros inválidos." },
       { status: 400 },
     );
   }
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
   const { modo, data, ate, servicos, profissional, ignorar } = parsed.data;
   const serviceIds = servicos.split(",").filter(Boolean);
   if (serviceIds.length === 0) {
-    return NextResponse.json({ erro: "Informe pelo menos um servico." }, { status: 400 });
+    return NextResponse.json({ erro: "Informe pelo menos um serviço." }, { status: 400 });
   }
 
   // A equipe agenda fora da antecedencia minima; o cliente, nao.
@@ -54,11 +54,11 @@ export async function GET(request: Request) {
 
   if (modo === "periodo") {
     if (!data || !ate) {
-      return NextResponse.json({ erro: "Informe o periodo." }, { status: 400 });
+      return NextResponse.json({ erro: "Informe o período." }, { status: 400 });
     }
     const span = diffInDaysISO(data, ate);
     if (span < 0 || span > 62) {
-      return NextResponse.json({ erro: "Periodo invalido (maximo 62 dias)." }, { status: 400 });
+      return NextResponse.json({ erro: "Período inválido (máximo 62 dias)." }, { status: 400 });
     }
 
     const counts = await getRangeAvailability({

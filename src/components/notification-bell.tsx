@@ -37,7 +37,7 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
         <button
           type="button"
           className="relative inline-flex size-9 items-center justify-center rounded-lg text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]"
-          aria-label={unread > 0 ? `${unread} avisos nao lidos` : "Avisos"}
+          aria-label={unread > 0 ? `${unread} avisos não lidos` : "Avisos"}
         >
           <Bell className="size-4" />
           {unread > 0 ? (

@@ -48,7 +48,7 @@ export function SubscribeButton({
       router.push("/minha-conta/plano");
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel assinar", state.message);
+      toast.error("Não foi possível assinar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -77,7 +77,7 @@ export function SubscribeButton({
         <DialogHeader>
           <DialogTitle>Assinar {planName}</DialogTitle>
           <DialogDescription>
-            {formatMoney(priceCents)} por mes. Sua franquia fica disponivel imediatamente.
+            {formatMoney(priceCents)} por mês. Sua franquia fica disponível imediatamente.
           </DialogDescription>
         </DialogHeader>
 
@@ -88,25 +88,25 @@ export function SubscribeButton({
             <Field
               label="Forma de pagamento"
               htmlFor="paymentMethod"
-              hint="A cobranca e registrada como fatura em aberto e confirmada pela barbearia."
+              hint="A cobrança é registrada como fatura em aberto e confirmada pela barbearia."
             >
               <Select id="paymentMethod" name="paymentMethod" defaultValue="PIX">
                 <option value="PIX">Pix</option>
-                <option value="CARD">Cartao</option>
+                <option value="CARD">Cartão</option>
                 <option value="CASH">Dinheiro na loja</option>
-                <option value="TRANSFER">Transferencia</option>
+                <option value="TRANSFER">Transferência</option>
               </Select>
             </Field>
 
             <p className="rounded-lg bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text-muted)]">
-              Sem fidelidade. Voce pode cancelar a qualquer momento e continua usando o que ja
-              pagou ate o fim do ciclo.
+              Sem fidelidade. Você pode cancelar a qualquer momento e continua usando o que já
+              pagou até o fim do ciclo.
             </p>
           </DialogBody>
 
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Agora nao
+              Agora não
             </Button>
             <Button type="submit" loading={pending}>
               Confirmar assinatura

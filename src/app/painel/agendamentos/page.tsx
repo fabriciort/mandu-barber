@@ -92,7 +92,7 @@ export default async function AppointmentsListPage({
     <div className="space-y-6">
       <PageHeader
         title="Agendamentos"
-        description={`${total} registro(s) no periodo selecionado.`}
+        description={`${total} registro(s) no período selecionado.`}
       />
 
       <Card className="p-4">
@@ -102,7 +102,7 @@ export default async function AppointmentsListPage({
             <Input
               name="q"
               defaultValue={params.q}
-              placeholder="Nome, telefone ou codigo"
+              placeholder="Nome, telefone ou código"
               className="pl-9"
               aria-label="Buscar"
             />
@@ -150,7 +150,7 @@ export default async function AppointmentsListPage({
         <EmptyState
           icon={ClipboardList}
           title="Nenhum agendamento encontrado"
-          description="Ajuste o periodo ou os filtros para encontrar o que procura."
+          description="Ajuste o período ou os filtros para encontrar o que procura."
         />
       ) : (
         <>
@@ -160,7 +160,7 @@ export default async function AppointmentsListPage({
                 <tr className="text-xs uppercase tracking-wide text-[var(--text-muted)]">
                   <th className="px-4 py-2.5 font-medium">Quando</th>
                   <th className="px-4 py-2.5 font-medium">Cliente</th>
-                  <th className="px-4 py-2.5 font-medium">Servicos</th>
+                  <th className="px-4 py-2.5 font-medium">Serviços</th>
                   <th className="px-4 py-2.5 font-medium">Profissional</th>
                   <th className="px-4 py-2.5 font-medium">Origem</th>
                   <th className="px-4 py-2.5 font-medium">Status</th>
@@ -230,7 +230,7 @@ export default async function AppointmentsListPage({
           {pages > 1 ? (
             <div className="flex items-center justify-between text-sm">
               <p className="text-[var(--text-muted)]">
-                Pagina {page} de {pages}
+                Página {page} de {pages}
               </p>
               <div className="flex gap-2">
                 {page > 1 ? (
@@ -246,7 +246,7 @@ export default async function AppointmentsListPage({
                     href={buildPageUrl(params, page + 1)}
                     className="rounded-lg border border-[var(--border-strong)] px-3 py-1.5 transition-colors hover:border-[var(--accent)]"
                   >
-                    Proxima
+                    Próxima
                   </Link>
                 ) : null}
               </div>

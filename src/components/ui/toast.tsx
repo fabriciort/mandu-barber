@@ -61,7 +61,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       <div
         className="pointer-events-none fixed inset-x-0 bottom-0 z-[100] flex flex-col items-center gap-2 p-4 sm:bottom-auto sm:right-0 sm:top-0 sm:items-end"
         role="region"
-        aria-label="Notificacoes"
+        aria-label="Notificações"
       >
         {toasts.map((item) => {
           const config = TONE_CONFIG[item.tone];

@@ -35,7 +35,7 @@ describe("mergeIntervals", () => {
     ]);
   });
 
-  it("descarta intervalos invalidos ou de duracao zero", () => {
+  it("descarta intervalos inválidos ou de duração zero", () => {
     expect(mergeIntervals([{ start: h(10), end: h(10) }, { start: h(12), end: h(11) }])).toEqual([]);
   });
 });
@@ -56,13 +56,13 @@ describe("subtractIntervals", () => {
     );
   });
 
-  it("corta nas bordas sem deixar sobra de duracao zero", () => {
+  it("corta nas bordas sem deixar sobra de duração zero", () => {
     expect(
       subtractIntervals([{ start: h(9), end: h(18) }], [{ start: h(9), end: h(10) }]),
     ).toEqual([{ start: h(10), end: h(18) }]);
   });
 
-  it("aplica varios bloqueios de uma vez", () => {
+  it("aplica vários bloqueios de uma vez", () => {
     expect(
       subtractIntervals(
         [{ start: h(9), end: h(18) }],
@@ -80,7 +80,7 @@ describe("subtractIntervals", () => {
 });
 
 describe("intersectIntervals", () => {
-  it("cruza a jornada do barbeiro com o horario da loja", () => {
+  it("cruza a jornada do barbeiro com o horário da loja", () => {
     const loja = [{ start: h(9), end: h(20) }];
     const barbeiro = [
       { start: h(8), end: h(12) },
@@ -92,7 +92,7 @@ describe("intersectIntervals", () => {
     ]);
   });
 
-  it("devolve vazio quando nao ha sobreposicao", () => {
+  it("devolve vazio quando não ha sobreposicao", () => {
     expect(intersectIntervals([{ start: h(9), end: h(12) }], [{ start: h(13), end: h(18) }])).toEqual(
       [],
     );
@@ -100,7 +100,7 @@ describe("intersectIntervals", () => {
 });
 
 describe("generateSlots", () => {
-  it("respeita a duracao: nao oferece horario que estoura a janela", () => {
+  it("respeita a duração: não oferece horário que estoura a janela", () => {
     const slots = generateSlots([{ start: h(9), end: h(10) }], { duration: 45, step: 15 });
     expect(slots).toEqual([h(9), h(9, 15)]);
   });
@@ -110,7 +110,7 @@ describe("generateSlots", () => {
     expect(slots).toEqual([h(9, 15), h(9, 30)]);
   });
 
-  it("aplica a antecedencia minima", () => {
+  it("aplica a antecedência mínima", () => {
     const slots = generateSlots([{ start: h(9), end: h(12) }], {
       duration: 30,
       step: 30,
@@ -119,7 +119,7 @@ describe("generateSlots", () => {
     expect(slots[0]).toBe(h(10, 30));
   });
 
-  it("nao permite atendimento atravessando duas janelas livres", () => {
+  it("não permite atendimento atravessando duas janelas livres", () => {
     const free = [
       { start: h(9), end: h(9, 30) },
       { start: h(10), end: h(11) },
@@ -128,11 +128,11 @@ describe("generateSlots", () => {
     expect(slots).toEqual([h(10)]);
   });
 
-  it("devolve vazio para duracao maior que qualquer janela", () => {
+  it("devolve vazio para duração maior que qualquer janela", () => {
     expect(generateSlots([{ start: h(9), end: h(10) }], { duration: 120, step: 15 })).toEqual([]);
   });
 
-  it("nao gera horarios duplicados quando janelas se tocam", () => {
+  it("não gera horários duplicados quando janelas se tocam", () => {
     const slots = generateSlots(
       [
         { start: h(9), end: h(10) },
@@ -150,7 +150,7 @@ describe("auxiliares", () => {
     expect(overlaps({ start: h(9), end: h(10, 1) }, { start: h(10), end: h(11) })).toBe(true);
   });
 
-  it("totalMinutes nao conta sobreposicao duas vezes", () => {
+  it("totalMinutes não conta sobreposicao duas vezes", () => {
     expect(
       totalMinutes([
         { start: h(9), end: h(11) },
@@ -159,7 +159,7 @@ describe("auxiliares", () => {
     ).toBe(180);
   });
 
-  it("containsInterval exige caber inteiro em uma unica janela", () => {
+  it("containsInterval exige caber inteiro em uma única janela", () => {
     const free = [
       { start: h(9), end: h(10) },
       { start: h(10, 15), end: h(12) },

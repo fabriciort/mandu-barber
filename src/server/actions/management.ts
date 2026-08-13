@@ -16,12 +16,12 @@ import { failure, runAction, success, type ActionState } from "./result";
 
 const serviceSchema = z.object({
   id: z.string().optional(),
-  name: z.string().trim().min(2, "Informe o nome do servico.").max(80),
+  name: z.string().trim().min(2, "Informe o nome do serviço.").max(80),
   description: z.string().trim().max(400).optional(),
   category: z.enum(["CABELO", "BARBA", "COMBO", "ESTETICA", "INFANTIL"]),
-  durationMinutes: z.coerce.number().int().min(5, "Minimo de 5 minutos.").max(480),
+  durationMinutes: z.coerce.number().int().min(5, "Mínimo de 5 minutos.").max(480),
   bufferMinutes: z.coerce.number().int().min(0).max(120),
-  priceCents: z.coerce.number().int().min(0, "Preco invalido."),
+  priceCents: z.coerce.number().int().min(0, "Preço inválido."),
   active: z.boolean(),
   featured: z.boolean(),
   barberIds: z.array(z.string()),
@@ -96,7 +96,7 @@ export async function saveServiceAction(
 
     revalidatePath("/painel/servicos");
     revalidatePath("/agendar");
-    return success(input.id ? "Servico atualizado." : "Servico criado.");
+    return success(input.id ? "Serviço atualizado." : "Serviço criado.");
   });
 }
 
@@ -108,11 +108,11 @@ export async function toggleServiceAction(
     await actionOwner();
     const id = String(formData.get("id") ?? "");
     const service = await prisma.service.findUnique({ where: { id } });
-    if (!service) return failure("Servico nao encontrado.");
+    if (!service) return failure("Serviço não encontrado.");
 
     await prisma.service.update({ where: { id }, data: { active: !service.active } });
     revalidatePath("/painel/servicos");
-    return success(service.active ? "Servico desativado." : "Servico reativado.");
+    return success(service.active ? "Serviço desativado." : "Serviço reativado.");
   });
 }
 
@@ -121,7 +121,7 @@ export async function toggleServiceAction(
 const barberSchema = z.object({
   id: z.string().optional(),
   name: z.string().trim().min(3, "Informe o nome.").max(120),
-  email: z.string().trim().toLowerCase().email("E-mail invalido."),
+  email: z.string().trim().toLowerCase().email("E-mail inválido."),
   phone: z.string().trim().transform(onlyDigits),
   headline: z.string().trim().max(120).optional(),
   bio: z.string().trim().max(600).optional(),
@@ -166,13 +166,13 @@ export async function saveBarberAction(
         where: { id: input.id },
         include: { user: true },
       });
-      if (!profile) return failure("Profissional nao encontrado.");
+      if (!profile) return failure("Profissional não encontrado.");
 
       const emailTaken = await prisma.user.findFirst({
         where: { email: input.email, id: { not: profile.userId } },
         select: { id: true },
       });
-      if (emailTaken) return failure("E-mail ja usado por outra conta.", { email: "E-mail em uso." });
+      if (emailTaken) return failure("E-mail já usado por outra conta.", { email: "E-mail em uso." });
 
       await prisma.$transaction(async (tx) => {
         await tx.user.update({
@@ -213,10 +213,10 @@ export async function saveBarberAction(
       where: { email: input.email },
       include: { barber: { select: { id: true } } },
     });
-    if (existing?.barber) return failure("Este e-mail ja pertence a um profissional.");
+    if (existing?.barber) return failure("Este e-mail já pertence a um profissional.");
     if (!input.password || input.password.length < 8) {
       return failure("Defina uma senha de acesso com pelo menos 8 caracteres.", {
-        password: "Minimo de 8 caracteres.",
+        password: "Mínimo de 8 caracteres.",
       });
     }
 
@@ -281,7 +281,7 @@ export async function saveWorkingHoursAction(
     });
 
     if (staff.role === "BARBER" && staff.barberId !== input.barberId) {
-      return failure("Voce so pode editar a propria jornada.");
+      return failure("Você só pode editar a própria jornada.");
     }
 
     const parsed = z
@@ -296,7 +296,7 @@ export async function saveWorkingHoursAction(
     for (const day of parsed) {
       for (const block of day.blocks) {
         if (block.end <= block.start) {
-          return failure("Ha um intervalo com fim antes do inicio.");
+          return failure("Ha um intervalo com fim antes do início.");
         }
       }
     }
@@ -356,12 +356,12 @@ export async function saveTimeOffAction(
     // Profissional bloqueia apenas a propria agenda; bloqueio da loja e do gestor.
     const barberId = staff.role === "BARBER" ? staff.barberId : input.barberId || null;
     if (staff.role === "BARBER" && input.barberId && input.barberId !== staff.barberId) {
-      return failure("Voce so pode bloquear a propria agenda.");
+      return failure("Você só pode bloquear a própria agenda.");
     }
 
     const startsAt = zonedDateTime(input.startDate, input.startMinute, shop.timezone);
     const endsAt = zonedDateTime(input.endDate, input.endMinute, shop.timezone);
-    if (endsAt <= startsAt) return failure("O fim do bloqueio precisa ser depois do inicio.");
+    if (endsAt <= startsAt) return failure("O fim do bloqueio precisa ser depois do início.");
 
     const conflicts = await prisma.appointment.count({
       where: {
@@ -373,7 +373,7 @@ export async function saveTimeOffAction(
     });
     if (conflicts > 0) {
       return failure(
-        `Existem ${conflicts} agendamento(s) neste periodo. Remarque ou cancele antes de bloquear.`,
+        `Existem ${conflicts} agendamento(s) neste período. Remarque ou cancele antes de bloquear.`,
       );
     }
 
@@ -400,9 +400,9 @@ export async function deleteTimeOffAction(
     const staff = await actionStaff();
     const id = String(formData.get("id") ?? "");
     const timeOff = await prisma.timeOff.findUnique({ where: { id } });
-    if (!timeOff) return failure("Bloqueio nao encontrado.");
+    if (!timeOff) return failure("Bloqueio não encontrado.");
     if (staff.role === "BARBER" && timeOff.barberId !== staff.barberId) {
-      return failure("Este bloqueio nao e seu.");
+      return failure("Este bloqueio não e seu.");
     }
 
     await prisma.timeOff.delete({ where: { id } });
@@ -513,7 +513,7 @@ export async function savePlanAction(_prev: ActionState, formData: FormData): Pr
 const clientSchema = z.object({
   id: z.string().optional(),
   name: z.string().trim().min(3, "Informe o nome.").max(120),
-  email: z.string().trim().toLowerCase().email("E-mail invalido."),
+  email: z.string().trim().toLowerCase().email("E-mail inválido."),
   phone: z.string().trim().transform(onlyDigits),
   notes: z.string().trim().max(600).optional(),
   active: z.boolean().default(true),
@@ -538,7 +538,7 @@ export async function saveClientAction(
       where: { email: input.email, ...(input.id ? { id: { not: input.id } } : {}) },
       select: { id: true },
     });
-    if (conflict) return failure("E-mail ja cadastrado.", { email: "E-mail ja cadastrado." });
+    if (conflict) return failure("E-mail já cadastrado.", { email: "E-mail já cadastrado." });
 
     if (input.id) {
       await prisma.user.update({
@@ -587,7 +587,7 @@ const settingsSchema = z.object({
   tagline: z.string().trim().max(160),
   phone: z.string().trim().transform(onlyDigits),
   whatsapp: z.string().trim().transform(onlyDigits),
-  email: z.string().trim().toLowerCase().email("E-mail invalido.").or(z.literal("")),
+  email: z.string().trim().toLowerCase().email("E-mail inválido.").or(z.literal("")),
   addressLine: z.string().trim().max(160),
   district: z.string().trim().max(80),
   city: z.string().trim().max(80),
@@ -704,7 +704,7 @@ export async function saveSettingsAction(
     await audit(prisma, { actorId: owner.id, action: "settings.update", entity: "ShopSettings" });
 
     revalidatePath("/", "layout");
-    return success("Configuracoes salvas.");
+    return success("Configurações salvas.");
   });
 }
 

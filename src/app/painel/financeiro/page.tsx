@@ -131,7 +131,7 @@ export default async function FinancePage({
           <div className="flex gap-2">
             <div>
               <label htmlFor="de" className="text-xs text-[var(--text-muted)]">
-                Inicio
+                Início
               </label>
               <Input id="de" type="date" name="de" defaultValue={from} />
             </div>
@@ -146,14 +146,14 @@ export default async function FinancePage({
             type="submit"
             className="h-10 rounded-lg bg-[var(--accent)] px-4 text-sm font-medium text-[var(--accent-contrast)] transition-all hover:brightness-110"
           >
-            Aplicar periodo
+            Aplicar período
           </button>
         </form>
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Receita de servicos"
+          label="Receita de serviços"
           value={formatMoney(serviceRevenue)}
           hint={`${appointments.length} atendimentos`}
           icon={Wallet}
@@ -162,7 +162,7 @@ export default async function FinancePage({
         <StatCard
           label="Receita de assinaturas"
           value={formatMoney(subscriptionRevenue)}
-          hint="faturas pagas no periodo"
+          hint="faturas pagas no período"
           icon={Receipt}
           tone="accent"
         />
@@ -183,9 +183,9 @@ export default async function FinancePage({
 
       <Card className="p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-semibold">Receita de servicos por dia</h2>
+          <h2 className="font-semibold">Receita de serviços por dia</h2>
           <p className="text-sm text-[var(--text-muted)]">
-            Total do periodo: {formatMoney(serviceRevenue)}
+            Total do período: {formatMoney(serviceRevenue)}
           </p>
         </div>
         <div className="mt-4">
@@ -200,7 +200,7 @@ export default async function FinancePage({
             Repasse da equipe
           </h2>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            Base: receita de servicos concluidos no periodo.
+            Base: receita de serviços concluídos no período.
           </p>
 
           <ul className="mt-4 space-y-3">
@@ -234,7 +234,7 @@ export default async function FinancePage({
           <h2 className="font-semibold">Como o dinheiro entrou</h2>
           {byMethod.size === 0 ? (
             <p className="mt-4 text-sm text-[var(--text-muted)]">
-              Nenhum pagamento registrado no periodo.
+              Nenhum pagamento registrado no período.
             </p>
           ) : (
             <ul className="mt-4 space-y-3">
@@ -264,10 +264,10 @@ export default async function FinancePage({
       </div>
 
       <section>
-        <SectionTitle>Lancamentos recentes</SectionTitle>
+        <SectionTitle>Lançamentos recentes</SectionTitle>
         {payments.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)]">
-            Nenhum pagamento registrado no periodo selecionado.
+            Nenhum pagamento registrado no período selecionado.
           </p>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
@@ -290,7 +290,7 @@ export default async function FinancePage({
                     <td className="px-4 py-2.5 text-[var(--text-secondary)]">
                       {payment.appointment
                         ? payment.appointment.services.map((s) => s.name).join(" + ")
-                        : (payment.invoice?.description ?? "Lancamento avulso")}
+                        : (payment.invoice?.description ?? "Lançamento avulso")}
                     </td>
                     <td className="px-4 py-2.5">
                       {payment.appointment?.client.name ?? payment.invoice?.client.name ?? "—"}

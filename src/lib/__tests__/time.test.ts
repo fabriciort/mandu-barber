@@ -16,7 +16,7 @@ import { formatMoney, parseMoneyToCents, formatPhone, slugify } from "../format"
 const TZ = "America/Sao_Paulo";
 
 describe("conversao de fuso", () => {
-  it("converte horario local da loja para UTC", () => {
+  it("converte horário local da loja para UTC", () => {
     // Sao Paulo esta em UTC-3 o ano todo desde 2019.
     const utc = zonedDateTime("2026-08-13", 9 * 60 + 30, TZ);
     expect(utc.toISOString()).toBe("2026-08-13T12:30:00.000Z");
@@ -47,7 +47,7 @@ describe("conversao de fuso", () => {
 });
 
 describe("aritmetica de datas ISO", () => {
-  it("soma dias atravessando a virada de mes", () => {
+  it("soma dias atravessando a virada de mês", () => {
     expect(addDaysISO("2026-01-31", 1)).toBe("2026-02-01");
     expect(addDaysISO("2026-03-01", -1)).toBe("2026-02-28");
   });
@@ -69,7 +69,7 @@ describe("aritmetica de datas ISO", () => {
 });
 
 describe("formatacao", () => {
-  it("formata duracao em linguagem de balcao", () => {
+  it("formata duração em linguagem de balcão", () => {
     expect(formatDuration(45)).toBe("45 min");
     expect(formatDuration(60)).toBe("1 h");
     expect(formatDuration(90)).toBe("1 h 30 min");
@@ -80,7 +80,7 @@ describe("formatacao", () => {
     expect(formatMoney(0)).toMatch(/0,00/);
   });
 
-  it("le o que o gestor digita no campo de preco", () => {
+  it("le o que o gestor digita no campo de preço", () => {
     expect(parseMoneyToCents("70,00")).toBe(7000);
     expect(parseMoneyToCents("R$ 1.234,50")).toBe(123450);
     expect(parseMoneyToCents("70")).toBe(7000);

@@ -66,7 +66,7 @@ export async function notifyStaff(
  */
 async function dispatchExternal(params: { type: NotificationType; title: string }) {
   if (process.env.NODE_ENV === "development") {
-    console.info(`[notificacao] ${params.type}: ${params.title}`);
+    console.info(`[notificação] ${params.type}: ${params.title}`);
   }
 }
 

@@ -59,7 +59,7 @@ export async function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold">Horarios</h3>
+          <h3 className="text-sm font-semibold">Horários</h3>
           <ul className="mt-3 space-y-1.5 text-sm text-[var(--text-muted)]">
             {shop.businessHours.map((blocks, weekday) => (
               <li key={weekday} className="flex justify-between gap-4">
@@ -81,7 +81,7 @@ export async function SiteFooter() {
           <ul className="mt-3 space-y-2 text-sm text-[var(--text-muted)]">
             <li>
               <Link href="/agendar" className="hover:text-[var(--accent)]">
-                Agendar horario
+                Agendar horário
               </Link>
             </li>
             <li>
@@ -96,7 +96,7 @@ export async function SiteFooter() {
             </li>
             <li>
               <Link href="/entrar" className="hover:text-[var(--accent)]">
-                Area da equipe
+                Área da equipe
               </Link>
             </li>
           </ul>
@@ -108,7 +108,7 @@ export async function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {shop.name}. Todos os direitos reservados.
           </p>
-          <p>Feito para durar: agenda, equipe e assinaturas em um lugar so.</p>
+          <p>Feito para durar: agenda, equipe e assinaturas em um lugar só.</p>
         </div>
       </div>
     </footer>

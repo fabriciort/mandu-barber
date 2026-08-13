@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)]"
             >
               <ArrowLeft className="size-4" />
-              Inicio
+              Início
             </Link>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="relative flex h-full flex-col justify-end p-12 text-ink-100">
           <blockquote className="max-w-md">
             <p className="font-[family-name:var(--font-display)] text-3xl leading-snug">
-              &quot;Cliente bom nao e o que aparece. E o que volta — e a gente lembra do corte dele.&quot;
+              &quot;Cliente bom não é o que aparece. É o que volta — e a gente lembra do corte dele.&quot;
             </p>
             <footer className="mt-6 text-sm text-ink-400">
               Ricardo Mandu, fundador da Mandu Barber

@@ -61,7 +61,7 @@ export function AppointmentDrawer({
       onClose();
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel atualizar", state.message);
+      toast.error("Não foi possível atualizar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -92,7 +92,7 @@ export function AppointmentDrawer({
         <DialogBody className="space-y-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-              Servicos
+              Serviços
             </p>
             <p className="mt-1.5">{appointment.services.join(" + ")}</p>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
@@ -129,7 +129,7 @@ export function AppointmentDrawer({
           {appointment.clientNotes ? (
             <div className="rounded-lg bg-[var(--surface-muted)] p-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                Observacao do cliente
+                Observação do cliente
               </p>
               <p className="mt-1 text-sm">{appointment.clientNotes}</p>
             </div>
@@ -167,7 +167,7 @@ export function AppointmentDrawer({
                   <input type="hidden" name="status" value="NO_SHOW" />
                   <Button type="submit" size="sm" variant="ghost" loading={pending}>
                     <UserX className="size-4" />
-                    Nao compareceu
+                    Não compareceu
                   </Button>
                 </form>
 
@@ -193,16 +193,16 @@ export function AppointmentDrawer({
                   >
                     <Select id="paymentMethod" name="paymentMethod" defaultValue="PIX">
                       <option value="PIX">Pix</option>
-                      <option value="CARD">Cartao</option>
+                      <option value="CARD">Cartão</option>
                       <option value="CASH">Dinheiro</option>
-                      <option value="TRANSFER">Transferencia</option>
+                      <option value="TRANSFER">Transferência</option>
                     </Select>
                   </Field>
                 ) : (
                   <p className="mt-1 text-sm text-[var(--text-muted)]">
                     {appointment.totalCents === 0
                       ? "Coberto pelo plano — nada a receber."
-                      : "Pagamento ja registrado."}
+                      : "Pagamento já registrado."}
                   </p>
                 )}
 

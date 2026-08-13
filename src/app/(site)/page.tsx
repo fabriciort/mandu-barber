@@ -74,17 +74,17 @@ export default async function HomePage() {
           <div className="animate-[var(--animate-fade-up)]">
             <Badge tone="accent" className="border-brass-400/40 bg-brass-400/15 text-brass-200">
               <Sparkles className="size-3" />
-              {shop.district ? `${shop.district}, ${shop.city}` : "Sao Paulo"}
+              {shop.district ? `${shop.district}, ${shop.city}` : "São Paulo"}
             </Badge>
 
             <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.05] tracking-tight sm:text-6xl">
-              Seu horario reservado.
+              Seu horário reservado.
               <br />
               <span className="text-brass-300">Seu corte, do jeito certo.</span>
             </h1>
 
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-300">
-              Escolha o servico, o profissional e o horario em menos de um minuto. Sem fila de
+              Escolha o serviço, o profissional e o horário em menos de um minuto. Sem fila de
               espera no WhatsApp, sem &quot;me confirma depois&quot;.
             </p>
 
@@ -106,8 +106,8 @@ export default async function HomePage() {
             </div>
 
             <dl className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-ink-700 pt-8">
-              <Stat value={`${stats.completed}+`} label="Atendimentos concluidos" />
-              <Stat value={stats.rating} label={`Media de ${stats.reviewCount} avaliacoes`} />
+              <Stat value={`${stats.completed}+`} label="Atendimentos concluídos" />
+              <Stat value={stats.rating} label={`Média de ${stats.reviewCount} avaliações`} />
               <Stat value={`${barbers.length}`} label="Profissionais na equipe" />
             </dl>
           </div>
@@ -124,17 +124,17 @@ export default async function HomePage() {
           <Highlight
             icon={CalendarCheck}
             title="Agenda que reflete a realidade"
-            description="Voce so ve horarios que o profissional tem de fato. Nada de confirmar e descobrir depois que nao dava."
+            description="Você só ve horários que o profissional tem de fato. Nada de confirmar e descobrir depois que não dava."
           />
           <Highlight
             icon={ShieldCheck}
-            title="Cancelou, o credito volta"
-            description={`Cancelamento online ate ${shop.cancellationWindowHours}h antes. Se voce e assinante, o credito do plano retorna na hora.`}
+            title="Cancelou, o crédito volta"
+            description={`Cancelamento online até ${shop.cancellationWindowHours}h antes. Se você é assinante, o crédito do plano retorna na hora.`}
           />
           <Highlight
             icon={Clock}
-            title="Lembrete antes do horario"
-            description="Um aviso no dia anterior e outro na hora certa. A cadeira nao fica vazia e voce nao perde o corte."
+            title="Lembrete antes do horário"
+            description="Um aviso no dia anterior e outro na hora certa. A cadeira não fica vazia e você não perde o corte."
           />
         </div>
       </section>
@@ -142,9 +142,9 @@ export default async function HomePage() {
       {/* ---------------------------------------------------------- servicos */}
       <section id="servicos" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
         <SectionHeading
-          eyebrow="Cardapio"
+          eyebrow="Cardápio"
           title="O que fazemos"
-          description="Precos de tabela. Assinantes pagam menos ou nada, conforme o plano."
+          description="Preços de tabela. Assinantes pagam menos ou nada, conforme o plano."
         />
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -191,7 +191,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Quem corta"
             title="A equipe da casa"
-            description="Cada um com sua mao. Escolha quem ja conhece seu cabelo — ou deixe que a gente indica quem esta livre."
+            description="Cada um com sua mao. Escolha quem já conhece seu cabelo — ou deixe que a gente indica quem está livre."
           />
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -282,11 +282,11 @@ export default async function HomePage() {
 
                 <p className="mt-5 flex items-baseline gap-1">
                   <span className="text-3xl font-semibold">{formatMoney(plan.priceCents)}</span>
-                  <span className="text-sm text-[var(--text-muted)]">/mes</span>
+                  <span className="text-sm text-[var(--text-muted)]">/mês</span>
                 </p>
                 {savings.savingsCents > 0 ? (
                   <p className="mt-1 text-xs font-medium text-moss-600 dark:text-moss-400">
-                    Economia de ate {formatMoney(savings.savingsCents)} por mes
+                    Economia de até {formatMoney(savings.savingsCents)} por mês
                   </p>
                 ) : null}
 
@@ -322,7 +322,7 @@ export default async function HomePage() {
             <SectionHeading
               eyebrow="Na cadeira"
               title="O que dizem os clientes"
-              description="Avaliacoes deixadas apos atendimentos concluidos, sem curadoria."
+              description="Avaliações deixadas após atendimentos concluídos, sem curadoria."
             />
 
             <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -359,7 +359,7 @@ export default async function HomePage() {
           <div>
             <SectionHeading eyebrow="Visita" title="Passe na loja" />
             <p className="mt-4 text-[var(--text-secondary)]">
-              {formatAddress(shop) || "Sao Paulo, SP"}
+              {formatAddress(shop) || "São Paulo, SP"}
             </p>
 
             <div className="mt-6 space-y-1.5 text-sm">
@@ -381,7 +381,7 @@ export default async function HomePage() {
               <Button asChild>
                 <Link href="/agendar">
                   <CalendarCheck className="size-4" />
-                  Reservar horario
+                  Reservar horário
                 </Link>
               </Button>
               {shop.mapsUrl ? (
@@ -476,7 +476,7 @@ function SectionHeading({
   );
 }
 
-/** Vitrine dos proximos horarios livres — prova de que a agenda esta viva. */
+/** Vitrine dos próximos horários livres — prova de que a agenda esta viva. */
 async function NextSlotsPreview() {
   const { getRangeAvailability } = await import("@/server/services/availability");
   const { todayKey, addDaysISO, parseDateKey } = await import("@/lib/time");
@@ -502,7 +502,7 @@ async function NextSlotsPreview() {
     <div className="rounded-3xl border border-ink-700 bg-ink-900/70 p-6 shadow-[var(--shadow-lift)] backdrop-blur">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-widest text-ink-400">Proximos 7 dias</p>
+          <p className="text-xs uppercase tracking-widest text-ink-400">Próximos 7 dias</p>
           <p className="mt-1 font-medium text-ink-100">{featured.name}</p>
         </div>
         <Badge tone="accent" className="border-brass-400/40 bg-brass-400/15 text-brass-200">
@@ -532,7 +532,7 @@ async function NextSlotsPreview() {
                     : "text-sm text-ink-500"
                 }
               >
-                {count > 0 ? `${count} horarios livres` : "Sem vaga"}
+                {count > 0 ? `${count} horários livres` : "Sem vaga"}
               </span>
             </li>
           );
@@ -540,7 +540,7 @@ async function NextSlotsPreview() {
       </ul>
 
       <Button asChild block className="mt-6 bg-brass-400 text-ink-950 hover:bg-brass-300">
-        <Link href="/agendar">Escolher meu horario</Link>
+        <Link href="/agendar">Escolher meu horário</Link>
       </Button>
     </div>
   );

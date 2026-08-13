@@ -16,7 +16,7 @@ import { formatDuration } from "@/lib/time";
 export const metadata: Metadata = {
   title: "Planos de assinatura",
   description:
-    "Assine a Mandu Barber: franquia mensal de cortes e barbas, desconto no cardapio e prioridade na agenda.",
+    "Assine a Mandu Barber: franquia mensal de cortes e barbas, desconto no cardápio e prioridade na agenda.",
 };
 
 export const dynamic = "force-dynamic";
@@ -44,18 +44,18 @@ export default async function PlansPage() {
           Assinatura
         </p>
         <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight sm:text-5xl">
-          Corte sempre em dia, preco travado
+          Corte sempre em dia, preço travado
         </h1>
         <p className="mt-4 text-lg text-[var(--text-muted)]">
-          Escolha a franquia que combina com sua rotina. Sem fidelidade — voce cancela quando
-          quiser e usa tudo o que ja pagou.
+          Escolha a franquia que combina com sua rotina. Sem fidelidade — você cancela quando
+          quiser e usa tudo o que já pagou.
         </p>
       </div>
 
       {subscription ? (
         <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-between gap-3 rounded-xl border border-moss-500/30 bg-moss-500/8 px-5 py-4">
           <p className="text-sm">
-            Voce ja assina o <strong>{subscription.planName}</strong>.
+            Você já assina o <strong>{subscription.planName}</strong>.
           </p>
           <Button asChild size="sm" variant="secondary">
             <Link href="/minha-conta/plano">Gerenciar meu plano</Link>
@@ -110,13 +110,13 @@ export default async function PlansPage() {
                     {formatMoney(plan.priceCents)}
                   </span>
                   <span className="text-sm text-[var(--text-muted)]">
-                    /{plan.intervalMonths === 1 ? "mes" : `${plan.intervalMonths} meses`}
+                    /{plan.intervalMonths === 1 ? "mês" : `${plan.intervalMonths} meses`}
                   </span>
                 </p>
                 {savings.savingsCents > 0 ? (
                   <p className="mt-1.5 text-sm font-medium text-moss-600 dark:text-moss-400">
                     Economia de {formatMoney(savings.savingsCents)} vs. avulso
-                    {savings.hasUnlimited ? " (uso medio)" : ""}
+                    {savings.hasUnlimited ? " (uso médio)" : ""}
                   </p>
                 ) : null}
               </div>
@@ -148,7 +148,7 @@ export default async function PlansPage() {
                         0,
                       ),
                     )}{" "}
-                    de cadeira por mes.
+                    de cadeira por mês.
                   </p>
                 </div>
               ) : null}
@@ -176,7 +176,7 @@ export default async function PlansPage() {
                   </Button>
                 ) : subscription ? (
                   <Button block variant="secondary" disabled>
-                    Voce ja tem um plano ativo
+                    Você já tem um plano ativo
                   </Button>
                 ) : (
                   <SubscribeButton
@@ -217,10 +217,10 @@ export default async function PlansPage() {
       <div className="mt-16 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] px-6 py-10 text-center">
         <Sparkles className="mx-auto size-6 text-[var(--accent)]" />
         <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl font-semibold">
-          Ainda na duvida?
+          Ainda na dúvida?
         </h2>
         <p className="mx-auto mt-2 max-w-md text-[var(--text-muted)]">
-          Marque um corte avulso primeiro. Se gostar, a assinatura fica esperando por voce.
+          Marque um corte avulso primeiro. Se gostar, a assinatura fica esperando por você.
         </p>
         <Button asChild className="mt-6">
           <Link href="/agendar">Agendar um corte avulso</Link>
@@ -232,29 +232,29 @@ export default async function PlansPage() {
 
 const FAQ = [
   {
-    question: "Se eu nao usar todos os cortes do mes, perco?",
+    question: "Se eu não usar todos os cortes do mês, perco?",
     answer:
-      "Nos planos com acumulo, o que sobra vai para o mes seguinte ate o limite indicado no plano. Nos demais, a franquia e renovada a cada ciclo — por isso vale escolher o plano do tamanho da sua rotina.",
+      "Nos planos com acumulo, o que sobra vai para o mês seguinte até o limite indicado no plano. Nos demais, a franquia é renovada a cada ciclo — por isso vale escolher o plano do tamanho da sua rotina.",
   },
   {
-    question: "Como funciona o desconto nos servicos fora da franquia?",
+    question: "Como funciona o desconto nos serviços fora da franquia?",
     answer:
-      "Assim que a franquia acaba (ou se voce escolhe um servico que nao esta nela), o desconto do plano entra automaticamente no fechamento da conta. Voce ve o valor final antes de confirmar o agendamento.",
+      "Assim que a franquia acaba (ou se você escolhe um serviço que não está nela), o desconto do plano entra automaticamente no fechamento da conta. Você ve o valor final antes de confirmar o agendamento.",
   },
   {
     question: "Posso cancelar quando quiser?",
     answer:
-      "Pode. O cancelamento vale para o fim do ciclo vigente: voce usa tudo o que ja pagou e nao ha nova cobranca. Se mudar de ideia antes da virada, da para reativar em um clique.",
+      "Pode. O cancelamento vale para o fim do ciclo vigente: você usa tudo o que já pagou e não há nova cobrança. Se mudar de ideia antes da virada, dá para reativar em um clique.",
   },
   {
-    question: "E se eu precisar desmarcar um horario?",
+    question: "E se eu precisar desmarcar um horário?",
     answer:
-      "Cancelando dentro do prazo, o credito volta para o seu saldo do ciclo na hora. Nada de credito perdido por remarcar.",
+      "Cancelando dentro do prazo, o crédito volta para o seu saldo do ciclo na hora. Nada de crédito perdido por remarcar.",
   },
   {
     question: "Posso usar o plano com qualquer profissional?",
     answer:
-      "Sim, com qualquer profissional habilitado no servico. Alguns profissionais tem preco de tabela diferente, mas a franquia do plano cobre igual.",
+      "Sim, com qualquer profissional habilitado no serviço. Alguns profissionais tem preço de tabela diferente, mas a franquia do plano cobre igual.",
   },
 ];
 

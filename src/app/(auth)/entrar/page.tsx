@@ -22,13 +22,13 @@ export default async function SignInPage({
         Entrar
       </h1>
       <p className="mt-2 text-sm text-[var(--text-muted)]">
-        Acesse para agendar, acompanhar seu plano e ver seu historico.
+        Acesse para agendar, acompanhar seu plano e ver seu histórico.
       </p>
 
       <SignInForm next={safeNext(params.proximo)} />
 
       <p className="mt-6 text-center text-sm text-[var(--text-muted)]">
-        Ainda nao tem conta?{" "}
+        Ainda não tem conta?{" "}
         <Link
           href={`/cadastro${params.proximo ? `?proximo=${encodeURIComponent(params.proximo)}` : ""}`}
           className="font-medium text-[var(--accent)] hover:underline"
@@ -60,7 +60,7 @@ export default async function SignInPage({
   );
 }
 
-/** So aceitamos redirecionamento interno — nunca para outro dominio. */
+/** Só aceitamos redirecionamento interno — nunca para outro dominio. */
 function safeNext(value?: string): string | undefined {
   if (!value) return undefined;
   if (!value.startsWith("/") || value.startsWith("//")) return undefined;

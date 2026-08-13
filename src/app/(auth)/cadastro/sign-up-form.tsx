@@ -47,7 +47,7 @@ export function SignUpForm({ next }: { next?: string }) {
         label="Celular"
         htmlFor="phone"
         error={state.fieldErrors?.phone}
-        hint="Usamos para avisar sobre o seu horario."
+        hint="Usamos para avisar sobre o seu horário."
       >
         <PhoneInput id="phone" name="phone" autoComplete="tel" />
       </Field>
@@ -57,7 +57,7 @@ export function SignUpForm({ next }: { next?: string }) {
         htmlFor="password"
         required
         error={state.fieldErrors?.password}
-        hint="Minimo de 8 caracteres."
+        hint="Mínimo de 8 caracteres."
       >
         <Input
           id="password"
@@ -74,7 +74,7 @@ export function SignUpForm({ next }: { next?: string }) {
       </Button>
 
       <p className="text-center text-xs text-[var(--text-muted)]">
-        Ao criar sua conta voce concorda em receber avisos sobre seus agendamentos.
+        Ao criar sua conta você concorda em receber avisos sobre seus agendamentos.
       </p>
     </form>
   );

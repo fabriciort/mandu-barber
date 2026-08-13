@@ -23,16 +23,16 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: {
-    default: "Mandu Barber — Barbearia em Sao Paulo",
+    default: "Mandu Barber — Barbearia em São Paulo",
     template: "%s · Mandu Barber",
   },
   description:
-    "Agende seu corte na Mandu Barber, acompanhe seu plano de assinatura e escolha o profissional pelo horario que cabe no seu dia.",
+    "Agende seu corte na Mandu Barber, acompanhe seu plano de assinatura e escolha o profissional pelo horário que cabe no seu dia.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
     siteName: "Mandu Barber",
-    title: "Mandu Barber — Barbearia em Sao Paulo",
+    title: "Mandu Barber — Barbearia em São Paulo",
     description: "Agendamento online, planos de assinatura e uma equipe que conhece seu corte.",
   },
   robots: { index: true, follow: true },
@@ -74,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="#conteudo"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-[var(--accent)] focus:px-4 focus:py-2 focus:text-[var(--accent-contrast)]"
         >
-          Pular para o conteudo
+          Pular para o conteúdo
         </a>
         <ToastProvider>{children}</ToastProvider>
       </body>

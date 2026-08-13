@@ -29,7 +29,7 @@ export function ProfileForm({
       toast.success("Dados atualizados");
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -51,13 +51,13 @@ export function ProfileForm({
       <Field
         label="Data de nascimento"
         htmlFor="birthDate"
-        hint="A gente gosta de lembrar de quem faz aniversario."
+        hint="A gente gosta de lembrar de quem faz aniversário."
       >
         <Input id="birthDate" name="birthDate" type="date" defaultValue={defaultValues.birthDate} />
       </Field>
 
       <Button type="submit" loading={pending}>
-        Salvar alteracoes
+        Salvar alterações
       </Button>
     </form>
   );
@@ -75,7 +75,7 @@ export function PasswordForm() {
       toast.success("Senha alterada", state.message);
       formRef.current?.reset();
     } else if (state.message) {
-      toast.error("Nao foi possivel trocar a senha", state.message);
+      toast.error("Não foi possível trocar a senha", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -91,7 +91,7 @@ export function PasswordForm() {
         htmlFor="next"
         required
         error={state.fieldErrors?.next}
-        hint="Minimo de 8 caracteres."
+        hint="Mínimo de 8 caracteres."
       >
         <Input
           id="next"

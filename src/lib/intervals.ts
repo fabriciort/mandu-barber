@@ -3,7 +3,7 @@
  *
  * Toda a disponibilidade da agenda e calculada aqui, sobre numeros puros —
  * sem Date, sem fuso, sem banco. Isso mantem a regra mais delicada do produto
- * ("este horario esta livre?") isolada e coberta por teste.
+ * ("este horário esta livre?") isolada e coberta por teste.
  */
 
 export type Interval = {

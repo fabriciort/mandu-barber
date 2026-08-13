@@ -65,7 +65,7 @@ export function WorkingHoursDialog({
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -98,7 +98,7 @@ export function WorkingHoursDialog({
     );
   }
 
-  /** Copia a jornada do primeiro dia util preenchido para segunda a sexta. */
+  /** Copia a jornada do primeiro dia útil preenchido para segunda a sexta. */
   function replicateWeekdays() {
     const source = days.slice(1, 6).find((blocks) => blocks.length > 0);
     if (!source) return;
@@ -130,7 +130,7 @@ export function WorkingHoursDialog({
         <DialogHeader>
           <DialogTitle>Jornada de {barberName}</DialogTitle>
           <DialogDescription>
-            Os horarios disponiveis para o cliente sao a interseccao desta jornada com o
+            Os horários disponíveis para o cliente são a interseção desta jornada com o
             funcionamento da loja.
           </DialogDescription>
         </DialogHeader>
@@ -194,16 +194,16 @@ export function WorkingHoursDialog({
                           <TimeSelect
                             value={block.start}
                             onChange={(value) => updateBlock(weekday, index, { start: value })}
-                            label={`Inicio do intervalo ${index + 1} de ${label}`}
+                            label={`Início do intervalo ${index + 1} de ${label}`}
                           />
-                          <span className="text-[var(--text-muted)]">ate</span>
+                          <span className="text-[var(--text-muted)]">até</span>
                           <TimeSelect
                             value={block.end}
                             onChange={(value) => updateBlock(weekday, index, { end: value })}
                             label={`Fim do intervalo ${index + 1} de ${label}`}
                           />
                           {block.end <= block.start ? (
-                            <span className="text-xs text-rust-500">invalido</span>
+                            <span className="text-xs text-rust-500">inválido</span>
                           ) : null}
                           <button
                             type="button"

@@ -68,7 +68,7 @@ export function MobileNav({
               </div>
             </div>
 
-            <nav className="flex flex-col" aria-label="Navegacao">
+            <nav className="flex flex-col" aria-label="Navegação">
               {links.map((link) => (
                 <Link
                   key={link.href}
@@ -86,7 +86,7 @@ export function MobileNav({
                 <Button asChild variant="secondary" block onClick={() => setOpen(false)}>
                   <Link href="/painel">
                     <LayoutDashboard className="size-4" />
-                    Painel de gestao
+                    Painel de gestão
                   </Link>
                 </Button>
               ) : null}
@@ -99,7 +99,7 @@ export function MobileNav({
               <Button asChild block onClick={() => setOpen(false)}>
                 <Link href="/agendar">
                   <CalendarPlus className="size-4" />
-                  Agendar horario
+                  Agendar horário
                 </Link>
               </Button>
             </div>

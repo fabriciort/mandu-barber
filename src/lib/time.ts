@@ -96,7 +96,7 @@ export function formatDate(date: Date, timezone = DEFAULT_TIMEZONE): string {
 }
 
 export function formatDateTime(date: Date, timezone = DEFAULT_TIMEZONE): string {
-  return formatInTimeZone(date, timezone, "dd/MM/yyyy 'as' HH:mm");
+  return formatInTimeZone(date, timezone, "dd/MM/yyyy 'às' HH:mm");
 }
 
 export function formatLongDate(date: Date, timezone = DEFAULT_TIMEZONE): string {
@@ -136,7 +136,7 @@ export function formatRelative(date: Date, now = new Date()): string {
   const days = Math.round(abs / (60 * 24));
   if (days < 30) return suffix(days === 1 ? "1 dia" : `${days} dias`);
   const months = Math.round(days / 30);
-  return suffix(months === 1 ? "1 mes" : `${months} meses`);
+  return suffix(months === 1 ? "1 mês" : `${months} meses`);
 }
 
 function pad(value: number): string {

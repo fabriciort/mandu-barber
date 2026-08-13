@@ -4,7 +4,7 @@ import { requireOwner } from "@/server/auth/guards";
 import { getShopConfig } from "@/server/services/settings";
 import { prisma } from "@/server/db";
 
-export const metadata = { title: "Configuracoes" };
+export const metadata = { title: "Configurações" };
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
@@ -29,7 +29,7 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Configuracoes"
+        title="Configurações"
         description="Dados da loja, funcionamento e as regras que governam o agendamento online."
       />
 

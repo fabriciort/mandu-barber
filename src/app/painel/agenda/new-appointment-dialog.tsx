@@ -100,7 +100,7 @@ export function NewAppointmentDialog({
       resetForm();
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel agendar", state.message);
+      toast.error("Não foi possível agendar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -150,7 +150,7 @@ export function NewAppointmentDialog({
         <DialogHeader>
           <DialogTitle>Novo agendamento</DialogTitle>
           <DialogDescription>
-            Lance um horario para um cliente ja cadastrado. A franquia do plano dele e aplicada
+            Lance um horário para um cliente já cadastrado. A franquia do plano dele é aplicada
             automaticamente.
           </DialogDescription>
         </DialogHeader>
@@ -228,7 +228,7 @@ export function NewAppointmentDialog({
             ) : null}
 
             {/* Servicos */}
-            <Field label="Servicos" required error={state.fieldErrors?.serviceIds}>
+            <Field label="Serviços" required error={state.fieldErrors?.serviceIds}>
               <div className="grid max-h-44 gap-1.5 overflow-y-auto rounded-lg border border-[var(--border-subtle)] p-2 sm:grid-cols-2">
                 {availableServices.map((service) => {
                   const checked = serviceIds.includes(service.id);
@@ -278,19 +278,19 @@ export function NewAppointmentDialog({
                 />
               </Field>
 
-              <Field label="Horario" required>
+              <Field label="Horário" required>
                 {serviceIds.length === 0 ? (
                   <p className="py-2 text-sm text-[var(--text-muted)]">
-                    Escolha os servicos para ver os horarios.
+                    Escolha os serviços para ver os horários.
                   </p>
                 ) : loading ? (
                   <p className="flex items-center gap-2 py-2 text-sm text-[var(--text-muted)]">
                     <Loader2 className="size-4 animate-spin" />
-                    Buscando horarios...
+                    Buscando horários...
                   </p>
                 ) : slots.length === 0 ? (
                   <p className="py-2 text-sm text-[var(--text-muted)]">
-                    Sem horario livre nesta data.
+                    Sem horário livre nesta data.
                   </p>
                 ) : (
                   <div className="grid max-h-32 grid-cols-4 gap-1.5 overflow-y-auto">
@@ -320,7 +320,7 @@ export function NewAppointmentDialog({
                 name="internalNotes"
                 rows={2}
                 maxLength={500}
-                placeholder="Visivel apenas para a equipe."
+                placeholder="Visível apenas para a equipe."
               />
             </Field>
 

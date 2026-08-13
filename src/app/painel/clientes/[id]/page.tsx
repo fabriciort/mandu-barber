@@ -137,7 +137,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         {client.notes ? (
           <div className="mt-5 rounded-lg border border-dashed border-[var(--border-strong)] p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-              Observacoes internas
+              Observações internas
             </p>
             <p className="mt-1 text-sm">{client.notes}</p>
           </div>
@@ -197,7 +197,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
       <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
         <section>
-          <SectionTitle>Historico de atendimentos</SectionTitle>
+          <SectionTitle>Histórico de atendimentos</SectionTitle>
           {client.appointments.length === 0 ? (
             <p className="text-sm text-[var(--text-muted)]">Nenhum atendimento registrado.</p>
           ) : (
@@ -241,7 +241,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         <div className="space-y-4">
           {client.reviews.length > 0 ? (
             <section>
-              <SectionTitle>Avaliacoes deixadas</SectionTitle>
+              <SectionTitle>Avaliações deixadas</SectionTitle>
               <div className="space-y-2">
                 {client.reviews.map((review) => (
                   <Card key={review.id} className="p-4">

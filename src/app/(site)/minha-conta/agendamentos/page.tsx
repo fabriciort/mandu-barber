@@ -59,13 +59,13 @@ export default async function MyAppointmentsPage({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-1">
           <FilterLink active={filter === "proximos"} href="/minha-conta/agendamentos">
-            Proximos
+            Próximos
           </FilterLink>
           <FilterLink
             active={filter === "historico"}
             href="/minha-conta/agendamentos?filtro=historico"
           >
-            Historico
+            Histórico
           </FilterLink>
         </div>
 
@@ -80,16 +80,16 @@ export default async function MyAppointmentsPage({
       {appointments.length === 0 ? (
         <EmptyState
           icon={CalendarDays}
-          title={filter === "proximos" ? "Nenhum horario marcado" : "Nada no historico ainda"}
+          title={filter === "proximos" ? "Nenhum horário marcado" : "Nada no histórico ainda"}
           description={
             filter === "proximos"
-              ? "Quando voce agendar, seus proximos horarios aparecem aqui."
-              : "Seus atendimentos concluidos vao ficar guardados nesta aba."
+              ? "Quando você agendar, seus próximos horários aparecem aqui."
+              : "Seus atendimentos concluídos vao ficar guardados nesta aba."
           }
           action={
             filter === "proximos" ? (
               <Button asChild>
-                <Link href="/agendar">Agendar horario</Link>
+                <Link href="/agendar">Agendar horário</Link>
               </Button>
             ) : null
           }
@@ -141,7 +141,7 @@ export default async function MyAppointmentsPage({
                       {appointment.services.map((s) => s.name).join(" + ")}
                     </h3>
 
-                    <p className="mt-1 text-sm capitalize text-[var(--text-muted)]">
+                    <p className="mt-1 text-sm first-letter:uppercase text-[var(--text-muted)]">
                       {formatLongDate(appointment.startsAt, shop.timezone)} ·{" "}
                       {formatDuration(duration)}
                     </p>

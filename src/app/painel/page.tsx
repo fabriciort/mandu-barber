@@ -49,11 +49,11 @@ export default async function PanelHomePage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title={isOwner ? "Visao geral" : "Meu dia"}
+        title={isOwner ? "Visão geral" : "Meu dia"}
         description={
           isOwner
-            ? "Como a barbearia esta hoje e no mes."
-            : "Seus atendimentos, seu faturamento e sua ocupacao."
+            ? "Como a barbearia está hoje e no mês."
+            : "Seus atendimentos, seu faturamento e sua ocupação."
         }
         actions={
           <>
@@ -77,25 +77,25 @@ export default async function PanelHomePage() {
           <StatCard
             label="Atendimentos"
             value={data.today.appointments}
-            hint={`${data.today.completed} concluidos`}
+            hint={`${data.today.completed} concluídos`}
             icon={CalendarCheck}
             tone="accent"
           />
           <StatCard
             label="Faturamento"
             value={formatMoney(data.today.revenueCents)}
-            hint="atendimentos concluidos"
+            hint="atendimentos concluídos"
             icon={Wallet}
             tone="success"
           />
           <StatCard
-            label="Ocupacao da cadeira"
+            label="Ocupação da cadeira"
             value={formatPercent(data.today.occupancyPercent)}
-            hint="do tempo disponivel"
+            hint="do tempo disponível"
             icon={Percent}
           />
           <StatCard
-            label="Ticket medio do mes"
+            label="Ticket médio do mês"
             value={formatMoney(data.month.ticketCents)}
             hint={`${data.month.appointments} atendimentos`}
             icon={TrendingUp}
@@ -115,14 +115,14 @@ export default async function PanelHomePage() {
             </Button>
           }
         >
-          Proximos na fila
+          Próximos na fila
         </SectionTitle>
 
         {data.today.nextAppointments.length === 0 ? (
           <EmptyState
             icon={CalendarCheck}
             title="Nada mais marcado para hoje"
-            description="Aproveite para revisar o cardapio ou lancar um atendimento de balcao."
+            description="Aproveite para revisar o cardápio ou lancar um atendimento de balcão."
             action={
               <Button asChild variant="secondary" size="sm">
                 <Link href="/painel/agendamentos?novo=1">Lancar atendimento</Link>
@@ -166,15 +166,15 @@ export default async function PanelHomePage() {
         <Card className="p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 className="font-semibold">Faturamento dos ultimos 30 dias</h2>
+              <h2 className="font-semibold">Faturamento dos últimos 30 dias</h2>
               <p className="text-sm text-[var(--text-muted)]">
-                {formatMoney(data.month.revenueCents)} no mes corrente
+                {formatMoney(data.month.revenueCents)} no mês corrente
               </p>
             </div>
             {revenueDelta !== null ? (
               <Badge tone={revenueDelta >= 0 ? "success" : "danger"}>
                 {revenueDelta >= 0 ? "+" : ""}
-                {revenueDelta}% vs. mes anterior
+                {revenueDelta}% vs. mês anterior
               </Badge>
             ) : null}
           </div>
@@ -230,12 +230,12 @@ export default async function PanelHomePage() {
           ) : null}
 
           <Card className="p-5">
-            <h2 className="font-semibold">Saude da operacao</h2>
+            <h2 className="font-semibold">Saúde da operação</h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex items-center justify-between">
                 <dt className="flex items-center gap-2 text-[var(--text-muted)]">
                   <UserPlus className="size-4" />
-                  Clientes novos no mes
+                  Clientes novos no mês
                 </dt>
                 <dd className="font-medium">{data.month.newClients}</dd>
               </div>
@@ -262,7 +262,7 @@ export default async function PanelHomePage() {
       {isOwner ? (
         <section className="grid gap-4 lg:grid-cols-2">
           <Card className="p-5">
-            <h2 className="font-semibold">Desempenho da equipe no mes</h2>
+            <h2 className="font-semibold">Desempenho da equipe no mês</h2>
             <ul className="mt-4 space-y-3">
               {data.team.map((member) => (
                 <li key={member.barberId} className="flex items-center gap-3">
@@ -302,15 +302,15 @@ export default async function PanelHomePage() {
               ))}
             </ul>
             <p className="mt-4 text-xs text-[var(--text-muted)]">
-              A barra mostra a ocupacao do mes: quanto do tempo disponivel virou cadeira ocupada.
+              A barra mostra a ocupação do mês: quanto do tempo disponível virou cadeira ocupada.
             </p>
           </Card>
 
           <Card className="p-5">
-            <h2 className="font-semibold">Servicos que mais faturam</h2>
+            <h2 className="font-semibold">Serviços que mais faturam</h2>
             {data.topServices.length === 0 ? (
               <p className="mt-4 text-sm text-[var(--text-muted)]">
-                Sem atendimentos concluidos neste mes.
+                Sem atendimentos concluídos neste mês.
               </p>
             ) : (
               <ul className="mt-4 space-y-3">
@@ -334,7 +334,7 @@ export default async function PanelHomePage() {
                         />
                       </div>
                       <p className="mt-1 text-xs text-[var(--text-muted)]">
-                        {service.count} execucao(oes)
+                        {service.count} execução(oes)
                       </p>
                     </li>
                   );

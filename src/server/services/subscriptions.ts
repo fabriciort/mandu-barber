@@ -334,11 +334,11 @@ export async function createSubscription(params: {
       where: { clientId: params.clientId, status: { in: ["ACTIVE", "PAST_DUE", "PAUSED"] } },
     });
     if (existing) {
-      throw new Error("Este cliente ja possui uma assinatura ativa.");
+      throw new Error("Este cliente já possui uma assinatura ativa.");
     }
 
     const plan = await tx.plan.findUnique({ where: { id: params.planId } });
-    if (!plan || !plan.active) throw new Error("Plano indisponivel.");
+    if (!plan || !plan.active) throw new Error("Plano indisponível.");
 
     const start = params.startAt ?? new Date();
     const end = addMonthsKeepingDay(start, plan.intervalMonths);

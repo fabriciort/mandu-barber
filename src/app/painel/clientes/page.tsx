@@ -140,7 +140,7 @@ export default async function ClientsPage({
           description={
             query
               ? "Tente outro termo de busca ou cadastre este cliente."
-              : "Cadastre o primeiro cliente para comecar a lancar atendimentos."
+              : "Cadastre o primeiro cliente para começar a lancar atendimentos."
           }
           action={<ClientFormDialog />}
         />
@@ -186,7 +186,7 @@ export default async function ClientsPage({
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-[var(--text-muted)]">Ultima visita</dt>
+                        <dt className="text-[var(--text-muted)]">Última visita</dt>
                         <dd className="mt-0.5 font-semibold">
                           {lastVisit ? formatRelative(lastVisit) : "—"}
                         </dd>
@@ -207,7 +207,7 @@ export default async function ClientsPage({
           {pages > 1 ? (
             <div className="flex items-center justify-between text-sm">
               <p className="text-[var(--text-muted)]">
-                Pagina {page} de {pages}
+                Página {page} de {pages}
               </p>
               <div className="flex gap-2">
                 {page > 1 ? (
@@ -223,7 +223,7 @@ export default async function ClientsPage({
                     href={`/painel/clientes?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(onlySubscribers ? { filtro: "assinantes" } : {}), pagina: String(page + 1) })}`}
                     className="rounded-lg border border-[var(--border-strong)] px-3 py-1.5 transition-colors hover:border-[var(--accent)]"
                   >
-                    Proxima
+                    Próxima
                   </Link>
                 ) : null}
               </div>
@@ -233,8 +233,8 @@ export default async function ClientsPage({
       )}
 
       <p className="text-xs text-[var(--text-muted)]">
-        Cadastro feito no balcao recebe senha provisoria — o cliente troca no primeiro acesso.
-        Fuso da agenda: {shop.timezone}. Ultima atualizacao: {formatDate(new Date(), shop.timezone)}.
+        Cadastro feito no balcão recebe senha provisória — o cliente troca no primeiro acesso.
+        Fuso da agenda: {shop.timezone}. Última atualização: {formatDate(new Date(), shop.timezone)}.
       </p>
     </div>
   );

@@ -30,7 +30,7 @@ export default async function ProfilePage() {
       <Card className="p-6">
         <h2 className="text-lg font-semibold">Seus dados</h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Usamos seu celular apenas para avisar sobre horarios.
+          Usamos seu celular apenas para avisar sobre horários.
         </p>
         <ProfileForm
           defaultValues={{
@@ -46,7 +46,7 @@ export default async function ProfilePage() {
         <Card className="p-6">
           <h2 className="text-lg font-semibold">Trocar senha</h2>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            Ao trocar a senha, as outras sessoes sao encerradas.
+            Ao trocar a senha, as outras sessões são encerradas.
           </p>
           <PasswordForm />
         </Card>

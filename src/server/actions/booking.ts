@@ -16,9 +16,9 @@ import { isValidDateKey } from "@/lib/time";
 import { failure, runAction, success, type ActionState } from "./result";
 
 const bookingSchema = z.object({
-  serviceIds: z.array(z.string().min(1)).min(1, "Escolha pelo menos um servico."),
+  serviceIds: z.array(z.string().min(1)).min(1, "Escolha pelo menos um serviço."),
   barberId: z.string().min(1).nullable(),
-  date: z.string().refine(isValidDateKey, "Data invalida."),
+  date: z.string().refine(isValidDateKey, "Data inválida."),
   minute: z.coerce.number().int().min(0).max(24 * 60),
   notes: z.string().trim().max(500).optional(),
   usePlan: z.boolean().default(true),
@@ -90,7 +90,7 @@ export async function createPanelBookingAction(
     const barberId =
       staff.role === "BARBER" ? staff.barberId : input.barberId;
     if (staff.role === "BARBER" && input.barberId && input.barberId !== staff.barberId) {
-      return failure("Voce so pode agendar na sua propria agenda.");
+      return failure("Você só pode agendar na sua própria agenda.");
     }
 
     const appointment = await createAppointment({
@@ -126,9 +126,9 @@ export async function cancelBookingAction(
       where: { id: appointmentId },
       select: { clientId: true, barberId: true },
     });
-    if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+    if (!appointment) throw new BookingError("Agendamento não encontrado.");
     if (!canManageAppointment(user, appointment)) {
-      return failure("Voce nao pode cancelar este agendamento.");
+      return failure("Você não pode cancelar este agendamento.");
     }
 
     await cancelAppointment({
@@ -147,7 +147,7 @@ export async function cancelBookingAction(
 
 const rescheduleSchema = z.object({
   appointmentId: z.string().min(1),
-  date: z.string().refine(isValidDateKey, "Data invalida."),
+  date: z.string().refine(isValidDateKey, "Data inválida."),
   minute: z.coerce.number().int().min(0).max(24 * 60),
   barberId: z.string().optional().nullable(),
 });
@@ -169,9 +169,9 @@ export async function rescheduleBookingAction(
       where: { id: input.appointmentId },
       select: { clientId: true, barberId: true },
     });
-    if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+    if (!appointment) throw new BookingError("Agendamento não encontrado.");
     if (!canManageAppointment(user, appointment)) {
-      return failure("Voce nao pode remarcar este agendamento.");
+      return failure("Você não pode remarcar este agendamento.");
     }
 
     await rescheduleAppointment({
@@ -210,7 +210,7 @@ export async function setStatusAction(_prev: ActionState, formData: FormData): P
       where: { id: input.appointmentId },
       select: { barberId: true },
     });
-    if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+    if (!appointment) throw new BookingError("Agendamento não encontrado.");
     if (staff.role === "BARBER" && staff.barberId !== appointment.barberId) {
       return failure("Este atendimento e de outro profissional.");
     }
@@ -249,12 +249,12 @@ export async function reviewAction(_prev: ActionState, formData: FormData): Prom
       where: { id: input.appointmentId },
       include: { review: true },
     });
-    if (!appointment) throw new BookingError("Agendamento nao encontrado.");
-    if (appointment.clientId !== user.id) return failure("Este atendimento nao e seu.");
+    if (!appointment) throw new BookingError("Agendamento não encontrado.");
+    if (appointment.clientId !== user.id) return failure("Este atendimento não e seu.");
     if (appointment.status !== "COMPLETED") {
-      return failure("So e possivel avaliar atendimentos concluidos.");
+      return failure("Só e possível avaliar atendimentos concluídos.");
     }
-    if (appointment.review) return failure("Voce ja avaliou este atendimento.");
+    if (appointment.review) return failure("Você já avaliou este atendimento.");
 
     await prisma.review.create({
       data: {
@@ -267,7 +267,7 @@ export async function reviewAction(_prev: ActionState, formData: FormData): Prom
     });
 
     revalidatePath("/minha-conta");
-    return success("Obrigado pela avaliacao.");
+    return success("Obrigado pela avaliação.");
   });
 }
 
@@ -283,9 +283,9 @@ export async function replyReviewAction(
     if (!reply) return failure("Escreva uma resposta.");
 
     const review = await prisma.review.findUnique({ where: { id: reviewId } });
-    if (!review) return failure("Avaliacao nao encontrada.");
+    if (!review) return failure("Avaliação não encontrada.");
     if (staff.role === "BARBER" && review.barberId !== staff.barberId) {
-      return failure("Esta avaliacao e de outro profissional.");
+      return failure("Esta avaliação e de outro profissional.");
     }
 
     await prisma.review.update({

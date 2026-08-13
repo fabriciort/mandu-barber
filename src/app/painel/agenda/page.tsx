@@ -95,7 +95,7 @@ export default async function AgendaPage({
     <div className="space-y-6">
       <PageHeader
         title="Agenda"
-        description="Arraste o olho pela coluna: cada bloco e um atendimento. Clique para operar."
+        description="Arraste o olho pela coluna: cada bloco é um atendimento. Clique para operar."
       />
 
       <AgendaBoard

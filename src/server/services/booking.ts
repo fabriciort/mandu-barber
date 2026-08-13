@@ -67,7 +67,7 @@ export async function createAppointment(input: CreateAppointmentInput) {
   const shop = await getShopConfig();
 
   if (input.serviceIds.length === 0) {
-    throw new BookingError("Escolha pelo menos um servico.");
+    throw new BookingError("Escolha pelo menos um serviço.");
   }
 
   const availability = await getDayAvailability({
@@ -80,13 +80,13 @@ export async function createAppointment(input: CreateAppointmentInput) {
   const slot = availability.slots.find((s) => s.minute === input.minute);
   if (!slot) {
     throw new BookingError(
-      "Este horario acabou de ser preenchido. Escolha outro horario disponivel.",
+      "Este horário acabou de ser preenchido. Escolha outro horário disponível.",
     );
   }
 
   const barberId = input.barberId ?? pickBarber(slot.barberIds);
   if (!slot.barberIds.includes(barberId)) {
-    throw new BookingError("O profissional escolhido nao esta livre neste horario.");
+    throw new BookingError("O profissional escolhido não esta livre neste horário.");
   }
 
   const services = await prisma.service.findMany({
@@ -94,7 +94,7 @@ export async function createAppointment(input: CreateAppointmentInput) {
     include: { barbers: { select: { barberId: true, priceCents: true, durationMinutes: true } } },
   });
   if (services.length !== new Set(input.serviceIds).size) {
-    throw new BookingError("Um dos servicos escolhidos nao esta mais disponivel.");
+    throw new BookingError("Um dos serviços escolhidos não esta mais disponível.");
   }
 
   const resolved = resolveServicesForBarber(services, barberId);
@@ -208,16 +208,16 @@ export async function cancelAppointment(params: {
     where: { id: params.appointmentId },
     include: appointmentInclude,
   });
-  if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+  if (!appointment) throw new BookingError("Agendamento não encontrado.");
   if (!ACTIVE_APPOINTMENT_STATUSES.includes(appointment.status as never)) {
-    throw new BookingError("Este agendamento ja foi encerrado.");
+    throw new BookingError("Este agendamento já foi encerrado.");
   }
 
   if (!params.actorIsStaff) {
     const limit = appointment.startsAt.getTime() - shop.cancellationWindowHours * 3_600_000;
     if (Date.now() > limit) {
       throw new BookingError(
-        `Cancelamentos online sao aceitos ate ${shop.cancellationWindowHours}h antes. Fale com a barbearia pelo WhatsApp.`,
+        `Cancelamentos online são aceitos até ${shop.cancellationWindowHours}h antes. Fale com a barbearia pelo WhatsApp.`,
       );
     }
   }
@@ -255,7 +255,7 @@ export async function cancelAppointment(params: {
       userId: target,
       type: "APPOINTMENT_CANCELED",
       title: "Agendamento cancelado",
-      body: `Seu horario de ${when} foi cancelado.${params.reason ? ` Motivo: ${params.reason}` : ""}`,
+      body: `Seu horário de ${when} foi cancelado.${params.reason ? ` Motivo: ${params.reason}` : ""}`,
       link: "/minha-conta/agendamentos",
     });
   }
@@ -289,7 +289,7 @@ export async function rescheduleAppointment(params: {
     where: { id: params.appointmentId },
     include: appointmentInclude,
   });
-  if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+  if (!appointment) throw new BookingError("Agendamento não encontrado.");
   if (!ACTIVE_APPOINTMENT_STATUSES.includes(appointment.status as never)) {
     throw new BookingError("Somente agendamentos ativos podem ser remarcados.");
   }
@@ -304,11 +304,11 @@ export async function rescheduleAppointment(params: {
   });
 
   const slot = availability.slots.find((s) => s.minute === params.minute);
-  if (!slot) throw new BookingError("Horario indisponivel para remarcacao.");
+  if (!slot) throw new BookingError("Horário indisponível para remarcação.");
 
   const barberId = params.barberId ?? appointment.barberId;
   if (!slot.barberIds.includes(barberId)) {
-    throw new BookingError("O profissional nao esta livre neste horario.");
+    throw new BookingError("O profissional não esta livre neste horário.");
   }
 
   const duration = appointment.services.reduce((sum, s) => sum + s.durationMinutes, 0);
@@ -339,7 +339,7 @@ export async function rescheduleAppointment(params: {
     userId: appointment.clientId,
     type: "APPOINTMENT_RESCHEDULED",
     title: "Agendamento remarcado",
-    body: `Novo horario: ${formatDateTime(startsAt, shop.timezone)}.`,
+    body: `Novo horário: ${formatDateTime(startsAt, shop.timezone)}.`,
     link: `/minha-conta/agendamentos/${appointment.id}`,
   });
 
@@ -358,7 +358,7 @@ export async function setAppointmentStatus(params: {
     where: { id: params.appointmentId },
     include: appointmentInclude,
   });
-  if (!appointment) throw new BookingError("Agendamento nao encontrado.");
+  if (!appointment) throw new BookingError("Agendamento não encontrado.");
 
   const now = new Date();
 
@@ -427,7 +427,7 @@ async function assertSlotFree(
     select: { id: true },
   });
   if (conflict) {
-    throw new BookingError("Este horario acabou de ser preenchido. Escolha outro.");
+    throw new BookingError("Este horário acabou de ser preenchido. Escolha outro.");
   }
 
   const blocked = await db.timeOff.findFirst({
@@ -439,13 +439,13 @@ async function assertSlotFree(
     select: { id: true },
   });
   if (blocked) {
-    throw new BookingError("A agenda esta bloqueada neste horario.");
+    throw new BookingError("A agenda esta bloqueada neste horário.");
   }
 }
 
 /** Distribui "qualquer profissional" de forma justa em vez de sempre o primeiro. */
 function pickBarber(barberIds: string[]): string {
-  if (barberIds.length === 0) throw new BookingError("Nenhum profissional disponivel.");
+  if (barberIds.length === 0) throw new BookingError("Nenhum profissional disponível.");
   return barberIds[Math.floor(Math.random() * barberIds.length)];
 }
 

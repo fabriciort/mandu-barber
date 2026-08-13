@@ -80,7 +80,7 @@ export function PlanFormDialog({
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -121,7 +121,7 @@ export function PlanFormDialog({
         <DialogHeader>
           <DialogTitle>{plan ? "Editar plano" : "Novo plano"}</DialogTitle>
           <DialogDescription>
-            A franquia define quantas vezes por ciclo cada servico sai sem custo para o assinante.
+            A franquia define quantas vezes por ciclo cada serviço sai sem custo para o assinante.
           </DialogDescription>
         </DialogHeader>
 
@@ -142,14 +142,14 @@ export function PlanFormDialog({
                   name="tagline"
                   defaultValue={plan?.tagline ?? ""}
                   maxLength={120}
-                  placeholder="Ex.: Para quem corta todo mes"
+                  placeholder="Ex.: Para quem corta todo mês"
                 />
               </Field>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
               <Field
-                label="Preco"
+                label="Preço"
                 htmlFor="price"
                 required
                 hint={priceCents ? formatMoney(priceCents) : "Ex.: 119,00"}
@@ -270,7 +270,7 @@ export function PlanFormDialog({
                 name="perks"
                 rows={4}
                 defaultValue={plan?.perks ?? ""}
-                placeholder={"4 cortes por mes\n15% nos demais servicos\nPrioridade na agenda"}
+                placeholder={"4 cortes por mês\n15% nos demais serviços\nPrioridade na agenda"}
               />
             </Field>
 
@@ -282,7 +282,7 @@ export function PlanFormDialog({
               />
               <CheckboxField
                 name="allowRollover"
-                label="Acumular creditos nao usados"
+                label="Acumular créditos não usados"
                 defaultChecked={plan?.allowRollover ?? false}
               />
               <CheckboxField
@@ -300,7 +300,7 @@ export function PlanFormDialog({
             <Field
               label="Limite de acumulo"
               htmlFor="maxRolloverCredits"
-              hint="Quantos creditos podem passar para o ciclo seguinte."
+              hint="Quantos créditos podem passar para o ciclo seguinte."
             >
               <Input
                 id="maxRolloverCredits"
@@ -313,7 +313,7 @@ export function PlanFormDialog({
               />
             </Field>
 
-            <Field label="Descricao interna" htmlFor="description">
+            <Field label="Descrição interna" htmlFor="description">
               <Textarea
                 id="description"
                 name="description"

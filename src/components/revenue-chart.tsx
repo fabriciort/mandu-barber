@@ -29,7 +29,7 @@ export function RevenueChart({ data }: { data: Point[] }) {
   if (!hasRevenue) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-[var(--text-muted)]">
-        Ainda nao ha faturamento no periodo.
+        Ainda não há faturamento no período.
       </div>
     );
   }
@@ -64,7 +64,7 @@ export function RevenueChart({ data }: { data: Point[] }) {
           <YAxis
             tickLine={false}
             axisLine={false}
-            width={54}
+            width={70}
             tick={{ fontSize: 11, fill: "var(--text-muted)" }}
             tickFormatter={(value: number) => formatMoneyCompact(value)}
           />

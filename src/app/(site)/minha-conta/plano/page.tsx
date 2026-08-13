@@ -51,8 +51,8 @@ export default async function MyPlanPage() {
       <div className="space-y-6">
         <EmptyState
           icon={Sparkles}
-          title="Voce ainda nao tem plano ativo"
-          description="Assinando, voce trava o preco do corte, ganha desconto no resto do cardapio e entra na fila de prioridade da agenda."
+          title="Você ainda não tem plano ativo"
+          description="Assinando, você trava o preço do corte, ganha desconto no resto do cardápio e entra na fila de prioridade da agenda."
           action={
             <Button asChild>
               <Link href="/planos">Conhecer os planos</Link>
@@ -85,7 +85,7 @@ export default async function MyPlanPage() {
                 {subscription.planName}
               </h2>
               <p className="text-sm text-[var(--text-muted)]">
-                {formatMoney(subscription.priceCents)} por mes ·{" "}
+                {formatMoney(subscription.priceCents)} por mês ·{" "}
                 {subscription.cancelAtPeriodEnd
                   ? `Encerra em ${formatDate(subscription.currentPeriodEnd, shop.timezone)}`
                   : `Renova em ${formatDate(subscription.currentPeriodEnd, shop.timezone)}`}
@@ -145,8 +145,8 @@ export default async function MyPlanPage() {
                     {unlimited
                       ? `${credit.used} usados neste ciclo`
                       : left === 0
-                        ? "Franquia esgotada — os proximos entram com desconto do plano."
-                        : `${left} disponivel(is) ate o fim do ciclo`}
+                        ? "Franquia esgotada — os próximos entram com desconto do plano."
+                        : `${left} disponível(is) até o fim do ciclo`}
                   </p>
                 </div>
               );
@@ -173,21 +173,21 @@ export default async function MyPlanPage() {
                 <CalendarClock className="size-5 text-[var(--accent)]" />
                 <div>
                   <p className="text-xs text-[var(--text-muted)]">Agenda</p>
-                  <p className="font-semibold">Prioridade em horarios de pico</p>
+                  <p className="font-semibold">Prioridade em horários de pico</p>
                 </div>
               </div>
             ) : null}
           </div>
 
           <Button asChild className="mt-5">
-            <Link href="/agendar">Usar meu credito agora</Link>
+            <Link href="/agendar">Usar meu crédito agora</Link>
           </Button>
         </div>
       </Card>
 
       {usage.length > 0 ? (
         <section>
-          <SectionTitle>Movimentacao do plano</SectionTitle>
+          <SectionTitle>Movimentação do plano</SectionTitle>
           <ul className="divide-y divide-[var(--border-subtle)] overflow-hidden rounded-xl border border-[var(--border-subtle)]">
             {usage.map((entry) => (
               <li

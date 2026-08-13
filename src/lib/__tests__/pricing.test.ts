@@ -7,7 +7,7 @@ const barba = { id: "barba", name: "Barba Terapia", priceCents: 5000, durationMi
 const sobrancelha = { id: "sobrancelha", name: "Sobrancelha", priceCents: 2500, durationMinutes: 15 };
 
 describe("priceAppointment sem plano", () => {
-  it("cobra o preco de tabela", () => {
+  it("cobra o preço de tabela", () => {
     const result = priceWithoutPlan([corte, barba]);
     expect(result.subtotalCents).toBe(12000);
     expect(result.discountCents).toBe(0);
@@ -18,7 +18,7 @@ describe("priceAppointment sem plano", () => {
 });
 
 describe("priceAppointment com franquia", () => {
-  it("zera o servico coberto pelo plano", () => {
+  it("zera o serviço coberto pelo plano", () => {
     const result = priceAppointment(
       [corte],
       [{ serviceId: "corte", total: 4, used: 1 }],
@@ -29,7 +29,7 @@ describe("priceAppointment com franquia", () => {
     expect(result.creditsToConsume).toEqual([{ serviceId: "corte", quantity: 1 }]);
   });
 
-  it("aplica o credito no servico mais caro quando o saldo e limitado", () => {
+  it("aplica o crédito no serviço mais caro quando o saldo e limitado", () => {
     const result = priceAppointment(
       [sobrancelha, corte],
       [
@@ -49,7 +49,7 @@ describe("priceAppointment com franquia", () => {
     expect(result.totalCents).toBe(2250);
   });
 
-  it("preserva a ordem original dos servicos no resultado", () => {
+  it("preserva a ordem original dos serviços no resultado", () => {
     const result = priceAppointment([sobrancelha, corte, barba], [], { extraDiscountPercent: 0 });
     expect(result.charges.map((c) => c.serviceId)).toEqual(["sobrancelha", "corte", "barba"]);
   });
@@ -79,7 +79,7 @@ describe("priceAppointment com franquia", () => {
     expect(result.charges.every((c) => c.coveredByPlan)).toBe(true);
   });
 
-  it("nao aplica desconto negativo nem acima de 100%", () => {
+  it("não aplica desconto negativo nem acima de 100%", () => {
     const acima = priceAppointment([corte], [], { extraDiscountPercent: 250 });
     expect(acima.totalCents).toBe(0);
 
@@ -87,7 +87,7 @@ describe("priceAppointment com franquia", () => {
     expect(abaixo.totalCents).toBe(7000);
   });
 
-  it("mantem o preco de tabela visivel para mostrar a economia", () => {
+  it("mantem o preço de tabela visível para mostrar a economia", () => {
     const result = priceAppointment([corte], [{ serviceId: "corte", total: 4, used: 0 }], {
       extraDiscountPercent: 15,
     });
@@ -124,7 +124,7 @@ describe("planSavings", () => {
     expect(result.fullPriceCents).toBe(28000);
   });
 
-  it("nao devolve economia negativa", () => {
+  it("não devolve economia negativa", () => {
     expect(planSavings(50000, [{ quantityPerCycle: 1, priceCents: 7000 }]).savingsCents).toBe(0);
   });
 });

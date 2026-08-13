@@ -25,7 +25,7 @@ export function ReplyReviewForm({ reviewId }: { reviewId: string }) {
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel responder", state.message);
+      toast.error("Não foi possível responder", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -48,7 +48,7 @@ export function ReplyReviewForm({ reviewId }: { reviewId: string }) {
         required
         maxLength={600}
         autoFocus
-        placeholder="Agradeca, explique ou convide para uma nova visita. O cliente ve esta resposta."
+        placeholder="Agradeca, explique ou convide para uma nova visita. O cliente vê esta resposta."
       />
       <div className="flex gap-2">
         <Button type="submit" size="sm" loading={pending}>

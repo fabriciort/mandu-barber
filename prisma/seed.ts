@@ -71,13 +71,13 @@ async function main() {
     data: {
       id: "shop",
       name: "Mandu Barber",
-      tagline: "Barbearia de bairro com padrao de alta costura.",
+      tagline: "Barbearia de bairro com padrão de alta costura.",
       phone: "1133334444",
       whatsapp: "11987654321",
       email: "contato@mandubarber.com.br",
       addressLine: "Rua Aurora, 148",
       district: "Vila Buarque",
-      city: "Sao Paulo",
+      city: "São Paulo",
       state: "SP",
       zipCode: "01209-000",
       instagram: "mandubarber",
@@ -103,13 +103,13 @@ async function main() {
   });
 
   // ------------------------------------------------------------ servicos
-  console.log("Criando catalogo de servicos...");
+  console.log("Criando catalogo de serviços...");
   const serviceSeed = [
     {
       name: "Corte Mandu",
       slug: "corte-mandu",
       category: "CABELO",
-      description: "Corte na tesoura e maquina, finalizado com toalha quente e pomada.",
+      description: "Corte na tesoura e máquina, finalizado com toalha quente e pomada.",
       durationMinutes: 45,
       bufferMinutes: 5,
       priceCents: 7000,
@@ -120,7 +120,7 @@ async function main() {
       name: "Corte Social",
       slug: "corte-social",
       category: "CABELO",
-      description: "Corte classico, alinhado e discreto. Para quem quer sempre o mesmo padrao.",
+      description: "Corte clássico, alinhado e discreto. Para quem quer sempre o mesmo padrão.",
       durationMinutes: 30,
       bufferMinutes: 5,
       priceCents: 5500,
@@ -130,7 +130,7 @@ async function main() {
       name: "Barba Terapia",
       slug: "barba-terapia",
       category: "BARBA",
-      description: "Toalha quente, navalha, oleo e balm. Trinta minutos de descanso de verdade.",
+      description: "Toalha quente, navalha, óleo e balm. Trinta minutos de descanso de verdade.",
       durationMinutes: 30,
       bufferMinutes: 5,
       priceCents: 5000,
@@ -141,7 +141,7 @@ async function main() {
       name: "Barba Express",
       slug: "barba-express",
       category: "BARBA",
-      description: "Alinhamento rapido de contorno e pescoco.",
+      description: "Alinhamento rápido de contorno e pescoço.",
       durationMinutes: 20,
       priceCents: 3500,
       displayOrder: 4,
@@ -176,10 +176,10 @@ async function main() {
       displayOrder: 7,
     },
     {
-      name: "Pigmentacao de barba",
-      slug: "pigmentacao-barba",
+      name: "Pigmentação de barba",
+      slug: "pigmentação-barba",
       category: "ESTETICA",
-      description: "Preenchimento de falhas com pigmento temporario.",
+      description: "Preenchimento de falhas com pigmento temporário.",
       durationMinutes: 40,
       bufferMinutes: 10,
       priceCents: 8000,
@@ -189,7 +189,7 @@ async function main() {
       name: "Corte Kids",
       slug: "corte-kids",
       category: "INFANTIL",
-      description: "Atendimento paciente para criancas ate 10 anos, com cadeira alta.",
+      description: "Atendimento paciente para crianças até 10 anos, com cadeira alta.",
       durationMinutes: 30,
       bufferMinutes: 10,
       priceCents: 5000,
@@ -199,7 +199,7 @@ async function main() {
       name: "Platinado",
       slug: "platinado",
       category: "ESTETICA",
-      description: "Descoloracao completa com matizacao e tratamento.",
+      description: "Descoloração completa com matização e tratamento.",
       durationMinutes: 120,
       bufferMinutes: 15,
       priceCents: 22000,
@@ -212,7 +212,7 @@ async function main() {
   );
   const byslug = (slug: string) => {
     const found = services.find((s) => s.slug === slug);
-    if (!found) throw new Error(`servico ${slug} nao encontrado`);
+    if (!found) throw new Error(`serviço ${slug} não encontrado`);
     return found;
   };
 
@@ -232,9 +232,9 @@ async function main() {
     {
       name: "Ricardo Mandu",
       email: owner.email,
-      headline: "Fundador — classico e navalha",
+      headline: "Fundador — clássico e navalha",
       bio: "Vinte anos de cadeira. Aprendeu com o pai, em Recife, e trouxe a navalha para a Vila Buarque.",
-      specialties: ["Navalha", "Classico", "Barba"],
+      specialties: ["Navalha", "Clássico", "Barba"],
       commissionPercent: 100,
       color: "#c98b3a",
       existingUserId: owner.id,
@@ -245,9 +245,9 @@ async function main() {
       name: "Bruno Tavares",
       email: "bruno@mandubarber.com.br",
       phone: "11991110002",
-      headline: "Degrade e freestyle",
-      bio: "Especialista em degrade navalhado e desenhos. Fila de espera propria no Instagram.",
-      specialties: ["Degrade", "Freestyle", "Platinado"],
+      headline: "Degradê e freestyle",
+      bio: "Especialista em degradê navalhado e desenhos. Fila de espera própria no Instagram.",
+      specialties: ["Degradê", "Freestyle", "Platinado"],
       commissionPercent: 55,
       color: "#7fa66a",
       services: ["corte-mandu", "corte-social", "combo-mandu", "pezinho", "platinado", "sobrancelha", "barba-express"],
@@ -257,12 +257,12 @@ async function main() {
       name: "Caio Nakamura",
       email: "caio@mandubarber.com.br",
       phone: "11991110003",
-      headline: "Barboterapia e pigmentacao",
-      bio: "Fez barbearia virar ritual. Toalha quente, oleo quente e conversa boa.",
-      specialties: ["Barba", "Pigmentacao", "Toalha quente"],
+      headline: "Barboterapia e pigmentação",
+      bio: "Fez barbearia virar ritual. Toalha quente, óleo quente e conversa boa.",
+      specialties: ["Barba", "Pigmentação", "Toalha quente"],
       commissionPercent: 50,
       color: "#c96f4a",
-      services: ["barba-terapia", "barba-express", "pigmentacao-barba", "combo-mandu", "corte-social", "sobrancelha"],
+      services: ["barba-terapia", "barba-express", "pigmentação-barba", "combo-mandu", "corte-social", "sobrancelha"],
       hours: {
         weekdays: [
           { start: 12 * 60, end: 15 * 60 },
@@ -276,7 +276,7 @@ async function main() {
       email: "diego@mandubarber.com.br",
       phone: "11991110004",
       headline: "Corte infantil e social",
-      bio: "Tem o dom de cortar cabelo de crianca sem choro. Pai de dois.",
+      bio: "Tem o dom de cortar cabelo de criança sem choro. Pai de dois.",
       specialties: ["Infantil", "Social", "Rapidez"],
       commissionPercent: 50,
       color: "#5f8a4c",
@@ -349,7 +349,7 @@ async function main() {
   await prisma.timeOff.create({
     data: {
       barberId: barbers[1].id,
-      title: "Ferias",
+      title: "Férias",
       type: "VACATION",
       startsAt: localDateTime(21, 0),
       endsAt: localDateTime(28, 0),
@@ -358,7 +358,7 @@ async function main() {
   await prisma.timeOff.create({
     data: {
       barberId: null,
-      title: "Manutencao da loja",
+      title: "Manutenção da loja",
       type: "HOLIDAY",
       startsAt: localDateTime(14, 0),
       endsAt: localDateTime(15, 0),
@@ -371,15 +371,15 @@ async function main() {
     data: {
       name: "Mandu Essencial",
       slug: "essencial",
-      tagline: "Para quem corta todo mes, sem falta.",
-      description: "Dois cortes por mes e desconto no resto do cardapio.",
+      tagline: "Para quem corta todo mês, sem falta.",
+      description: "Dois cortes por mês e desconto no resto do cardápio.",
       priceCents: 11900,
       extraDiscountPercent: 10,
       accentColor: "#7fa66a",
       displayOrder: 1,
       perks: JSON.stringify([
-        "2 cortes por mes",
-        "10% de desconto nos demais servicos",
+        "2 cortes por mês",
+        "10% de desconto nos demais serviços",
         "Reagendamento sem burocracia",
       ]),
       benefits: { create: [{ serviceId: byslug("corte-mandu").id, quantityPerCycle: 2 }] },
@@ -391,7 +391,7 @@ async function main() {
       name: "Mandu Prime",
       slug: "prime",
       tagline: "Cabelo e barba sempre em dia.",
-      description: "Quatro cortes e duas barbas por mes, com prioridade de horario.",
+      description: "Quatro cortes e duas barbas por mês, com prioridade de horário.",
       priceCents: 21900,
       extraDiscountPercent: 15,
       priorityBooking: true,
@@ -401,11 +401,11 @@ async function main() {
       highlight: true,
       displayOrder: 2,
       perks: JSON.stringify([
-        "4 cortes por mes",
-        "2 barbas terapia por mes",
-        "15% nos demais servicos",
-        "Prioridade em horarios de pico",
-        "Ate 2 creditos acumulam para o mes seguinte",
+        "4 cortes por mês",
+        "2 barbas terapia por mês",
+        "15% nos demais serviços",
+        "Prioridade em horários de pico",
+        "Até 2 créditos acumulam para o mês seguinte",
       ]),
       benefits: {
         create: [
@@ -421,7 +421,7 @@ async function main() {
       name: "Mandu Black",
       slug: "black",
       tagline: "Ilimitado. Entre quando quiser.",
-      description: "Corte e barba sem limite, mais estetica com desconto pesado.",
+      description: "Corte e barba sem limite, mais estética com desconto pesado.",
       priceCents: 34900,
       extraDiscountPercent: 25,
       priorityBooking: true,
@@ -430,8 +430,8 @@ async function main() {
       perks: JSON.stringify([
         "Cortes ilimitados",
         "Barba terapia ilimitada",
-        "25% em estetica e quimica",
-        "Prioridade maxima na agenda",
+        "25% em estética e química",
+        "Prioridade máxima na agenda",
         "Bebida cortesia em todo atendimento",
       ]),
       benefits: {
@@ -446,21 +446,21 @@ async function main() {
   // --------------------------------------------------------------- clientes
   console.log("Criando clientes...");
   const clientSeed = [
-    ["Andre Lopes", "andre.lopes@email.com", "11988880001"],
+    ["André Lopes", "andre.lopes@email.com", "11988880001"],
     ["Felipe Moreira", "felipe.moreira@email.com", "11988880002"],
     ["Gustavo Prado", "gustavo.prado@email.com", "11988880003"],
-    ["Henrique Sa", "henrique.sa@email.com", "11988880004"],
+    ["Henrique Sá", "henrique.sa@email.com", "11988880004"],
     ["Igor Bastos", "igor.bastos@email.com", "11988880005"],
-    ["Joao Vitor Reis", "joao.reis@email.com", "11988880006"],
+    ["João Vitor Reis", "joao.reis@email.com", "11988880006"],
     ["Leandro Cunha", "leandro.cunha@email.com", "11988880007"],
     ["Marcelo Dias", "marcelo.dias@email.com", "11988880008"],
-    ["Nelson Araujo", "nelson.araujo@email.com", "11988880009"],
-    ["Otavio Ramos", "otavio.ramos@email.com", "11988880010"],
+    ["Nelson Araújo", "nelson.araujo@email.com", "11988880009"],
+    ["Otávio Ramos", "otavio.ramos@email.com", "11988880010"],
     ["Paulo Serra", "paulo.serra@email.com", "11988880011"],
     ["Rafael Antunes", "rafael.antunes@email.com", "11988880012"],
     ["Samuel Krause", "samuel.krause@email.com", "11988880013"],
     ["Thiago Bertoldo", "thiago.bertoldo@email.com", "11988880014"],
-    ["Vinicius Amaral", "vinicius.amaral@email.com", "11988880015"],
+    ["Vinícius Amaral", "vinicius.amaral@email.com", "11988880015"],
     ["Wagner Lisboa", "wagner.lisboa@email.com", "11988880016"],
   ];
 
@@ -481,7 +481,7 @@ async function main() {
       phone: "11987650000",
       passwordHash: password,
       role: "CLIENT",
-      notes: "Prefere maquina 2 nas laterais. Sempre pede cafe sem acucar.",
+      notes: "Prefere máquina 2 nas laterais. Sempre pede café sem açúcar.",
     },
   });
   clients.unshift(demo);
@@ -636,12 +636,12 @@ async function main() {
   }
 
   const reviewComments = [
-    "Melhor degrade que ja fiz. Saio de la parecendo outro.",
-    "Atendimento no horario, sem enrolacao. Voltarei.",
+    "Melhor degradê que já fiz. Saio de lá parecendo outro.",
+    "Atendimento no horário, sem enrolação. Voltarei.",
     "A barba com toalha quente vale cada centavo.",
-    "Ambiente impecavel e cafe bom.",
-    "Cortou exatamente como pedi, na primeira explicacao.",
-    "Meu filho nao chorou pela primeira vez. Ja virou nosso lugar.",
+    "Ambiente impecável e café bom.",
+    "Cortou exatamente como pedi, na primeira explicação.",
+    "Meu filho não chorou pela primeira vez. Já virou nosso lugar.",
   ];
 
   // Historico: 8 semanas para tras, movimento crescente.
@@ -728,7 +728,7 @@ async function main() {
     minute: 30,
     status: "COMPLETED",
     paid: true,
-    withReview: { rating: 5, comment: "Ritual completo. Sai renovado." },
+    withReview: { rating: 5, comment: "Ritual completo. Saí renovado." },
   });
 
   await prisma.notification.create({
@@ -736,7 +736,7 @@ async function main() {
       userId: demo.id,
       type: "SUBSCRIPTION",
       title: "Plano Mandu Prime ativo",
-      body: "Voce tem creditos disponiveis neste ciclo. Aproveite.",
+      body: "Você tem créditos disponíveis neste ciclo. Aproveite.",
       link: "/minha-conta/plano",
     },
   });

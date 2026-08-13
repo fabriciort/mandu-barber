@@ -11,7 +11,7 @@ import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
 import { formatDate } from "@/lib/time";
 
-export const metadata = { title: "Avaliacoes" };
+export const metadata = { title: "Avaliações" };
 export const dynamic = "force-dynamic";
 
 export default async function ReviewsPage() {
@@ -42,7 +42,7 @@ export default async function ReviewsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Avaliacoes"
+        title="Avaliações"
         description="O que os clientes escreveram depois do atendimento."
       />
 
@@ -65,7 +65,7 @@ export default async function ReviewsPage() {
               ))}
             </div>
             <p className="mt-1.5 text-sm text-[var(--text-muted)]">
-              {aggregate._count} avaliacao(oes)
+              {aggregate._count} avaliação(oes)
             </p>
           </div>
 
@@ -90,7 +90,7 @@ export default async function ReviewsPage() {
 
           {pending > 0 ? (
             <p className="mt-6 rounded-lg bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text-secondary)]">
-              {pending} avaliacao(oes) sem resposta. Responder mostra ao cliente que a critica foi
+              {pending} avaliação(oes) sem resposta. Responder mostra ao cliente que a crítica foi
               lida.
             </p>
           ) : null}
@@ -100,8 +100,8 @@ export default async function ReviewsPage() {
           {reviews.length === 0 ? (
             <EmptyState
               icon={Star}
-              title="Nenhuma avaliacao ainda"
-              description="Depois que os clientes avaliarem os atendimentos concluidos, as notas aparecem aqui."
+              title="Nenhuma avaliação ainda"
+              description="Depois que os clientes avaliarem os atendimentos concluídos, as notas aparecem aqui."
             />
           ) : (
             reviews.map((review) => (
@@ -134,7 +134,7 @@ export default async function ReviewsPage() {
                     </div>
                     {review.rating <= 3 ? (
                       <Badge tone="warning" size="sm">
-                        Atencao
+                        Atenção
                       </Badge>
                     ) : null}
                   </div>
@@ -144,7 +144,7 @@ export default async function ReviewsPage() {
                   <p className="mt-3 text-[var(--text-secondary)]">{review.comment}</p>
                 ) : (
                   <p className="mt-3 text-sm italic text-[var(--text-muted)]">
-                    Sem comentario escrito.
+                    Sem comentário escrito.
                   </p>
                 )}
 

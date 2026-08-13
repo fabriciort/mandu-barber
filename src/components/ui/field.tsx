@@ -61,8 +61,8 @@ export function Label({
 /**
  * Interruptor booleano que sempre envia um valor.
  *
- * Um checkbox desmarcado simplesmente nao entra no FormData, o que faria
- * "desligar" virar "nao informado". O hidden logo depois cobre esse caso — a
+ * Um checkbox desmarcado simplesmente não entra no FormData, o que faria
+ * "desligar" virar "não informado". O hidden logo depois cobre esse caso — a
  * ordem importa: o FormData segue a ordem do DOM e `get()` devolve o primeiro.
  */
 export function CheckboxField({
@@ -102,7 +102,7 @@ export function CheckboxField({
   );
 }
 
-/** Agrupa rotulo, controle, dica e erro com a acessibilidade ja ligada. */
+/** Agrupa rotulo, controle, dica e erro com a acessibilidade já ligada. */
 export function Field({
   label,
   hint,

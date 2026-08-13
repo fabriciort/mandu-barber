@@ -55,7 +55,7 @@ export const getShopConfig = cache(async (): Promise<ShopConfig> => {
     return {
       id: "shop",
       name: "Mandu Barber",
-      tagline: "Barbearia de bairro com padrao de alta costura.",
+      tagline: "Barbearia de bairro com padrão de alta costura.",
       phone: null,
       whatsapp: null,
       email: null,

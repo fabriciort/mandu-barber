@@ -66,15 +66,15 @@ type SubscriptionInfo = {
 
 type Slot = { minute: number; label: string; barberIds: string[] };
 
-const STEPS = ["Servicos", "Profissional", "Horario", "Confirmar"] as const;
+const STEPS = ["Serviços", "Profissional", "Horário", "Confirmar"] as const;
 
 const NO_SLOT_REASON: Record<string, string> = {
-  CLOSED: "A barbearia nao abre neste dia.",
-  PAST: "Esta data ja passou.",
-  TOO_FAR: "Ainda nao abrimos a agenda para esta data.",
-  NO_BARBER: "Nenhum profissional atende essa combinacao de servicos.",
-  FULL: "Todos os horarios deste dia foram preenchidos.",
-  BOOKING_DISABLED: "O agendamento online esta pausado.",
+  CLOSED: "A barbearia não abre neste dia.",
+  PAST: "Esta data já passou.",
+  TOO_FAR: "Ainda não abrimos a agenda para esta data.",
+  NO_BARBER: "Nenhum profissional atende essa combinação de serviços.",
+  FULL: "Todos os horários deste dia foram preenchidos.",
+  BOOKING_DISABLED: "O agendamento online está pausado.",
 };
 
 export function BookingWizard({
@@ -125,7 +125,7 @@ export function BookingWizard({
     [selectedServices, services],
   );
 
-  /** Profissionais que atendem TODOS os servicos escolhidos. */
+  /** Profissionais que atendem TODOS os serviços escolhidos. */
   const eligibleBarbers = React.useMemo(() => {
     if (chosen.length === 0) return barbers;
     return barbers.filter((barber) =>
@@ -292,8 +292,8 @@ export function BookingWizard({
       toast.success("Agendamento confirmado", "Enviamos os detalhes para a sua conta.");
       router.refresh();
     } else {
-      setError(result.message ?? "Nao foi possivel concluir.");
-      toast.error("Nao foi possivel agendar", result.message);
+      setError(result.message ?? "Não foi possível concluir.");
+      toast.error("Não foi possível agendar", result.message);
       // Horario tomado no meio do caminho: volta para a escolha de horario.
       if (result.message?.includes("horario")) setStep(2);
     }
@@ -503,10 +503,10 @@ function ServiceStep({
   return (
     <section aria-labelledby="titulo-servicos">
       <h2 id="titulo-servicos" className="text-lg font-semibold">
-        O que voce vai fazer hoje?
+        O que você vai fazer hoje?
       </h2>
       <p className="mt-1 text-sm text-[var(--text-muted)]">
-        Pode combinar mais de um servico — somamos a duracao para reservar o tempo certo.
+        Pode combinar mais de um serviço — somamos a duração para reservar o tempo certo.
       </p>
 
       <div className="mt-6 space-y-8">
@@ -591,12 +591,12 @@ function BarberStep({
   return (
     <section aria-labelledby="titulo-profissional">
       <h2 id="titulo-profissional" className="text-lg font-semibold">
-        Com quem voce quer cortar?
+        Com quem você quer cortar?
       </h2>
       <p className="mt-1 text-sm text-[var(--text-muted)]">
         {barbers.length === 0
-          ? "Nenhum profissional atende essa combinacao. Volte e ajuste os servicos."
-          : `Mostrando quem atende ${serviceCount > 1 ? "todos os servicos escolhidos" : "o servico escolhido"}.`}
+          ? "Nenhum profissional atende essa combinação. Volte e ajuste os serviços."
+          : `Mostrando quem atende ${serviceCount > 1 ? "todos os serviços escolhidos" : "o serviço escolhido"}.`}
       </p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -617,7 +617,7 @@ function BarberStep({
           <span className="min-w-0">
             <span className="block font-medium">Qualquer profissional</span>
             <span className="block text-sm text-[var(--text-muted)]">
-              Mais horarios disponiveis
+              Mais horários disponíveis
             </span>
           </span>
         </button>
@@ -704,10 +704,10 @@ function ScheduleStep({
   return (
     <section aria-labelledby="titulo-horario">
       <h2 id="titulo-horario" className="text-lg font-semibold">
-        Quando fica bom para voce?
+        Quando fica bom para você?
       </h2>
       <p className="mt-1 text-sm text-[var(--text-muted)]">
-        Mostramos apenas horarios em que o atendimento cabe inteiro.
+        Mostramos apenas horários em que o atendimento cabe inteiro.
       </p>
 
       {/* Faixa de dias */}
@@ -722,13 +722,13 @@ function ScheduleStep({
           >
             <ChevronLeft className="size-4" />
           </button>
-          <span className="text-sm font-medium capitalize">{monthLabel(days[0], days[13])}</span>
+          <span className="text-sm font-medium first-letter:uppercase">{monthLabel(days[0], days[13])}</span>
           <button
             type="button"
             onClick={() => onWeekChange(addDaysISO(weekStart, 7))}
             disabled={addDaysISO(weekStart, 7) > lastAllowed}
             className="rounded-lg p-1.5 text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)] disabled:opacity-40"
-            aria-label="Proxima semana"
+            aria-label="Próxima semana"
           >
             <ChevronRight className="size-4" />
           </button>
@@ -749,7 +749,7 @@ function ScheduleStep({
                 disabled={disabled}
                 aria-pressed={isSelected}
                 aria-label={`${parsed.getDate()} de ${parsed.toLocaleDateString("pt-BR", { month: "long" })}${
-                  count ? `, ${count} horarios` : ", indisponivel"
+                  count ? `, ${count} horários` : ", indisponível"
                 }`}
                 className={cn(
                   "flex flex-col items-center gap-0.5 rounded-lg border px-1 py-2 transition-all",
@@ -780,7 +780,7 @@ function ScheduleStep({
         </div>
       </div>
 
-      {/* Horarios */}
+      {/* Horários */}
       <div className="mt-6">
         {loading ? (
           <div className="flex items-center justify-center gap-2 py-14 text-sm text-[var(--text-muted)]">
@@ -881,7 +881,7 @@ function ConfirmStep({
           Tudo certo?
         </h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Confira os detalhes. Voce recebe a confirmacao na hora.
+          Confira os detalhes. Você recebe a confirmação na hora.
         </p>
       </div>
 
@@ -889,7 +889,7 @@ function ConfirmStep({
         <dl className="grid gap-4 sm:grid-cols-3">
           <div>
             <dt className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Quando</dt>
-            <dd className="mt-1 font-medium capitalize">{longDate(date)}</dd>
+            <dd className="mt-1 font-medium first-letter:uppercase">{longDate(date)}</dd>
             <dd className="text-sm text-[var(--text-muted)]">
               {minute !== null ? minutesToLabel(minute) : "--:--"} · {formatDuration(duration)}
             </dd>
@@ -903,17 +903,17 @@ function ConfirmStep({
                   {barber.name}
                 </>
               ) : (
-                "A definir no horario"
+                "A definir no horário"
               )}
             </dd>
             {!barber && slotBarbers.length > 0 ? (
               <dd className="text-sm text-[var(--text-muted)]">
-                Disponivel: {slotBarbers.filter(Boolean).join(", ")}
+                Disponível: {slotBarbers.filter(Boolean).join(", ")}
               </dd>
             ) : null}
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Servicos</dt>
+            <dt className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Serviços</dt>
             <dd className="mt-1 font-medium">{pricing.charges.length}</dd>
             <dd className="text-sm text-[var(--text-muted)]">
               {pricing.charges.map((c) => c.name).join(", ")}
@@ -944,8 +944,8 @@ function ConfirmStep({
             </span>
             <span className="mt-1 block text-sm text-[var(--text-muted)]">
               {covered.length > 0
-                ? `${covered.length} servico(s) sairao sem custo usando sua franquia.`
-                : `Sem franquia disponivel para estes servicos — voce ainda recebe ${subscription.extraDiscountPercent}% de desconto.`}
+                ? `${covered.length} serviço(s) sairao sem custo usando sua franquia.`
+                : `Sem franquia disponível para estes serviços — você ainda recebe ${subscription.extraDiscountPercent}% de desconto.`}
             </span>
           </span>
         </label>
@@ -953,21 +953,21 @@ function ConfirmStep({
 
       <div>
         <label htmlFor="observacoes" className="text-sm font-medium text-[var(--text-secondary)]">
-          Alguma observacao? <span className="text-[var(--text-muted)]">(opcional)</span>
+          Alguma observação? <span className="text-[var(--text-muted)]">(opcional)</span>
         </label>
         <Textarea
           id="observacoes"
           value={notes}
           onChange={(event) => onNotesChange(event.target.value)}
           maxLength={500}
-          placeholder="Ex.: maquina 2 nas laterais, tesoura em cima. Vou chegar 5 min antes."
+          placeholder="Ex.: máquina 2 nas laterais, tesoura em cima. Vou chegar 5 min antes."
           className="mt-2"
         />
       </div>
 
       {!authenticated ? (
         <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-          Voce sera levado ao login e volta direto para esta tela — nada do que montou se perde.
+          Você será levado ao login e volta direto para esta tela — nada do que montou se perde.
         </p>
       ) : null}
 
@@ -1013,7 +1013,7 @@ function SummaryCard({
 
         {charges.length === 0 ? (
           <p className="mt-4 text-sm text-[var(--text-muted)]">
-            Escolha um servico para montar seu horario.
+            Escolha um serviço para montar seu horário.
           </p>
         ) : (
           <>
@@ -1071,8 +1071,8 @@ function SummaryCard({
               {date && minute !== null ? (
                 <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                   <CalendarDays className="size-4 shrink-0 text-[var(--text-muted)]" />
-                  <span className="capitalize">
-                    {shortDate(date)} as {minutesToLabel(minute)}
+                  <span className="first-letter:uppercase">
+                    {shortDate(date)} às {minutesToLabel(minute)}
                   </span>
                 </div>
               ) : null}
@@ -1114,26 +1114,26 @@ function ConfirmationPanel({
       </span>
 
       <h2 className="mt-6 font-[family-name:var(--font-display)] text-3xl font-semibold">
-        Horario reservado
+        Horário reservado
       </h2>
       <p className="mt-2 text-[var(--text-muted)]">
-        Guardamos sua cadeira. Voce recebe um lembrete antes do atendimento.
+        Guardamos sua cadeira. Você recebe um lembrete antes do atendimento.
       </p>
 
       <div className="mt-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6 text-left">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
-          <span className="text-sm text-[var(--text-muted)]">Codigo</span>
+          <span className="text-sm text-[var(--text-muted)]">Código</span>
           <span className="font-mono text-lg font-semibold tracking-wider">{code}</span>
         </div>
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between gap-4">
             <dt className="text-[var(--text-muted)]">Quando</dt>
-            <dd className="text-right font-medium capitalize">
-              {longDate(date)} as {minutesToLabel(minute)}
+            <dd className="text-right font-medium first-letter:uppercase">
+              {longDate(date)} às {minutesToLabel(minute)}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-[var(--text-muted)]">Servicos</dt>
+            <dt className="text-[var(--text-muted)]">Serviços</dt>
             <dd className="text-right font-medium">{services.join(", ")}</dd>
           </div>
           {barberName ? (
@@ -1156,7 +1156,7 @@ function ConfirmationPanel({
           <Link href={`/minha-conta/agendamentos/${appointmentId}`}>Ver meu agendamento</Link>
         </Button>
         <Button asChild variant="secondary">
-          <Link href="/">Voltar ao inicio</Link>
+          <Link href="/">Voltar ao início</Link>
         </Button>
       </div>
     </div>
@@ -1195,8 +1195,8 @@ function describeAvailableBarbers(slots: Slot[], minute: number, barbers: Barber
     .map((id) => barbers.find((b) => b.id === id)?.name)
     .filter(Boolean) as string[];
   if (names.length === 0) return "";
-  if (names.length === 1) return `Voce sera atendido por ${names[0]}.`;
-  return `Livres neste horario: ${names.join(", ")}. Definimos na chegada.`;
+  if (names.length === 1) return `Você será atendido por ${names[0]}.`;
+  return `Livres neste horário: ${names.join(", ")}. Definimos na chegada.`;
 }
 
 function minutesToLabel(minute: number): string {

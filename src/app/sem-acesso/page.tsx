@@ -18,21 +18,21 @@ export default async function ForbiddenPage() {
         <ShieldAlert className="size-7 text-clay-500" />
       </span>
       <h1 className="mt-6 font-[family-name:var(--font-display)] text-3xl font-semibold">
-        Esta area nao e sua
+        Esta área não é sua
       </h1>
       <p className="mt-2 max-w-sm text-[var(--text-muted)]">
-        Sua conta nao tem permissao para o painel de gestao. Se voce faz parte da equipe, peca ao
+        Sua conta não tem permissao para o painel de gestão. Se você faz parte da equipe, peca ao
         gestor para liberar seu acesso.
       </p>
 
       <div className="mt-8 flex flex-col gap-2 sm:flex-row">
         <Button asChild>
           <Link href={user?.role === "CLIENT" ? "/minha-conta" : "/"}>
-            {user?.role === "CLIENT" ? "Ir para minha conta" : "Voltar ao inicio"}
+            {user?.role === "CLIENT" ? "Ir para minha conta" : "Voltar ao início"}
           </Link>
         </Button>
         <Button asChild variant="secondary">
-          <Link href="/agendar">Agendar horario</Link>
+          <Link href="/agendar">Agendar horário</Link>
         </Button>
       </div>
     </main>

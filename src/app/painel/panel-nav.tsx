@@ -32,8 +32,8 @@ type NavItem = {
 const ITEMS: NavItem[] = [
   {
     href: "/painel",
-    label: "Visao geral",
-    short: "Inicio",
+    label: "Visão geral",
+    short: "Início",
     icon: LayoutDashboard,
     roles: ["OWNER", "BARBER"],
     primary: true,
@@ -62,7 +62,7 @@ const ITEMS: NavItem[] = [
     roles: ["OWNER", "BARBER"],
     primary: true,
   },
-  { href: "/painel/servicos", label: "Servicos", short: "Servicos", icon: Scissors, roles: ["OWNER"] },
+  { href: "/painel/servicos", label: "Serviços", short: "Serviços", icon: Scissors, roles: ["OWNER"] },
   {
     href: "/painel/profissionais",
     label: "Profissionais",
@@ -81,14 +81,14 @@ const ITEMS: NavItem[] = [
   { href: "/painel/financeiro", label: "Financeiro", short: "Caixa", icon: Wallet, roles: ["OWNER"] },
   {
     href: "/painel/avaliacoes",
-    label: "Avaliacoes",
+    label: "Avaliações",
     short: "Notas",
     icon: Star,
     roles: ["OWNER", "BARBER"],
   },
   {
     href: "/painel/configuracoes",
-    label: "Configuracoes",
+    label: "Configurações",
     short: "Ajustes",
     icon: Settings,
     roles: ["OWNER"],
@@ -109,7 +109,7 @@ export function PanelNav({
   const visible = variant === "bottom" ? items.filter((item) => item.primary).slice(0, 5) : items;
 
   return (
-    <nav className={className} aria-label="Navegacao do painel">
+    <nav className={className} aria-label="Navegação do painel">
       {variant === "side" ? (
         <ul className="space-y-0.5">
           {visible.map((item) => {

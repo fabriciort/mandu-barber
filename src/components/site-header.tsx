@@ -10,7 +10,7 @@ import { getCurrentUser } from "@/server/auth/session";
 import { firstName } from "@/lib/format";
 
 const LINKS = [
-  { href: "/#servicos", label: "Servicos" },
+  { href: "/#servicos", label: "Serviços" },
   { href: "/#equipe", label: "Equipe" },
   { href: "/planos", label: "Planos" },
   { href: "/#visita", label: "Onde estamos" },
@@ -24,7 +24,7 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Logo />
 
-        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label="Navegacao principal">
+        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label="Navegação principal">
           {LINKS.map((link) => (
             <Link
               key={link.href}

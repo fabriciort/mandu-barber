@@ -54,7 +54,7 @@ export async function runAction(fn: () => Promise<ActionState>): Promise<ActionS
     const message = error instanceof Error ? error.message : "";
     return {
       ok: false,
-      message: message && message.length < 160 ? message : "Nao foi possivel concluir. Tente novamente.",
+      message: message && message.length < 160 ? message : "Não foi possível concluir. Tente novamente.",
     };
   }
 }

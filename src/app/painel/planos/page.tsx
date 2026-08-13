@@ -49,7 +49,7 @@ export default async function PlansAdminPage() {
         <EmptyState
           icon={CreditCard}
           title="Nenhum plano cadastrado"
-          description="Crie um plano para comecar a vender assinaturas."
+          description="Crie um plano para começar a vender assinaturas."
           action={<PlanFormDialog services={services} />}
         />
       ) : (
@@ -83,7 +83,7 @@ export default async function PlansAdminPage() {
                 <p className="mt-4 text-2xl font-semibold">
                   {formatMoney(plan.priceCents)}
                   <span className="text-sm font-normal text-[var(--text-muted)]">
-                    /{plan.intervalMonths === 1 ? "mes" : `${plan.intervalMonths} meses`}
+                    /{plan.intervalMonths === 1 ? "mês" : `${plan.intervalMonths} meses`}
                   </span>
                 </p>
 
@@ -108,8 +108,8 @@ export default async function PlansAdminPage() {
                   </div>
                   {plan.allowRollover ? (
                     <div className="flex justify-between gap-2">
-                      <span className="text-[var(--text-muted)]">Acumula ate</span>
-                      <span className="font-medium">{plan.maxRolloverCredits} credito(s)</span>
+                      <span className="text-[var(--text-muted)]">Acumula até</span>
+                      <span className="font-medium">{plan.maxRolloverCredits} crédito(s)</span>
                     </div>
                   ) : null}
                 </div>

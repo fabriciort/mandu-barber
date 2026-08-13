@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   const header = request.headers.get("authorization");
 
   if (secret && header !== `Bearer ${secret}`) {
-    return NextResponse.json({ erro: "Nao autorizado." }, { status: 401 });
+    return NextResponse.json({ erro: "Não autorizado." }, { status: 401 });
   }
 
   const shop = await getShopConfig();
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     await notify(prisma, {
       userId: appointment.clientId,
       type: "REMINDER",
-      title: `Seu horario e ${formatTime(appointment.startsAt, shop.timezone)}`,
+      title: `Seu horário e ${formatTime(appointment.startsAt, shop.timezone)}`,
       body: `${appointment.services.map((s) => s.name).join(" + ")} com ${appointment.barber.user.name} em ${formatDateTime(appointment.startsAt, shop.timezone)}.`,
       link: `/minha-conta/agendamentos/${appointment.id}`,
     });
@@ -79,7 +79,7 @@ export async function GET(request: Request) {
       userId: invoice.clientId,
       type: "SUBSCRIPTION",
       title: "Fatura em aberto",
-      body: `${invoice.description} esta aguardando pagamento. Passe na loja ou fale com a gente.`,
+      body: `${invoice.description} está aguardando pagamento. Passe na loja ou fale com a gente.`,
       link: "/minha-conta/plano",
     });
   }

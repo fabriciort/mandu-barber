@@ -31,7 +31,7 @@ export default async function SignUpPage({
       <SignUpForm next={next} />
 
       <p className="mt-6 text-center text-sm text-[var(--text-muted)]">
-        Ja tem conta?{" "}
+        Já tem conta?{" "}
         <Link
           href={`/entrar${next ? `?proximo=${encodeURIComponent(next)}` : ""}`}
           className="font-medium text-[var(--accent)] hover:underline"

@@ -32,7 +32,7 @@ export async function subscribeAction(
     });
 
     const plan = await prisma.plan.findUnique({ where: { id: input.planId } });
-    if (!plan?.active) return failure("Este plano nao esta mais disponivel.");
+    if (!plan?.active) return failure("Este plano não esta mais disponível.");
 
     const subscription = await createSubscription({
       clientId: user.id,
@@ -44,7 +44,7 @@ export async function subscribeAction(
       userId: user.id,
       type: "SUBSCRIPTION",
       title: `Plano ${plan.name} ativado`,
-      body: "Seus creditos ja estao disponiveis. A primeira fatura ficou em aberto no seu painel.",
+      body: "Seus créditos já estão disponíveis. A primeira fatura ficou em aberto no seu painel.",
       link: "/minha-conta/plano",
     });
     await audit(prisma, {
@@ -73,11 +73,11 @@ export async function cancelSubscriptionAction(
       where: { id: subscriptionId },
       include: { plan: { select: { name: true } } },
     });
-    if (!subscription) return failure("Assinatura nao encontrada.");
+    if (!subscription) return failure("Assinatura não encontrada.");
 
     const isOwner = user.role === "OWNER";
     if (subscription.clientId !== user.id && !isOwner) {
-      return failure("Voce nao pode alterar esta assinatura.");
+      return failure("Você não pode alterar esta assinatura.");
     }
 
     // Cliente encerra no fim do ciclo (ja pagou o mes); gestor pode cortar na hora.
@@ -95,7 +95,7 @@ export async function cancelSubscriptionAction(
     return success(
       immediate
         ? "Assinatura encerrada."
-        : "Assinatura sera encerrada no fim do ciclo. Ate la, seus creditos continuam valendo.",
+        : "Assinatura será encerrada no fim do ciclo. Até la, seus créditos continuam valendo.",
     );
   });
 }
@@ -109,9 +109,9 @@ export async function resumeSubscriptionAction(
     const subscriptionId = String(formData.get("subscriptionId") ?? "");
 
     const subscription = await prisma.subscription.findUnique({ where: { id: subscriptionId } });
-    if (!subscription) return failure("Assinatura nao encontrada.");
+    if (!subscription) return failure("Assinatura não encontrada.");
     if (subscription.clientId !== user.id && user.role !== "OWNER") {
-      return failure("Voce nao pode alterar esta assinatura.");
+      return failure("Você não pode alterar esta assinatura.");
     }
 
     await resumeSubscription(subscriptionId);
@@ -141,7 +141,7 @@ export async function assignSubscriptionAction(
       userId: clientId,
       type: "SUBSCRIPTION",
       title: `Plano ${plan?.name ?? ""} ativado`,
-      body: "A barbearia ativou seu plano. Seus creditos ja estao disponiveis.",
+      body: "A barbearia ativou seu plano. Seus créditos já estão disponíveis.",
       link: "/minha-conta/plano",
     });
     await audit(prisma, {
@@ -168,8 +168,8 @@ export async function payInvoiceAction(
     const method = (formData.get("method") as string) || "PIX";
 
     const invoice = await prisma.invoice.findUnique({ where: { id: invoiceId } });
-    if (!invoice) return failure("Fatura nao encontrada.");
-    if (invoice.status === "PAID") return failure("Esta fatura ja esta paga.");
+    if (!invoice) return failure("Fatura não encontrada.");
+    if (invoice.status === "PAID") return failure("Esta fatura já está paga.");
 
     await prisma.$transaction(async (tx) => {
       await tx.invoice.update({

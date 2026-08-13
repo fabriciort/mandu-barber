@@ -7,7 +7,7 @@ import type { Role } from "@/lib/enums";
 
 /** Erro de dominio para acoes que exigem autenticacao/permissao. */
 export class AuthorizationError extends Error {
-  constructor(message = "Voce nao tem permissao para esta acao.") {
+  constructor(message = "Você não tem permissao para esta ação.") {
     super(message);
     this.name = "AuthorizationError";
   }
@@ -44,7 +44,7 @@ export async function requireOwner(redirectTo?: string): Promise<SessionUser> {
  */
 export async function actionUser(): Promise<SessionUser> {
   const user = await getCurrentUser();
-  if (!user) throw new AuthorizationError("Sua sessao expirou. Entre novamente.");
+  if (!user) throw new AuthorizationError("Sua sessão expirou. Entre novamente.");
   return user;
 }
 
@@ -68,7 +68,7 @@ export async function actionOwner(): Promise<SessionUser> {
  */
 export function scopeToBarber(user: SessionUser, requestedBarberId?: string | null): string | null {
   if (user.role === "OWNER") return requestedBarberId ?? null;
-  if (!user.barberId) throw new AuthorizationError("Perfil de profissional nao encontrado.");
+  if (!user.barberId) throw new AuthorizationError("Perfil de profissional não encontrado.");
   return user.barberId;
 }
 

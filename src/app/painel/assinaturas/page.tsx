@@ -86,7 +86,7 @@ export default async function SubscriptionsPage({
         <StatCard
           label="Receita recorrente"
           value={formatMoney(mrr)}
-          hint="por mes, normalizada"
+          hint="por mês, normalizada"
           icon={Repeat}
           tone="success"
         />

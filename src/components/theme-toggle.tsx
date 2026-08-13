@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 /**
  * Alterna claro/escuro e guarda a escolha. O estado inicial vem do script no
- * <head>, entao aqui so espelhamos o que ja esta aplicado no documento.
+ * <head>, entao aqui só espelhamos o que já esta aplicado no documento.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const [dark, setDark] = React.useState(false);

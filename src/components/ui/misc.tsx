@@ -10,7 +10,7 @@ export function Separator({ className, ...props }: React.HTMLAttributes<HTMLDivE
   return <div className={cn("h-px w-full bg-[var(--border-subtle)]", className)} {...props} />;
 }
 
-/** Cabecalho padrao de pagina interna: titulo, apoio e acoes. */
+/** Cabecalho padrão de página interna: titulo, apoio e ações. */
 export function PageHeader({
   title,
   description,

@@ -11,7 +11,7 @@ import { formatMoney } from "@/lib/format";
 import { formatDuration } from "@/lib/time";
 import { SERVICE_CATEGORY_LABEL, type ServiceCategory } from "@/lib/enums";
 
-export const metadata = { title: "Servicos" };
+export const metadata = { title: "Serviços" };
 export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
@@ -43,16 +43,16 @@ export default async function ServicesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Servicos"
-        description="O cardapio da casa. Preco, duracao e quem esta habilitado a executar."
+        title="Serviços"
+        description="O cardápio da casa. Preço, duração e quem está habilitado a executar."
         actions={<ServiceFormDialog barbers={barberOptions} />}
       />
 
       {services.length === 0 ? (
         <EmptyState
           icon={Scissors}
-          title="Nenhum servico cadastrado"
-          description="Cadastre o primeiro servico para liberar o agendamento online."
+          title="Nenhum serviço cadastrado"
+          description="Cadastre o primeiro serviço para liberar o agendamento online."
           action={<ServiceFormDialog barbers={barberOptions} />}
         />
       ) : (
@@ -117,7 +117,7 @@ export default async function ServicesPage() {
 
                     <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-3">
                       <span className="text-xs text-[var(--text-muted)]">
-                        {service._count.appointments} execucao(oes)
+                        {service._count.appointments} execução(oes)
                       </span>
                       <div className="flex gap-1">
                         <ToggleServiceButton id={service.id} active={service.active} />

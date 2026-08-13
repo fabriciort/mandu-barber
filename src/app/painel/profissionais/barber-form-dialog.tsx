@@ -54,7 +54,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
       setOpen(false);
       router.refresh();
     } else if (state.message) {
-      toast.error("Nao foi possivel salvar", state.message);
+      toast.error("Não foi possível salvar", state.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -80,7 +80,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
           <DialogTitle>{barber ? "Editar profissional" : "Novo profissional"}</DialogTitle>
           <DialogDescription>
             {barber
-              ? "Atualize perfil, comissao e acesso ao painel."
+              ? "Atualize perfil, comissão e acesso ao painel."
               : "O profissional recebe acesso ao painel com a senha definida aqui."}
           </DialogDescription>
         </DialogHeader>
@@ -108,7 +108,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
               htmlFor="password"
               required={!barber}
               error={state.fieldErrors?.password}
-              hint={barber ? "Deixe em branco para manter a senha atual." : "Minimo de 8 caracteres."}
+              hint={barber ? "Deixe em branco para manter a senha atual." : "Mínimo de 8 caracteres."}
             >
               <Input
                 id="password"
@@ -126,7 +126,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
                 name="headline"
                 defaultValue={barber?.headline ?? ""}
                 maxLength={120}
-                placeholder="Ex.: Especialista em degrade e navalha"
+                placeholder="Ex.: Especialista em degradê e navalha"
               />
             </Field>
 
@@ -143,15 +143,15 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
                 id="specialties"
                 name="specialties"
                 defaultValue={barber?.specialties ?? ""}
-                placeholder="Degrade, Navalha, Barba"
+                placeholder="Degradê, Navalha, Barba"
               />
             </Field>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
-                label="Comissao (%)"
+                label="Comissão (%)"
                 htmlFor="commissionPercent"
-                hint="Usada no relatorio de repasse."
+                hint="Usada no relatório de repasse."
               >
                 <Input
                   id="commissionPercent"

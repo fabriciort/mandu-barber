@@ -138,7 +138,7 @@ export function AgendaBoard({
             type="button"
             onClick={() => navigate(addDaysISO(date, 1))}
             className="rounded-md p-1.5 text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)]"
-            aria-label="Proximo dia"
+            aria-label="Próximo dia"
           >
             <ChevronRight className="size-4" />
           </button>
@@ -203,9 +203,9 @@ export function AgendaBoard({
       </div>
 
       <div className="flex flex-wrap items-center gap-4 rounded-lg bg-[var(--surface-muted)] px-4 py-2.5 text-sm">
-        <span className="font-medium capitalize">{dayLabel}</span>
+        <span className="font-medium first-letter:uppercase">{dayLabel}</span>
         <span className="text-[var(--text-muted)]">
-          {activeCount} atendimento(s) · {formatMoney(dayRevenue)} concluido(s)
+          {activeCount} atendimento(s) · {formatMoney(dayRevenue)} concluído(s)
         </span>
       </div>
 
@@ -343,11 +343,11 @@ export function AgendaBoard({
         </span>
         <span className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-sm bg-moss-500" />
-          Concluido
+          Concluído
         </span>
         <span className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-sm bg-clay-400" />
-          Nao compareceu
+          Não compareceu
         </span>
         <span className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-sm border border-dashed border-[var(--border-strong)]" />
