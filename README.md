@@ -125,6 +125,52 @@ acúmulo opcional de créditos não usados.
 
 ---
 
+## Deploy (Vercel e afins)
+
+> **SQLite não funciona em serverless.** O disco da Vercel é somente leitura e
+> efêmero: o build passa, mas toda página quebra em tempo de execução. Para
+> publicar, o banco precisa ser Postgres. Este é o passo que não dá para pular.
+
+**1. Crie um Postgres.** Vercel Postgres, Neon, Supabase ou Railway — todos
+entregam a connection string pronta. O plano gratuito de qualquer um segura uma
+barbearia com folga.
+
+**2. Troque o provider** em `prisma/schema.prisma`:
+
+```prisma
+datasource db {
+  provider = "postgresql"   // era "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+
+**3. Configure as variáveis** no painel do provedor (Settings → Environment
+Variables). Não deixe nenhuma em branco — variável vazia é diferente de variável
+ausente:
+
+| Variável | Valor |
+| --- | --- |
+| `DATABASE_URL` | a string do Postgres do passo 1 |
+| `AUTH_SECRET` | `openssl rand -base64 48` |
+| `NEXT_PUBLIC_APP_URL` | `https://seu-dominio` (ou deixe **fora**, não vazia) |
+| `CRON_SECRET` | `openssl rand -hex 24` |
+
+**4. Crie as tabelas e popule** apontando para o banco de produção:
+
+```bash
+DATABASE_URL="postgresql://..." npx prisma db push
+DATABASE_URL="postgresql://..." npm run db:seed   # opcional, dados de demonstração
+```
+
+Em produção de verdade, rode o seed uma vez só e depois troque a senha do gestor
+pela tela de perfil — as contas de demonstração usam senha pública.
+
+**5. Agende a rotina.** Na Vercel, crie um `vercel.json`:
+
+```json
+{ "crons": [{ "path": "/api/cron/lembretes", "schedule": "0 * * * *" }] }
+```
+
 ## Rotina agendada
 
 `GET /api/cron/lembretes` — chame de hora em hora pelo agendador do seu provedor:

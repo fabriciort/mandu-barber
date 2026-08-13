@@ -20,8 +20,37 @@ const fraunces = Fraunces({
   axes: ["SOFT", "WONK"],
 });
 
+/**
+ * Endereço público da aplicação, usado nos metadados de compartilhamento.
+ *
+ * Precisa tolerar variável vazia ou mal preenchida: um deploy nao pode falhar
+ * porque alguem deixou o campo em branco no painel do provedor. A ordem é
+ * NEXT_PUBLIC_APP_URL -> URL gerada pelo provedor -> localhost.
+ */
+function resolveAppUrl(): URL {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured) {
+    try {
+      return new URL(configured);
+    } catch {
+      // Valor invalido (falta o https://, por exemplo): segue para o proximo.
+    }
+  }
+
+  const providerUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() || process.env.VERCEL_URL?.trim();
+  if (providerUrl) {
+    try {
+      return new URL(providerUrl.startsWith("http") ? providerUrl : `https://${providerUrl}`);
+    } catch {
+      // idem
+    }
+  }
+
+  return new URL("http://localhost:3000");
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: resolveAppUrl(),
   title: {
     default: "Mandu Barber — Barbearia em São Paulo",
     template: "%s · Mandu Barber",
