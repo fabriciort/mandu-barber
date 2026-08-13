@@ -1,0 +1,477 @@
+// Mandu Barber — modelo de dados
+//
+// Convencoes:
+// - Valores monetarios sao SEMPRE inteiros em centavos (evita erro de ponto flutuante).
+// - Horarios de funcionamento sao inteiros em "minutos desde a meia-noite" (540 = 09:00).
+// - Datas/horas sao gravadas em UTC; a conversao para o fuso da barbearia acontece
+//   na borda (src/lib/time.ts), nunca no banco.
+// - "Enums" sao strings validadas por Zod em src/lib/enums.ts — o provider SQLite nao
+//   suporta enums nativos do Prisma, e manter strings preserva a portabilidade para
+//   Postgres sem migracao de dados.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Identidade e acesso
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  phone        String?   @unique
+  passwordHash String
+  role         String    @default("CLIENT") // CLIENT | BARBER | OWNER
+  avatarUrl    String?
+  birthDate    DateTime?
+  notes        String? // observacoes internas sobre o cliente (visivel no painel)
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  barber             BarberProfile?
+  appointments       Appointment[]  @relation("ClientAppointments")
+  canceledAppointmnt Appointment[]  @relation("CanceledByUser")
+  subscriptions      Subscription[]
+  invoices           Invoice[]
+  reviews            Review[]
+  notifications      Notification[]
+  sessions           Session[]
+  payments           Payment[]      @relation("PaymentReceivedBy")
+  auditLogs          AuditLog[]
+
+  @@index([role, active])
+  @@index([name])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Profissionais
+// ---------------------------------------------------------------------------
+
+model BarberProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline          String? // "Especialista em degrade e barba"
+  bio               String?
+  specialties       String   @default("[]") // JSON array de strings
+  commissionPercent Int      @default(50)
+  agendaColor       String   @default("#c98b3a")
+  acceptsNewClients Boolean  @default(true)
+  active            Boolean  @default(true)
+  displayOrder      Int      @default(0)
+  startedAt         DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  workingHours WorkingHour[]
+  timeOffs     TimeOff[]
+  services     BarberService[]
+  appointments Appointment[]
+  reviews      Review[]
+
+  @@index([active, displayOrder])
+}
+
+/// Um intervalo de trabalho recorrente. Um mesmo dia pode ter varios intervalos
+/// (ex.: 09:00-12:00 e 13:30-19:00), o que modela o intervalo de almoco sem
+/// precisar de um tipo especial de bloqueio.
+model WorkingHour {
+  id          String        @id @default(cuid())
+  barberId    String
+  barber      BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  weekday     Int // 0 = domingo ... 6 = sabado
+  startMinute Int
+  endMinute   Int
+
+  @@index([barberId, weekday])
+}
+
+/// Bloqueio pontual na agenda. Se barberId for nulo, o bloqueio vale para a
+/// barbearia inteira (feriado, manutencao, evento).
+model TimeOff {
+  id        String         @id @default(cuid())
+  barberId  String?
+  barber    BarberProfile? @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  title     String
+  type      String         @default("BLOCK") // BLOCK | VACATION | HOLIDAY | TRAINING
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime       @default(now())
+
+  @@index([barberId, startsAt])
+  @@index([startsAt, endsAt])
+}
+
+// ---------------------------------------------------------------------------
+// Catalogo de servicos
+// ---------------------------------------------------------------------------
+
+model Service {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String?
+  category        String   @default("CABELO") // CABELO | BARBA | COMBO | ESTETICA | INFANTIL
+  durationMinutes Int
+  bufferMinutes   Int      @default(0) // tempo de limpeza/preparo apos o servico
+  priceCents      Int
+  active          Boolean  @default(true)
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  barbers      BarberService[]
+  appointments AppointmentService[]
+  planBenefits PlanBenefit[]
+  credits      SubscriptionCredit[]
+  usages       SubscriptionUsage[]
+
+  @@index([active, displayOrder])
+}
+
+/// Vinculo profissional <-> servico, com possibilidade de sobrescrever preco e
+/// duracao (um barbeiro senior pode cobrar mais ou ser mais rapido).
+model BarberService {
+  id              String        @id @default(cuid())
+  barberId        String
+  barber          BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  serviceId       String
+  service         Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  priceCents      Int?
+  durationMinutes Int?
+
+  @@unique([barberId, serviceId])
+  @@index([serviceId])
+}
+
+// ---------------------------------------------------------------------------
+// Agendamentos
+// ---------------------------------------------------------------------------
+
+model Appointment {
+  id       String        @id @default(cuid())
+  code     String        @unique // codigo curto para o cliente (ex.: MB-7K3QD)
+  clientId String
+  client   User          @relation("ClientAppointments", fields: [clientId], references: [id])
+  barberId String
+  barber   BarberProfile @relation(fields: [barberId], references: [id])
+
+  status   String   @default("SCHEDULED") // SCHEDULED | CONFIRMED | IN_PROGRESS | COMPLETED | CANCELED | NO_SHOW
+  startsAt DateTime
+  endsAt   DateTime
+
+  subtotalCents Int    @default(0) // soma dos servicos a preco cheio
+  discountCents Int    @default(0) // descontos de plano/cortesia
+  totalCents    Int    @default(0) // o que o cliente efetivamente paga
+  paymentStatus String @default("PENDING") // PENDING | PAID | WAIVED | REFUNDED
+
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  source        String  @default("ONLINE") // ONLINE | PANEL | WALK_IN
+  clientNotes   String?
+  internalNotes String?
+
+  checkedInAt    DateTime?
+  completedAt    DateTime?
+  canceledAt     DateTime?
+  canceledById   String?
+  canceledBy     User?     @relation("CanceledByUser", fields: [canceledById], references: [id])
+  cancelReason   String?
+  reminderSentAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  services AppointmentService[]
+  payments Payment[]
+  usages   SubscriptionUsage[]
+  review   Review?
+
+  @@index([barberId, startsAt])
+  @@index([clientId, startsAt])
+  @@index([status, startsAt])
+  @@index([startsAt])
+}
+
+/// Snapshot do servico no momento do agendamento: preco e duracao ficam
+/// congelados para que alteracoes futuras no catalogo nao reescrevam o historico.
+model AppointmentService {
+  id              String      @id @default(cuid())
+  appointmentId   String
+  appointment     Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  serviceId       String
+  service         Service     @relation(fields: [serviceId], references: [id])
+  name            String
+  priceCents      Int
+  durationMinutes Int
+  coveredByPlan   Boolean     @default(false)
+
+  @@index([appointmentId])
+  @@index([serviceId])
+}
+
+// ---------------------------------------------------------------------------
+// Planos e assinaturas
+// ---------------------------------------------------------------------------
+
+model Plan {
+  id                   String   @id @default(cuid())
+  name                 String
+  slug                 String   @unique
+  tagline              String?
+  description          String?
+  priceCents           Int
+  intervalMonths       Int      @default(1)
+  extraDiscountPercent Int      @default(0) // desconto em servicos fora da franquia
+  priorityBooking      Boolean  @default(false)
+  allowRollover        Boolean  @default(false)
+  maxRolloverCredits   Int      @default(0)
+  perks                String   @default("[]") // JSON array de strings (beneficios livres)
+  accentColor          String   @default("#c98b3a")
+  highlight            Boolean  @default(false)
+  active               Boolean  @default(true)
+  displayOrder         Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  benefits      PlanBenefit[]
+  subscriptions Subscription[]
+
+  @@index([active, displayOrder])
+}
+
+/// Franquia de um servico dentro do plano. quantityPerCycle = -1 significa ilimitado.
+model PlanBenefit {
+  id               String  @id @default(cuid())
+  planId           String
+  plan             Plan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  serviceId        String
+  service          Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  quantityPerCycle Int
+
+  @@unique([planId, serviceId])
+}
+
+model Subscription {
+  id       String @id @default(cuid())
+  clientId String
+  client   User   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  planId   String
+  plan     Plan   @relation(fields: [planId], references: [id])
+
+  status             String   @default("ACTIVE") // ACTIVE | PAST_DUE | PAUSED | CANCELED
+  priceCents         Int // snapshot do preco contratado
+  startedAt          DateTime @default(now())
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+  canceledAt         DateTime?
+  pausedAt           DateTime?
+  paymentMethod      String? // PIX | CARD | CASH | TRANSFER
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  credits      SubscriptionCredit[]
+  usages       SubscriptionUsage[]
+  invoices     Invoice[]
+  appointments Appointment[]
+
+  @@index([clientId, status])
+  @@index([status, currentPeriodEnd])
+}
+
+/// Saldo de franquia por servico dentro de um ciclo. O par (assinatura, servico,
+/// inicio do ciclo) e unico, o que torna a geracao de creditos idempotente.
+model SubscriptionCredit {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  serviceId      String
+  service        Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  cycleStart     DateTime
+  cycleEnd       DateTime
+  total          Int // -1 = ilimitado
+  used           Int          @default(0)
+
+  @@unique([subscriptionId, serviceId, cycleStart])
+  @@index([subscriptionId, cycleEnd])
+}
+
+/// Razao (ledger) de consumo: +1 consome, -1 estorna. Permite auditar por que o
+/// saldo de um cliente esta como esta, em vez de confiar em um contador solto.
+model SubscriptionUsage {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  serviceId      String
+  service        Service      @relation(fields: [serviceId], references: [id])
+  appointmentId  String?
+  appointment    Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  delta          Int // +1 consumo, -1 estorno
+  reason         String
+  cycleStart     DateTime
+  createdAt      DateTime     @default(now())
+
+  @@index([subscriptionId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Financeiro
+// ---------------------------------------------------------------------------
+
+model Invoice {
+  id             String        @id @default(cuid())
+  clientId       String
+  client         User          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  description    String
+  amountCents    Int
+  status         String        @default("OPEN") // OPEN | PAID | OVERDUE | VOID
+  dueDate        DateTime
+  paidAt         DateTime?
+  periodStart    DateTime?
+  periodEnd      DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  payments Payment[]
+
+  @@unique([subscriptionId, periodStart])
+  @@index([status, dueDate])
+  @@index([clientId, createdAt])
+}
+
+model Payment {
+  id            String       @id @default(cuid())
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  invoiceId     String?
+  invoice       Invoice?     @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  amountCents   Int
+  method        String // PIX | CARD | CASH | TRANSFER | PLAN
+  note          String?
+  receivedById  String?
+  receivedBy    User?        @relation("PaymentReceivedBy", fields: [receivedById], references: [id])
+  paidAt        DateTime     @default(now())
+  createdAt     DateTime     @default(now())
+
+  @@index([paidAt])
+  @@index([appointmentId])
+}
+
+// ---------------------------------------------------------------------------
+// Relacionamento
+// ---------------------------------------------------------------------------
+
+model Review {
+  id            String        @id @default(cuid())
+  appointmentId String        @unique
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  clientId      String
+  client        User          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  barberId      String
+  barber        BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  rating        Int // 1..5
+  comment       String?
+  reply         String?
+  repliedAt     DateTime?
+  createdAt     DateTime      @default(now())
+
+  @@index([barberId, createdAt])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String // APPOINTMENT_CONFIRMED | APPOINTMENT_CANCELED | REMINDER | SUBSCRIPTION | REVIEW_REQUEST | SYSTEM
+  title     String
+  body      String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  meta      String? // JSON
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+// ---------------------------------------------------------------------------
+// Configuracao da barbearia (registro unico, id = "shop")
+// ---------------------------------------------------------------------------
+
+model ShopSettings {
+  id                      String   @id @default("shop")
+  name                    String   @default("Mandu Barber")
+  tagline                 String   @default("Barbearia de bairro com padrao de alta costura.")
+  phone                   String?
+  whatsapp                String?
+  email                   String?
+  addressLine             String?
+  district                String?
+  city                    String?
+  state                   String?
+  zipCode                 String?
+  instagram               String?
+  mapsUrl                 String?
+  timezone                String   @default("America/Sao_Paulo")
+  slotStepMinutes         Int      @default(15)
+  minLeadMinutes          Int      @default(60) // antecedencia minima para agendar
+  maxAdvanceDays          Int      @default(60) // ate quantos dias no futuro
+  cancellationWindowHours Int      @default(3) // prazo para cancelar sem atrito
+  allowOnlineBooking      Boolean  @default(true)
+  updatedAt               DateTime @updatedAt
+
+  businessHours BusinessHour[]
+}
+
+model BusinessHour {
+  id          String       @id @default(cuid())
+  shopId      String       @default("shop")
+  shop        ShopSettings @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  weekday     Int
+  openMinute  Int
+  closeMinute Int
+  closed      Boolean      @default(false)
+
+  @@unique([shopId, weekday])
+}

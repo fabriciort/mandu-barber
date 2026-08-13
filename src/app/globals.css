@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+/*
+ * Mandu Barber — sistema visual
+ *
+ * Base grafite quente + latao (o brilho de navalha e tesoura), sem azul de
+ * dashboard generico. Tudo em tokens: telas novas herdam a identidade sem
+ * inventar cor propria.
+ */
+
+@theme {
+  --color-ink-950: #0b0a09;
+  --color-ink-900: #131110;
+  --color-ink-850: #1a1715;
+  --color-ink-800: #221e1b;
+  --color-ink-700: #2e2924;
+  --color-ink-600: #423a33;
+  --color-ink-500: #6b6058;
+  --color-ink-400: #94887e;
+  --color-ink-300: #b9aea5;
+  --color-ink-200: #d9d1ca;
+  --color-ink-100: #ece7e2;
+  --color-ink-50: #f7f4f1;
+
+  --color-brass-50: #fdf8ef;
+  --color-brass-100: #f8ecd3;
+  --color-brass-200: #f0d7a5;
+  --color-brass-300: #e4bb6d;
+  --color-brass-400: #d9a24a;
+  --color-brass-500: #c98b3a;
+  --color-brass-600: #ab6c2c;
+  --color-brass-700: #8a5227;
+  --color-brass-800: #714325;
+  --color-brass-900: #5e3822;
+
+  --color-clay-400: #c96f4a;
+  --color-clay-500: #b45a37;
+
+  --color-moss-400: #7fa66a;
+  --color-moss-500: #5f8a4c;
+  --color-moss-600: #47693a;
+
+  --color-rust-400: #d0625a;
+  --color-rust-500: #b8453d;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-display), "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1rem;
+
+  --shadow-soft: 0 1px 2px rgb(11 10 9 / 0.06), 0 8px 24px -12px rgb(11 10 9 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(11 10 9 / 0.06), 0 18px 40px -20px rgb(11 10 9 / 0.35);
+
+  --animate-fade-up: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.3s ease both;
+  --animate-scale-in: scale-in 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Papeis semanticos — claro por padrao, escuro pela classe .dark no <html>.
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --surface: #ffffff;
+  --surface-muted: #f7f4f1;
+  --surface-raised: #ffffff;
+  --surface-sunken: #efeae5;
+  --border-subtle: #e4ddd6;
+  --border-strong: #cfc5bb;
+  --text-primary: #131110;
+  --text-secondary: #5d534b;
+  --text-muted: #8a7f75;
+  --accent: #ab6c2c;
+  --accent-contrast: #ffffff;
+  --accent-soft: #f8ecd3;
+  --ring: #c98b3a;
+}
+
+.dark {
+  --surface: #131110;
+  --surface-muted: #1a1715;
+  --surface-raised: #221e1b;
+  --surface-sunken: #0b0a09;
+  --border-subtle: #2b2521;
+  --border-strong: #3c342d;
+  --text-primary: #f2ede8;
+  --text-secondary: #b9aea5;
+  --text-muted: #8a7f75;
+  --accent: #d9a24a;
+  --accent-contrast: #131110;
+  --accent-soft: #2a211a;
+  --ring: #d9a24a;
+}
+
+@layer base {
+  * {
+    border-color: var(--border-subtle);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Barra de rolagem discreta, alinhada ao tema */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Remove as setas de input[type=number] — usamos steppers proprios */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .surface-card {
+    background-color: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  /* Textura sutil de fundo para as areas de marketing */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      var(--surface-muted) 0%,
+      var(--surface-sunken) 50%,
+      var(--surface-muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+}
+
+/* Impressao: comandas e relatorios saem limpos do painel */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
