@@ -5,6 +5,7 @@ import { AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/cn";
 
+
 const controlBase =
   "w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] px-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]/25 disabled:cursor-not-allowed disabled:opacity-60";
 
@@ -53,6 +54,50 @@ export function Label({
     <label className={cn("text-sm font-medium text-[var(--text-secondary)]", className)} {...props}>
       {children}
       {required ? <span className="ml-0.5 text-rust-500">*</span> : null}
+    </label>
+  );
+}
+
+/**
+ * Interruptor booleano que sempre envia um valor.
+ *
+ * Um checkbox desmarcado simplesmente nao entra no FormData, o que faria
+ * "desligar" virar "nao informado". O hidden logo depois cobre esse caso — a
+ * ordem importa: o FormData segue a ordem do DOM e `get()` devolve o primeiro.
+ */
+export function CheckboxField({
+  name,
+  label,
+  hint,
+  defaultChecked,
+  disabled,
+}: {
+  name: string;
+  label: React.ReactNode;
+  hint?: React.ReactNode;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <label
+      className={cn(
+        "flex cursor-pointer items-start gap-2.5",
+        disabled && "cursor-not-allowed opacity-60",
+      )}
+    >
+      <input
+        type="checkbox"
+        name={name}
+        value="true"
+        defaultChecked={defaultChecked}
+        disabled={disabled}
+        className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]"
+      />
+      <input type="hidden" name={name} value="false" />
+      <span>
+        <span className="block text-sm font-medium">{label}</span>
+        {hint ? <span className="block text-xs text-[var(--text-muted)]">{hint}</span> : null}
+      </span>
     </label>
   );
 }

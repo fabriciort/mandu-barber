@@ -10,11 +10,13 @@ const inter = Inter({
   display: "swap",
 });
 
+// Fraunces e variavel: mantemos o eixo de peso continuo e ligamos SOFT/WONK,
+// que dao a ela o ar de tipo desenhado a mao — a assinatura visual da marca.
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["400", "600", "700"],
+  weight: "variable",
   axes: ["SOFT", "WONK"],
 });
 
