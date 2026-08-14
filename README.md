@@ -17,12 +17,16 @@ Três públicos, um sistema só:
 
 ```bash
 npm install
+docker compose up -d        # Postgres local na porta 5432
 cp .env.example .env        # gere um AUTH_SECRET: openssl rand -base64 48
 npm run setup               # prisma generate + db push + seed
 npm run dev
 ```
 
 Abra <http://localhost:3000>.
+
+Se preferir não usar Docker, aponte a `DATABASE_URL` para qualquer Postgres —
+um banco gratuito do Neon ou Supabase serve, inclusive para desenvolvimento.
 
 ### Acessos de demonstração
 
@@ -55,11 +59,11 @@ para leitura, Server Actions para escrita. Não há camada de API para o própri
 front — a única rota HTTP é `/api/disponibilidade`, consumida pelo assistente de
 agendamento, mais a rotina agendada.
 
-**Prisma + SQLite por padrão.** Zero configuração para rodar. Para produção,
-troque o `provider` em `prisma/schema.prisma` para `postgresql` e aponte a
-`DATABASE_URL`: o schema não usa nada específico de SQLite. Os "enums" do domínio
-são strings validadas por Zod (`src/lib/enums.ts`) justamente para essa migração
-não exigir conversão de dados.
+**Prisma + Postgres.** Mesmo banco em desenvolvimento e em produção — o
+`docker-compose.yml` sobe um local em um comando. Os "enums" do domínio são
+strings validadas por Zod (`src/lib/enums.ts`) em vez de enums nativos: validação,
+tipos e rótulos em português ficam num arquivo só, e acrescentar um status novo
+não exige migração de schema.
 
 **Dinheiro em centavos.** Todo valor monetário é `Int`. Nenhum ponto flutuante
 toca em preço, desconto ou comissão.
@@ -127,24 +131,11 @@ acúmulo opcional de créditos não usados.
 
 ## Deploy (Vercel e afins)
 
-> **SQLite não funciona em serverless.** O disco da Vercel é somente leitura e
-> efêmero: o build passa, mas toda página quebra em tempo de execução. Para
-> publicar, o banco precisa ser Postgres. Este é o passo que não dá para pular.
-
 **1. Crie um Postgres.** Vercel Postgres, Neon, Supabase ou Railway — todos
 entregam a connection string pronta. O plano gratuito de qualquer um segura uma
 barbearia com folga.
 
-**2. Troque o provider** em `prisma/schema.prisma`:
-
-```prisma
-datasource db {
-  provider = "postgresql"   // era "sqlite"
-  url      = env("DATABASE_URL")
-}
-```
-
-**3. Configure as variáveis** no painel do provedor (Settings → Environment
+**2. Configure as variáveis** no painel do provedor (Settings → Environment
 Variables). Não deixe nenhuma em branco — variável vazia é diferente de variável
 ausente:
 
@@ -155,7 +146,7 @@ ausente:
 | `NEXT_PUBLIC_APP_URL` | `https://seu-dominio` (ou deixe **fora**, não vazia) |
 | `CRON_SECRET` | `openssl rand -hex 24` |
 
-**4. Crie as tabelas e popule** apontando para o banco de produção:
+**3. Crie as tabelas e popule** apontando para o banco de produção:
 
 ```bash
 DATABASE_URL="postgresql://..." npx prisma db push
@@ -165,7 +156,7 @@ DATABASE_URL="postgresql://..." npm run db:seed   # opcional, dados de demonstra
 Em produção de verdade, rode o seed uma vez só e depois troque a senha do gestor
 pela tela de perfil — as contas de demonstração usam senha pública.
 
-**5. Agende a rotina.** Na Vercel, crie um `vercel.json`:
+**4. Agende a rotina.** Na Vercel, crie um `vercel.json`:
 
 ```json
 { "crons": [{ "path": "/api/cron/lembretes", "schedule": "0 * * * *" }] }
@@ -204,6 +195,7 @@ espalhadas pelo código.
 ## Mapa do código
 
 ```
+docker-compose.yml       Postgres local
 prisma/
   schema.prisma          modelo de dados comentado
   seed.ts                barbearia de demonstração

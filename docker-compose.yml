@@ -1,0 +1,28 @@
+# Postgres para desenvolvimento local.
+#
+#   docker compose up -d
+#
+# A DATABASE_URL correspondente ja vem preenchida no .env.example. Os dados
+# ficam no volume nomeado, entao derrubar o container nao apaga o banco —
+# para zerar de verdade: docker compose down -v
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mandu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mandu
+      POSTGRES_DB: mandubarber
+    ports:
+      - "5432:5432"
+    volumes:
+      - mandu-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mandubarber"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mandu-postgres-data:

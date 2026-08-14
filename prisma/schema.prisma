@@ -5,16 +5,16 @@
 // - Horarios de funcionamento sao inteiros em "minutos desde a meia-noite" (540 = 09:00).
 // - Datas/horas sao gravadas em UTC; a conversao para o fuso da barbearia acontece
 //   na borda (src/lib/time.ts), nunca no banco.
-// - "Enums" sao strings validadas por Zod em src/lib/enums.ts — o provider SQLite nao
-//   suporta enums nativos do Prisma, e manter strings preserva a portabilidade para
-//   Postgres sem migracao de dados.
+// - "Enums" sao strings validadas por Zod em src/lib/enums.ts, e nao enums nativos
+//   do banco: a validacao, os tipos e os rotulos em portugues ficam num arquivo so,
+//   e acrescentar um status novo nao exige migracao de schema.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
