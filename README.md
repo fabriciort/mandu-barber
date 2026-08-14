@@ -19,7 +19,7 @@ Três públicos, um sistema só:
 npm install
 docker compose up -d        # Postgres local na porta 5432
 cp .env.example .env        # gere um AUTH_SECRET: openssl rand -base64 48
-npm run setup               # prisma generate + db push + seed
+npm run setup               # gera o client, aplica migrações e popula
 npm run dev
 ```
 
@@ -47,8 +47,9 @@ clientes e 278 agendamentos entre histórico e futuro. Senha de todos: `mandu123
 | `npm run build` / `npm start` | Build e execução em produção |
 | `npm test` | Testes das regras de domínio (Vitest) |
 | `npm run typecheck` | TypeScript em modo estrito |
-| `npm run db:reset` | Recria o banco do zero e roda o seed |
-| `npm run db:seed` | Só o seed |
+| `npm run db:migrate` | Aplica as migrações pendentes |
+| `npm run db:seed` | Repopula do zero (**apaga** os dados atuais) |
+| `npm run db:reset` | Recria o schema e popula |
 
 ---
 
@@ -146,21 +147,24 @@ ausente:
 | `NEXT_PUBLIC_APP_URL` | `https://seu-dominio` (ou deixe **fora**, não vazia) |
 | `CRON_SECRET` | `openssl rand -hex 24` |
 
-**3. Crie as tabelas e popule** apontando para o banco de produção:
+**3. Faça o deploy.** É só isso — não precisa rodar nada no terminal. O script de
+build aplica as migrações e, **só se o banco estiver vazio**, popula a barbearia
+de demonstração:
 
-```bash
-DATABASE_URL="postgresql://..." npx prisma db push
-DATABASE_URL="postgresql://..." npm run db:seed   # opcional, dados de demonstração
+```
+prisma generate && prisma migrate deploy && tsx prisma/bootstrap.ts && next build
 ```
 
-Em produção de verdade, rode o seed uma vez só e depois troque a senha do gestor
-pela tela de perfil — as contas de demonstração usam senha pública.
+A partir do primeiro usuário cadastrado o bootstrap não toca em mais nada, então
+deploys seguintes preservam os dados reais. Se ele falhar no meio, desfaz o que
+criou para o próximo deploy tentar de novo, em vez de deixar o banco pela metade.
 
-**4. Agende a rotina.** Na Vercel, crie um `vercel.json`:
+> Antes de divulgar o endereço: as contas de demonstração usam senha pública
+> (`mandu123`). Entre como gestor e troque a senha em **Minha conta → Perfil**.
+> Para começar com a base limpa em vez dos dados de exemplo, rode
+> `DATABASE_URL="..." npx prisma migrate deploy` e pule o bootstrap.
 
-```json
-{ "crons": [{ "path": "/api/cron/lembretes", "schedule": "0 * * * *" }] }
-```
+**4. A rotina já está agendada** no `vercel.json`, de hora em hora.
 
 ## Rotina agendada
 

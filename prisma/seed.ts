@@ -37,7 +37,7 @@ function pick<T>(items: T[], index: number): T {
   return items[((index % size) + size) % size];
 }
 
-async function main() {
+export async function seed() {
   console.log("Limpando base...");
   await prisma.$transaction([
     prisma.auditLog.deleteMany(),
@@ -177,7 +177,7 @@ async function main() {
     },
     {
       name: "Pigmentação de barba",
-      slug: "pigmentação-barba",
+      slug: "pigmentacao-barba",
       category: "ESTETICA",
       description: "Preenchimento de falhas com pigmento temporário.",
       durationMinutes: 40,
@@ -262,7 +262,7 @@ async function main() {
       specialties: ["Barba", "Pigmentação", "Toalha quente"],
       commissionPercent: 50,
       color: "#c96f4a",
-      services: ["barba-terapia", "barba-express", "pigmentação-barba", "combo-mandu", "corte-social", "sobrancelha"],
+      services: ["barba-terapia", "barba-express", "pigmentacao-barba", "combo-mandu", "corte-social", "sobrancelha"],
       hours: {
         weekdays: [
           { start: 12 * 60, end: 15 * 60 },
@@ -748,11 +748,15 @@ async function main() {
   console.log("  Cliente:       cliente@mandubarber.com.br");
 }
 
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Executado direto pela linha de comando (npm run db:seed). Quando importado
+// pelo bootstrap, apenas a funcao `seed` e usada.
+if (process.argv[1]?.endsWith("seed.ts")) {
+  seed()
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
