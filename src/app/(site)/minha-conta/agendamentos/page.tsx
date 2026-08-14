@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
+import { FilterPill } from "@/components/ui/filter-pill";
 import { CancelAppointmentButton, ReviewButton } from "@/components/appointment-actions";
+import { cn } from "@/lib/cn";
 import { requireUser } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
@@ -57,16 +59,16 @@ export default async function MyAppointmentsPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-1">
-          <FilterLink active={filter === "proximos"} href="/minha-conta/agendamentos">
+        <div className="flex gap-2">
+          <FilterPill active={filter === "proximos"} href="/minha-conta/agendamentos">
             Próximos
-          </FilterLink>
-          <FilterLink
+          </FilterPill>
+          <FilterPill
             active={filter === "historico"}
             href="/minha-conta/agendamentos?filtro=historico"
           >
             Histórico
-          </FilterLink>
+          </FilterPill>
         </div>
 
         <Button asChild size="sm">
@@ -102,46 +104,82 @@ export default async function MyAppointmentsPage({
             const isUpcoming = ["SCHEDULED", "CONFIRMED", "IN_PROGRESS"].includes(status);
 
             return (
-              <Card key={appointment.id} className="p-5">
+              <Card
+                key={appointment.id}
+                className={cn(
+                  "p-4 transition-colors sm:p-5",
+                  // Passado e cancelado recuam: quem abre a lista esta atras do
+                  // que ainda vai acontecer, nao do que ja foi.
+                  status === "CANCELED" || status === "NO_SHOW"
+                    ? "border-dashed bg-transparent"
+                    : null,
+                )}
+              >
                 <div className="flex flex-wrap items-start gap-4">
-                  <div className="flex w-16 shrink-0 flex-col items-center rounded-xl bg-[var(--surface-muted)] py-2.5 text-center">
-                    <span className="text-xs uppercase text-[var(--text-muted)]">
-                      {appointment.startsAt.toLocaleDateString("pt-BR", {
-                        month: "short",
-                        timeZone: shop.timezone,
-                      })}
+                  {/* Bloco de data em "folhinha": mes pequeno, dia grande, hora
+                      embaixo. O olho acha a data sem ler a frase inteira. */}
+                  <div
+                    className={cn(
+                      "flex w-16 shrink-0 flex-col items-center rounded-[var(--radius-md)] py-2.5 text-center",
+                      isUpcoming
+                        ? "bg-[var(--surface-inverse)] text-[var(--text-inverse)]"
+                        : "bg-[var(--surface-muted)]",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "text-2xs uppercase tracking-[0.1em]",
+                        isUpcoming ? "opacity-65" : "text-[var(--text-muted)]",
+                      )}
+                    >
+                      {appointment.startsAt
+                        .toLocaleDateString("pt-BR", {
+                          month: "short",
+                          timeZone: shop.timezone,
+                        })
+                        .replace(".", "")}
                     </span>
-                    <span className="text-xl font-semibold leading-tight">
+                    <span className="tnum text-2xl font-semibold leading-none">
                       {appointment.startsAt.toLocaleDateString("pt-BR", {
                         day: "2-digit",
                         timeZone: shop.timezone,
                       })}
                     </span>
-                    <span className="text-xs text-[var(--text-muted)]">
+                    <span
+                      className={cn(
+                        "tnum mt-1 text-xs",
+                        isUpcoming ? "opacity-65" : "text-[var(--text-muted)]",
+                      )}
+                    >
                       {formatTime(appointment.startsAt, shop.timezone)}
                     </span>
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge tone={APPOINTMENT_STATUS_TONE[status] as never} size="sm">
+                      <Badge tone={APPOINTMENT_STATUS_TONE[status]} size="sm">
                         {APPOINTMENT_STATUS_LABEL[status]}
                       </Badge>
                       <span className="font-mono text-xs text-[var(--text-muted)]">
                         {appointment.code}
                       </span>
                       {appointment.review ? (
-                        <Badge tone="accent" size="sm">
+                        <Badge tone="solid" size="sm">
                           Avaliado {appointment.review.rating}/5
                         </Badge>
                       ) : null}
                     </div>
 
-                    <h3 className="mt-1.5 font-medium">
+                    <h3
+                      className={cn(
+                        "mt-2 text-pretty font-medium",
+                        status === "CANCELED" && "line-through decoration-[1.5px]",
+                      )}
+                    >
                       {appointment.services.map((s) => s.name).join(" + ")}
                     </h3>
 
-                    <p className="mt-1 text-sm first-letter:uppercase text-[var(--text-muted)]">
+                    <p className="mt-1 text-sm text-[var(--text-muted)] first-letter:uppercase">
                       {formatLongDate(appointment.startsAt, shop.timezone)} ·{" "}
                       {formatDuration(duration)}
                     </p>
@@ -199,25 +237,3 @@ export default async function MyAppointmentsPage({
   );
 }
 
-function FilterLink({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className={
-        active
-          ? "rounded-md bg-[var(--surface-raised)] px-3.5 py-1.5 text-sm font-medium shadow-[var(--shadow-soft)]"
-          : "rounded-md px-3.5 py-1.5 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
-      }
-    >
-      {children}
-    </Link>
-  );
-}

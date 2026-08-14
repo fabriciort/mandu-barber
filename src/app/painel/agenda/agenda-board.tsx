@@ -11,7 +11,7 @@ import { AppointmentDrawer } from "./appointment-drawer";
 import { NewAppointmentDialog } from "./new-appointment-dialog";
 import { BlockTimeDialog } from "./block-time-dialog";
 import { cn } from "@/lib/cn";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, pluralize } from "@/lib/format";
 import { addDaysISO, formatMinutesLabel, parseDateKey } from "@/lib/time";
 import { APPOINTMENT_STATUS_LABEL, type AppointmentStatus } from "@/lib/enums";
 
@@ -159,10 +159,10 @@ export function AgendaBoard({
               type="button"
               onClick={() => navigate(date, null)}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                "pressable rounded-full border px-3.5 py-2 text-xs font-medium",
                 !selectedBarberId
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                  : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent)]",
+                  ? "border-transparent bg-[var(--accent)] text-[var(--accent-contrast)]"
+                  : "border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]",
               )}
             >
               Todos
@@ -173,13 +173,12 @@ export function AgendaBoard({
                 type="button"
                 onClick={() => navigate(date, barber.id)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                  "pressable rounded-full border px-3.5 py-2 text-xs font-medium",
                   selectedBarberId === barber.id
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                    : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent)]",
+                    ? "border-transparent bg-[var(--accent)] text-[var(--accent-contrast)]"
+                    : "border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]",
                 )}
               >
-                <span className="size-2 rounded-full" style={{ backgroundColor: barber.color }} />
                 {barber.name.split(" ")[0]}
               </button>
             ))}
@@ -205,7 +204,7 @@ export function AgendaBoard({
       <div className="flex flex-wrap items-center gap-4 rounded-lg bg-[var(--surface-muted)] px-4 py-2.5 text-sm">
         <span className="font-medium first-letter:uppercase">{dayLabel}</span>
         <span className="text-[var(--text-muted)]">
-          {activeCount} atendimento(s) · {formatMoney(dayRevenue)} concluído(s)
+          {pluralize(activeCount, "atendimento", "atendimentos")} · {formatMoney(dayRevenue)} concluído
         </span>
       </div>
 
@@ -271,10 +270,10 @@ export function AgendaBoard({
               ))}
               {nowMinutes !== null && nowMinutes >= rangeStart && nowMinutes <= rangeEnd ? (
                 <div
-                  className="absolute inset-x-0 z-20 border-t-2 border-rust-500"
+                  className="absolute inset-x-0 z-20 border-t-2 border-[var(--border-strong)]"
                   style={{ top: (nowMinutes - rangeStart) * PX_PER_MINUTE }}
                 >
-                  <span className="absolute -left-1 -top-1 size-2 rounded-full bg-rust-500" />
+                  <span className="absolute -left-1 -top-1 size-2 rounded-full bg-[var(--accent)]" />
                 </div>
               ) : null}
             </div>
@@ -336,21 +335,25 @@ export function AgendaBoard({
       )}
 
       {/* Legenda */}
-      <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-muted)]">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[var(--text-muted)]">
         <span className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-sm bg-[var(--accent)]" />
+          <span className="h-3 w-4 rounded-sm bg-[var(--surface-muted)] border-l-2 border-[var(--accent)]" />
           Agendado
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-sm bg-moss-500" />
+          <span className="h-3 w-4 rounded-sm bg-[var(--surface-inverse)]" />
           Concluído
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-sm bg-clay-400" />
+          <span className="h-3 w-4 rounded-sm border border-dashed border-[var(--text-muted)]" />
           Não compareceu
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-sm border border-dashed border-[var(--border-strong)]" />
+          <span className="hatched h-3 w-4 rounded-sm bg-[var(--surface-muted)]" />
+          Cancelado
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-3 w-4 rounded-sm border border-dashed border-[var(--border-strong)] bg-[var(--surface-sunken)]" />
           Bloqueio
         </span>
       </div>
@@ -380,28 +383,32 @@ function AppointmentBlock({
   const canceled = appointment.status === "CANCELED";
   const compact = duration < 35;
 
-  const tone =
+  // Sem cor, o status do bloco vem do preenchimento e da borda:
+  // concluido = solido, em atendimento = solido com barra grossa,
+  // agendado = claro com barra fina, falta = tracejado, cancelado = hachurado.
+  const style: React.CSSProperties =
     appointment.status === "COMPLETED"
-      ? { bg: "rgb(95 138 76 / 0.16)", border: "#5f8a4c" }
-      : appointment.status === "NO_SHOW"
-        ? { bg: "rgb(201 111 74 / 0.16)", border: "#c96f4a" }
-        : appointment.status === "IN_PROGRESS"
-          ? { bg: "rgb(201 139 58 / 0.28)", border: color }
-          : { bg: "rgb(201 139 58 / 0.14)", border: color };
+      ? { backgroundColor: "var(--surface-inverse)", color: "var(--text-inverse)" }
+      : appointment.status === "IN_PROGRESS"
+        ? { backgroundColor: "var(--surface-sunken)", borderLeft: "4px solid var(--accent)" }
+        : appointment.status === "NO_SHOW"
+          ? { border: "1px dashed var(--text-muted)" }
+          : canceled
+            ? { backgroundColor: "var(--surface-muted)" }
+            : { backgroundColor: "var(--surface-muted)", borderLeft: "2px solid var(--accent)" };
 
   return (
     <button
       type="button"
       onClick={onSelect}
       className={cn(
-        "absolute inset-x-1 z-[8] overflow-hidden rounded-lg border-l-[3px] px-2 py-1 text-left transition-all hover:z-10 hover:shadow-[var(--shadow-lift)]",
-        canceled && "opacity-45 line-through",
+        "pressable absolute inset-x-1 z-[8] overflow-hidden rounded-[var(--radius-sm)] px-2 py-1 text-left hover:z-10 hover:shadow-[var(--shadow-md)]",
+        canceled && "hatched opacity-55 line-through",
       )}
       style={{
         top: (appointment.startMinute - rangeStart) * PX_PER_MINUTE,
-        height: Math.max(duration * PX_PER_MINUTE, 22),
-        backgroundColor: canceled ? "var(--surface-muted)" : tone.bg,
-        borderLeftColor: canceled ? "var(--border-strong)" : tone.border,
+        height: Math.max(duration * PX_PER_MINUTE, 24),
+        ...style,
       }}
       aria-label={`${appointment.clientName}, ${formatMinutesLabel(appointment.startMinute)}, ${
         APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]

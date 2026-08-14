@@ -23,7 +23,22 @@ import { saveBarberAction } from "@/server/actions/management";
 import type { ActionState } from "@/server/actions/result";
 import { cn } from "@/lib/cn";
 
-const COLORS = ["#c98b3a", "#7fa66a", "#c96f4a", "#5f8a4c", "#8a5227", "#6b6058", "#b45a37"];
+/**
+ * Tons de identificacao na agenda.
+ *
+ * A paleta e neutra por decisao de projeto — todos os tons ficam na faixa media
+ * do cinza, que e a unica que enxerga bem tanto sobre o fundo branco quanto
+ * sobre o preto. Cada um tem nome porque "escolha o terceiro cinza" nao e
+ * instrucao: com nome, o gestor consegue falar do tom com a equipe.
+ */
+const TONES = [
+  { value: "#3f3f45", label: "Grafite" },
+  { value: "#5c5c63", label: "Chumbo" },
+  { value: "#7c7c83", label: "Aço" },
+  { value: "#a1a1a6", label: "Prata" },
+  { value: "#c7c7ca", label: "Névoa" },
+  { value: "#8b8b91", label: "Fumaça" },
+];
 
 type BarberInput = {
   id: string;
@@ -43,7 +58,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
   const router = useRouter();
   const toast = useToast();
   const [open, setOpen] = React.useState(false);
-  const [color, setColor] = React.useState(barber?.agendaColor ?? COLORS[0]);
+  const [color, setColor] = React.useState(barber?.agendaColor ?? TONES[1].value);
   const [state, formAction, pending] = useActionState<ActionState, FormData>(saveBarberAction, {
     ok: false,
   });
@@ -163,22 +178,28 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
                 />
               </Field>
 
-              <Field label="Cor na agenda" hint="Identifica a coluna do profissional.">
-                <div className="flex flex-wrap gap-2 pt-1.5">
-                  {COLORS.map((option) => (
+              <Field label="Tom na agenda" hint="Identifica a coluna do profissional.">
+                <div
+                  className="flex flex-wrap gap-2 pt-1.5"
+                  role="radiogroup"
+                  aria-label="Tom na agenda"
+                >
+                  {TONES.map((option) => (
                     <button
-                      key={option}
+                      key={option.value}
                       type="button"
-                      onClick={() => setColor(option)}
+                      role="radio"
+                      onClick={() => setColor(option.value)}
+                      title={option.label}
                       className={cn(
-                        "size-7 rounded-full border-2 transition-transform",
-                        color === option
-                          ? "scale-110 border-[var(--text-primary)]"
-                          : "border-transparent hover:scale-105",
+                        "pressable size-8 rounded-full ring-offset-2 ring-offset-[var(--surface-raised)]",
+                        color === option.value
+                          ? "ring-2 ring-[var(--accent)]"
+                          : "ring-1 ring-[var(--border-default)] hover:ring-[var(--border-strong)]",
                       )}
-                      style={{ backgroundColor: option }}
-                      aria-label={`Cor ${option}`}
-                      aria-pressed={color === option}
+                      style={{ backgroundColor: option.value }}
+                      aria-label={option.label}
+                      aria-checked={color === option.value}
                     />
                   ))}
                 </div>
@@ -201,7 +222,7 @@ export function BarberFormDialog({ barber }: { barber?: BarberInput }) {
             </div>
 
             {state.message && !state.ok ? (
-              <p className="rounded-lg border border-rust-500/30 bg-rust-500/10 px-3 py-2 text-sm text-rust-500">
+              <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text-primary)]">
                 {state.message}
               </p>
             ) : null}

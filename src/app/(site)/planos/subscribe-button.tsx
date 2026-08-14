@@ -53,11 +53,16 @@ export function SubscribeButton({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
+  // No plano em destaque o cartao inteiro e invertido, entao o botao precisa
+  // inverter junto para nao sumir no fundo.
+  const variant = highlight ? "inverse" : "secondary";
+
   if (!authenticated) {
     return (
       <Button
         block
-        variant={highlight ? "primary" : "secondary"}
+        size="lg"
+        variant={variant}
         onClick={() => router.push(`/entrar?proximo=${encodeURIComponent("/planos")}`)}
       >
         Entrar para assinar
@@ -68,7 +73,7 @@ export function SubscribeButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button block variant={highlight ? "primary" : "secondary"}>
+        <Button block size="lg" variant={variant}>
           Assinar {planName}
         </Button>
       </DialogTrigger>

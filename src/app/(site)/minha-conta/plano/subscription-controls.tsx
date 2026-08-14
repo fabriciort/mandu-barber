@@ -69,7 +69,7 @@ export function SubscriptionControls({
     return (
       <form action={resumeAction}>
         <input type="hidden" name="subscriptionId" value={subscriptionId} />
-        <Button type="submit" size="sm" variant="secondary" loading={resuming}>
+        <Button type="submit" size="sm" variant="inverse" loading={resuming}>
           Manter minha assinatura
         </Button>
       </form>
@@ -79,7 +79,7 @@ export function SubscriptionControls({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="inverse-outline">
           Cancelar assinatura
         </Button>
       </DialogTrigger>

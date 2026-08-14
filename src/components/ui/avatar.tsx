@@ -8,12 +8,16 @@ const sizes = {
   sm: "size-8 text-xs",
   md: "size-10 text-sm",
   lg: "size-14 text-base",
-  xl: "size-20 text-xl",
+  xl: "size-20 text-2xl",
 } as const;
 
 /**
- * Avatar com iniciais. A cor de fundo deriva do nome, entao a mesma pessoa
- * tem sempre a mesma cor em toda a aplicacao — ajuda a bater o olho na agenda.
+ * Avatar com iniciais.
+ *
+ * No monocromatico nao da para tingir por pessoa, entao a distincao vem do
+ * TOM: o nome define um degrau da escala de cinza, sempre o mesmo para a mesma
+ * pessoa. O texto alterna entre claro e escuro conforme o fundo, para o
+ * contraste nunca cair.
  */
 export function Avatar({
   name,
@@ -28,7 +32,10 @@ export function Avatar({
   className?: string;
   ring?: string;
 }) {
-  const hue = hashHue(name);
+  const step = hashStep(name);
+  // 6 degraus estaveis; abaixo de 45% de luminosidade o texto vira claro.
+  const lightness = 22 + step * 13;
+  const light = lightness > 45;
 
   return (
     <span
@@ -38,8 +45,8 @@ export function Avatar({
         className,
       )}
       style={{
-        backgroundColor: src ? undefined : `hsl(${hue} 32% 82%)`,
-        color: src ? undefined : `hsl(${hue} 45% 24%)`,
+        backgroundColor: src ? undefined : `hsl(0 0% ${lightness}%)`,
+        color: src ? undefined : light ? "hsl(0 0% 12%)" : "hsl(0 0% 97%)",
         boxShadow: ring ? `0 0 0 2px ${ring}` : undefined,
       }}
       aria-hidden
@@ -54,10 +61,10 @@ export function Avatar({
   );
 }
 
-function hashHue(value: string): number {
+function hashStep(value: string): number {
   let hash = 0;
   for (let i = 0; i < value.length; i++) {
-    hash = (hash * 31 + value.charCodeAt(i)) % 360;
+    hash = (hash * 31 + value.charCodeAt(i)) % 997;
   }
-  return hash;
+  return hash % 5;
 }

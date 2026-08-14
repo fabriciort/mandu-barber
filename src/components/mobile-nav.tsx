@@ -2,44 +2,70 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { CalendarPlus, LayoutDashboard, LogIn, Menu, UserRound, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Avatar } from "@/components/ui/avatar";
+import { cn } from "@/lib/cn";
 
+/**
+ * Menu do celular como folha que desce do topo.
+ *
+ * Detalhes que fazem parecer nativo: trava a rolagem do fundo, fecha no Esc,
+ * fecha ao trocar de rota (senao o menu fica aberto sobre a tela nova), devolve
+ * o foco ao botao ao fechar e respeita a area segura do aparelho.
+ */
 export function MobileNav({
   links,
   authenticated,
   isStaff,
+  userName,
 }: {
   links: { href: string; label: string }[];
   authenticated: boolean;
   isStaff: boolean;
+  userName?: string | null;
 }) {
   const [open, setOpen] = React.useState(false);
+  const pathname = usePathname();
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const panelRef = React.useRef<HTMLDivElement>(null);
 
-  // Trava o scroll do fundo enquanto o menu esta aberto.
+  // Fecha ao navegar: sem isso o painel sobrevive a troca de rota.
   React.useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+    setOpen(false);
+  }, [pathname]);
 
   React.useEffect(() => {
+    if (!open) return;
+
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
     }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+
+    // O foco entra no painel para quem usa teclado ou leitor de tela.
+    panelRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", onKey);
+      triggerRef.current?.focus();
+    };
+  }, [open]);
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex size-9 items-center justify-center rounded-lg text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)] md:hidden"
+        className="pressable inline-flex size-10 items-center justify-center rounded-[var(--radius-md)] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] md:hidden"
         aria-label="Abrir menu"
         aria-expanded={open}
       >
@@ -48,57 +74,83 @@ export function MobileNav({
 
       {open ? (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div
-            className="absolute inset-0 animate-[var(--animate-fade-in)] bg-ink-950/60"
+          <button
+            type="button"
+            className="absolute inset-0 animate-[var(--animate-fade)] bg-black/50 backdrop-blur-[2px]"
             onClick={() => setOpen(false)}
+            aria-label="Fechar menu"
+            tabIndex={-1}
           />
-          <div className="absolute inset-x-0 top-0 animate-[var(--animate-fade-up)] rounded-b-2xl border-b border-[var(--border-strong)] bg-[var(--surface)] p-4 shadow-[var(--shadow-lift)]">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm font-medium text-[var(--text-muted)]">Menu</span>
-              <div className="flex items-center gap-1">
+
+          <div
+            ref={panelRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="absolute inset-x-0 top-0 animate-[var(--animate-rise)] rounded-b-[var(--radius-2xl)] border-b border-[var(--border-default)] bg-[var(--surface)] shadow-[var(--shadow-xl)] focus:outline-none"
+          >
+            <div className="flex h-16 items-center justify-between px-5">
+              {authenticated && userName ? (
+                <span className="flex items-center gap-2.5">
+                  <Avatar name={userName} size="sm" />
+                  <span className="text-sm font-medium">{userName.split(" ")[0]}</span>
+                </span>
+              ) : (
+                <span className="text-sm font-medium text-[var(--text-muted)]">Menu</span>
+              )}
+
+              <span className="flex items-center gap-1">
                 <ThemeToggle />
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="inline-flex size-9 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]"
+                  className="pressable inline-flex size-10 items-center justify-center rounded-[var(--radius-md)] hover:bg-[var(--surface-muted)]"
                   aria-label="Fechar menu"
                 >
                   <X className="size-5" />
                 </button>
-              </div>
+              </span>
             </div>
 
-            <nav className="flex flex-col" aria-label="Navegação">
-              {links.map((link) => (
+            <nav className="stagger border-t border-[var(--border-subtle)] px-3 py-2" aria-label="Navegação">
+              {links.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-[var(--surface-muted)]"
+                  style={{ "--i": index } as React.CSSProperties}
+                  className={cn(
+                    "pressable flex items-center rounded-[var(--radius-md)] px-3 py-3.5 text-[15px] font-medium",
+                    "hover:bg-[var(--surface-muted)]",
+                  )}
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            <div className="mt-4 grid gap-2 border-t border-[var(--border-subtle)] pt-4">
+            <div className="grid gap-2 border-t border-[var(--border-subtle)] p-4 pb-safe">
               {isStaff ? (
-                <Button asChild variant="secondary" block onClick={() => setOpen(false)}>
+                <Button asChild variant="secondary" block size="lg">
                   <Link href="/painel">
-                    <LayoutDashboard className="size-4" />
+                    <LayoutDashboard className="size-[18px]" />
                     Painel de gestão
                   </Link>
                 </Button>
               ) : null}
-              <Button asChild variant="secondary" block onClick={() => setOpen(false)}>
+              <Button asChild variant="secondary" block size="lg">
                 <Link href={authenticated ? "/minha-conta" : "/entrar"}>
-                  {authenticated ? <UserRound className="size-4" /> : <LogIn className="size-4" />}
+                  {authenticated ? (
+                    <UserRound className="size-[18px]" />
+                  ) : (
+                    <LogIn className="size-[18px]" />
+                  )}
                   {authenticated ? "Minha conta" : "Entrar"}
                 </Link>
               </Button>
-              <Button asChild block onClick={() => setOpen(false)}>
+              <Button asChild block size="lg">
                 <Link href="/agendar">
-                  <CalendarPlus className="size-4" />
+                  <CalendarPlus className="size-[18px]" />
                   Agendar horário
                 </Link>
               </Button>

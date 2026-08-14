@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter, Instrument_Serif } from "next/font/google";
 
 import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
@@ -10,14 +10,13 @@ const inter = Inter({
   display: "swap",
 });
 
-// Fraunces e variavel: mantemos o eixo de peso continuo e ligamos SOFT/WONK,
-// que dao a ela o ar de tipo desenhado a mao — a assinatura visual da marca.
-const fraunces = Fraunces({
+// Serifa editorial de alto contraste: no monocromatico, a diferenca entre
+// hastes grossas e finas e o que substitui a cor como ornamento.
+const display = Instrument_Serif({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: "variable",
-  axes: ["SOFT", "WONK"],
+  weight: "400",
 });
 
 /**
@@ -69,8 +68,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f4f1" },
-    { media: "(prefers-color-scheme: dark)", color: "#131110" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -94,7 +93,7 @@ const themeScript = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${display.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

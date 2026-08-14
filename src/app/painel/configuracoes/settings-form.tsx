@@ -178,7 +178,7 @@ export function SettingsForm({
                     label={`Fechamento de ${WEEKDAY_LABEL[day.weekday]}`}
                   />
                   {day.closeMinute <= day.openMinute ? (
-                    <span className="text-xs text-rust-500">fim antes do início</span>
+                    <span className="text-xs text-[var(--text-primary)]">fim antes do início</span>
                   ) : null}
                 </div>
               ) : (
@@ -268,7 +268,7 @@ export function SettingsForm({
       </Card>
 
       {state.message && !state.ok ? (
-        <p className="rounded-lg border border-rust-500/30 bg-rust-500/10 px-4 py-3 text-sm text-rust-500">
+        <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 py-3 text-sm text-[var(--text-primary)]">
           {state.message}
         </p>
       ) : null}

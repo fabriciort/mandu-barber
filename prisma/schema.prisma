@@ -78,7 +78,7 @@ model BarberProfile {
   bio               String?
   specialties       String   @default("[]") // JSON array de strings
   commissionPercent Int      @default(50)
-  agendaColor       String   @default("#c98b3a")
+  agendaColor       String   @default("#5c5c63")
   acceptsNewClients Boolean  @default(true)
   active            Boolean  @default(true)
   displayOrder      Int      @default(0)

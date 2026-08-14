@@ -62,57 +62,80 @@ export default async function HomePage() {
   return (
     <>
       {/* ------------------------------------------------------------ hero */}
-      <section className="grain relative overflow-hidden bg-ink-950 text-ink-50">
+      <section className="grain relative isolate overflow-hidden bg-[var(--surface-inverse)] text-[var(--text-inverse)]">
+        {/* Vinheta: escurece as bordas e puxa o olho para o centro do texto.
+            Sem cor, a profundidade vem da luz. */}
         <div
+          aria-hidden
           className="pointer-events-none absolute inset-0 opacity-70"
           style={{
             background:
-              "radial-gradient(70% 55% at 15% 0%, rgba(201,139,58,0.25) 0%, transparent 60%), radial-gradient(50% 50% at 100% 100%, rgba(201,111,74,0.18) 0%, transparent 65%)",
+              "radial-gradient(80% 60% at 12% 0%, rgb(255 255 255 / 0.14) 0%, transparent 60%), radial-gradient(60% 60% at 100% 100%, rgb(255 255 255 / 0.07) 0%, transparent 60%)",
           }}
         />
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:py-28">
-          <div className="animate-[var(--animate-fade-up)]">
-            <Badge tone="accent" className="border-brass-400/40 bg-brass-400/15 text-brass-200">
-              <Sparkles className="size-3" />
-              {shop.district ? `${shop.district}, ${shop.city}` : "São Paulo"}
-            </Badge>
 
-            <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.05] tracking-tight sm:text-6xl">
+        <div className="relative mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:pb-28 lg:pt-24">
+          <div className="stagger">
+            <p
+              style={{ "--i": 0 } as React.CSSProperties}
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/70"
+            >
+              <span className="size-1.5 rounded-full bg-white" />
+              {shop.district ? `${shop.district} · ${shop.city}` : "São Paulo"}
+            </p>
+
+            <h1
+              style={{ "--i": 1 } as React.CSSProperties}
+              className="font-display mt-6 text-[clamp(2.5rem,9vw,4.5rem)] leading-[0.98] text-white balance"
+            >
               Seu horário reservado.
               <br />
-              <span className="text-brass-300">Seu corte, do jeito certo.</span>
+              <span className="text-white/45">Seu corte, do jeito certo.</span>
             </h1>
 
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-300">
+            <p
+              style={{ "--i": 2 } as React.CSSProperties}
+              className="mt-6 max-w-md text-base leading-relaxed text-white/60 sm:text-lg pretty"
+            >
               Escolha o serviço, o profissional e o horário em menos de um minuto. Sem fila de
               espera no WhatsApp, sem &quot;me confirma depois&quot;.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-brass-400 text-ink-950 hover:bg-brass-300">
+            <div
+              style={{ "--i": 3 } as React.CSSProperties}
+              className="mt-9 flex flex-col gap-3 sm:flex-row"
+            >
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-black shadow-none hover:bg-white/90"
+              >
                 <Link href="/agendar">
                   Agendar agora
-                  <ArrowRight className="size-5" />
+                  <ArrowRight className="size-[18px]" />
                 </Link>
               </Button>
               <Button
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-ink-600 text-ink-100 hover:border-brass-400 hover:text-brass-300"
+                className="border-white/25 text-white hover:bg-white/10"
               >
-                <Link href="/planos">Ver planos de assinatura</Link>
+                <Link href="/planos">Ver planos</Link>
               </Button>
             </div>
 
-            <dl className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-ink-700 pt-8">
+            <dl
+              style={{ "--i": 4 } as React.CSSProperties}
+              className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/12 pt-8"
+            >
               <Stat value={`${stats.completed}+`} label="Atendimentos concluídos" />
               <Stat value={stats.rating} label={`Média de ${stats.reviewCount} avaliações`} />
               <Stat value={`${barbers.length}`} label="Profissionais na equipe" />
             </dl>
           </div>
 
-          <div className="relative hidden lg:block">
+          <div className="relative">
             <NextSlotsPreview />
           </div>
         </div>
@@ -151,10 +174,10 @@ export default async function HomePage() {
           {services.map((service) => (
             <Card key={service.id} interactive className="flex flex-col p-5">
               <div className="flex items-start justify-between gap-2">
-                <Badge tone={service.featured ? "accent" : "neutral"} size="sm">
+                <Badge tone={service.featured ? "solid" : "muted"} size="sm">
                   {SERVICE_CATEGORY_LABEL[service.category as ServiceCategory] ?? service.category}
                 </Badge>
-                {service.featured ? <Star className="size-4 fill-brass-400 text-brass-400" /> : null}
+                {service.featured ? <Star className="size-4 fill-[var(--text-primary)] text-[var(--accent)]" /> : null}
               </div>
 
               <h3 className="mt-3 font-medium">{service.name}</h3>
@@ -212,7 +235,7 @@ export default async function HomePage() {
                       <h3 className="truncate font-medium">{barber.user.name}</h3>
                       <p className="truncate text-xs text-[var(--text-muted)]">{barber.headline}</p>
                       {rating ? (
-                        <p className="mt-1 flex items-center gap-1 text-xs font-medium text-brass-600 dark:text-brass-300">
+                        <p className="mt-1 flex items-center gap-1 text-xs font-medium text-[var(--accent)]">
                           <Star className="size-3 fill-current" />
                           {rating.toFixed(1)}
                           <span className="font-normal text-[var(--text-muted)]">
@@ -267,25 +290,25 @@ export default async function HomePage() {
               <Card
                 key={plan.id}
                 interactive
-                className={`relative flex flex-col p-6 ${plan.highlight ? "border-brass-500/50 shadow-[var(--shadow-lift)]" : ""}`}
+                className={`relative flex flex-col p-6 ${plan.highlight ? "border-[var(--border-strong)] shadow-[var(--shadow-lg)]" : ""}`}
               >
                 {plan.highlight ? (
-                  <Badge tone="accent" className="absolute -top-2.5 left-6">
+                  <Badge tone="solid" className="absolute -top-2.5 left-6">
                     Mais assinado
                   </Badge>
                 ) : null}
 
-                <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold">
+                <h3 className="font-display text-xl">
                   {plan.name}
                 </h3>
                 <p className="mt-1 text-sm text-[var(--text-muted)]">{plan.tagline}</p>
 
                 <p className="mt-5 flex items-baseline gap-1">
-                  <span className="text-3xl font-semibold">{formatMoney(plan.priceCents)}</span>
+                  <span className="text-3xl">{formatMoney(plan.priceCents)}</span>
                   <span className="text-sm text-[var(--text-muted)]">/mês</span>
                 </p>
                 {savings.savingsCents > 0 ? (
-                  <p className="mt-1 text-xs font-medium text-moss-600 dark:text-moss-400">
+                  <p className="mt-1 text-xs text-[var(--text-primary)]">
                     Economia de até {formatMoney(savings.savingsCents)} por mês
                   </p>
                 ) : null}
@@ -342,7 +365,7 @@ export default async function HomePage() {
                     </div>
                     <div className="flex gap-0.5" aria-label={`${review.rating} de 5`}>
                       {Array.from({ length: review.rating }).map((_, index) => (
-                        <Star key={index} className="size-3.5 fill-brass-400 text-brass-400" />
+                        <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--accent)]" />
                       ))}
                     </div>
                   </div>
@@ -404,8 +427,8 @@ export default async function HomePage() {
               }}
             />
             <div className="relative flex h-full flex-col justify-end p-6 text-ink-100">
-              <Scissors className="size-8 text-brass-300" />
-              <p className="mt-4 font-[family-name:var(--font-display)] text-2xl leading-snug">
+              <Scissors className="size-8 text-[var(--accent)]" />
+              <p className="mt-4 font-display text-2xl leading-snug">
                 &quot;Cadeira boa, conversa boa e o corte no ponto.&quot;
               </p>
               <p className="mt-2 text-sm text-ink-400">O que a gente quer ouvir toda vez.</p>
@@ -422,10 +445,8 @@ export default async function HomePage() {
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <dt className="font-[family-name:var(--font-display)] text-2xl font-semibold text-brass-300">
-        {value}
-      </dt>
-      <dd className="mt-1 text-xs leading-snug text-ink-400">{label}</dd>
+      <dt className="font-display text-3xl leading-none text-white">{value}</dt>
+      <dd className="mt-2 text-xs leading-snug text-white/45">{label}</dd>
     </div>
   );
 }
@@ -441,12 +462,14 @@ function Highlight({
 }) {
   return (
     <div className="flex gap-4">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
-        <Icon className="size-5" />
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-default)] text-[var(--text-primary)]">
+        <Icon className="size-[18px]" />
       </span>
       <div>
-        <h3 className="font-medium">{title}</h3>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">{description}</p>
+        <h3 className=" tracking-[var(--)]">{title}</h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-muted)] pretty">
+          {description}
+        </p>
       </div>
     </div>
   );
@@ -463,14 +486,14 @@ function SectionHeading({
 }) {
   return (
     <div className="max-w-2xl">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+      <p className="text-2xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
         {eyebrow}
       </p>
-      <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h2 className="font-display mt-3 text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.05] balance">
         {title}
       </h2>
       {description ? (
-        <p className="mt-3 text-[var(--text-muted)]">{description}</p>
+        <p className="mt-4 leading-relaxed text-[var(--text-muted)] pretty">{description}</p>
       ) : null}
     </div>
   );
@@ -499,47 +522,58 @@ async function NextSlotsPreview() {
   const days = Object.entries(counts).slice(0, 7);
 
   return (
-    <div className="rounded-3xl border border-ink-700 bg-ink-900/70 p-6 shadow-[var(--shadow-lift)] backdrop-blur">
-      <div className="flex items-center justify-between">
+    <div className="rounded-[var(--radius-2xl)] bg-white p-5 text-black shadow-[var(--shadow-xl)] sm:p-6">
+      <div className="flex items-baseline justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-widest text-ink-400">Próximos 7 dias</p>
-          <p className="mt-1 font-medium text-ink-100">{featured.name}</p>
+          <p className="text-2xs uppercase tracking-[0.16em] text-black/40">
+            Próximos 7 dias
+          </p>
+          <p className="mt-1">{featured.name}</p>
         </div>
-        <Badge tone="accent" className="border-brass-400/40 bg-brass-400/15 text-brass-200">
+        <span className="tnum shrink-0 text-xs text-black/40">
           {formatDuration(featured.durationMinutes)}
-        </Badge>
+        </span>
       </div>
 
-      <ul className="mt-6 space-y-2">
+      <ul className="mt-5 divide-y divide-black/8">
         {days.map(([date, count]) => {
           const day = parseDateKey(date);
-          const weekday = WEEKDAY_SHORT[day.getDay()];
           return (
-            <li
-              key={date}
-              className="flex items-center justify-between rounded-xl border border-ink-700/70 bg-ink-850/60 px-4 py-3"
-            >
-              <span className="flex items-center gap-3">
-                <span className="flex size-9 flex-col items-center justify-center rounded-lg bg-ink-800 text-[10px] uppercase text-ink-400">
-                  {weekday}
-                  <span className="text-sm font-semibold text-ink-100">{day.getDate()}</span>
+            <li key={date} className="flex items-center gap-4 py-2.5">
+              <span className="flex w-11 shrink-0 flex-col items-center">
+                <span className="text-2xs uppercase tracking-wide text-black/35">
+                  {WEEKDAY_SHORT[day.getDay()]}
                 </span>
+                <span className="tnum text-lg leading-tight">{day.getDate()}</span>
               </span>
+
+              {/* Barra proporcional: quantos horarios livres, de relance. */}
+              <span className="h-1 flex-1 overflow-hidden rounded-full bg-black/8">
+                <span
+                  className="block h-full rounded-full bg-black transition-all"
+                  style={{ width: `${Math.min(100, (count / 45) * 100)}%` }}
+                />
+              </span>
+
               <span
                 className={
                   count > 0
-                    ? "text-sm font-medium text-brass-300"
-                    : "text-sm text-ink-500"
+                    ? "tnum w-24 shrink-0 text-right text-xs font-medium"
+                    : "w-24 shrink-0 text-right text-xs text-black/30"
                 }
               >
-                {count > 0 ? `${count} horários livres` : "Sem vaga"}
+                {count > 0 ? `${count} livres` : "Sem vaga"}
               </span>
             </li>
           );
         })}
       </ul>
 
-      <Button asChild block className="mt-6 bg-brass-400 text-ink-950 hover:bg-brass-300">
+      <Button
+        asChild
+        block
+        className="mt-6 bg-black text-white shadow-none hover:bg-black/85"
+      >
         <Link href="/agendar">Escolher meu horário</Link>
       </Button>
     </div>

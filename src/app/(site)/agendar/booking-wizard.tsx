@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, pluralize } from "@/lib/format";
 import { addDaysISO, formatDuration, parseDateKey } from "@/lib/time";
 import { priceAppointment, type CreditBalance } from "@/lib/pricing";
 import { SERVICE_CATEGORY_LABEL, WEEKDAY_SHORT, type ServiceCategory } from "@/lib/enums";
@@ -383,7 +383,8 @@ export function BookingWizard({
           ) : null}
         </div>
 
-        <div className="mt-8 flex items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-6">
+        {/* Desktop: acoes no fim do conteudo. */}
+        <div className="mt-10 hidden items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-6 sm:flex">
           <Button variant="ghost" onClick={goBack} disabled={step === 0}>
             <ArrowLeft className="size-4" />
             Voltar
@@ -399,6 +400,54 @@ export function BookingWizard({
               {authenticated ? "Confirmar agendamento" : "Entrar e confirmar"}
             </Button>
           )}
+        </div>
+
+        {/* Celular: barra fixa no rodape, sempre ao alcance do polegar, com o
+            total visivel — a pessoa nao precisa rolar para saber o preco. */}
+        <div className="h-28 sm:hidden" aria-hidden />
+        <div className="sticky-bar fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border-subtle)] pb-safe sm:hidden">
+          <div className="flex items-center gap-3 px-4 py-3">
+            {step > 0 ? (
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={goBack}
+                aria-label="Voltar"
+                className="w-12 shrink-0 px-0"
+              >
+                <ArrowLeft className="size-[18px]" />
+              </Button>
+            ) : null}
+
+            <div className="min-w-0 flex-1">
+              {pricing.charges.length > 0 ? (
+                <>
+                  <p className="truncate text-2xs text-[var(--text-muted)]">
+                    {pluralize(pricing.charges.length, "serviço", "serviços")} ·{" "}
+                    {formatDuration(totalDuration)}
+                  </p>
+                  <p className="truncate text-sm font-semibold">
+                    {pricing.totalCents === 0
+                      ? "Coberto pelo plano"
+                      : formatMoney(pricing.totalCents)}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-[var(--text-muted)]">Escolha um serviço</p>
+              )}
+            </div>
+
+            {step < STEPS.length - 1 ? (
+              <Button onClick={goNext} disabled={!canAdvance} size="lg" className="shrink-0">
+                Continuar
+                <ArrowRight className="size-[18px]" />
+              </Button>
+            ) : (
+              <Button onClick={submit} loading={submitting} size="lg" className="shrink-0">
+                Confirmar
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -421,53 +470,83 @@ export function BookingWizard({
 
 function Stepper({ current, onSelect }: { current: number; onSelect: (index: number) => void }) {
   return (
-    <ol className="flex items-center gap-2" aria-label="Etapas do agendamento">
-      {STEPS.map((label, index) => {
-        const done = index < current;
-        const active = index === current;
-        return (
-          <li key={label} className="flex flex-1 items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onSelect(index)}
-              disabled={index >= current}
-              className={cn(
-                "flex items-center gap-2 rounded-lg px-1 py-1 text-left transition-colors",
-                done && "cursor-pointer hover:opacity-80",
-                index > current && "cursor-default",
-              )}
-            >
-              <span
+    <div>
+      {/* Celular: barra de progresso + rotulo. Quatro circulos com texto nao
+          cabem em 360px sem virar sopa de letrinha. */}
+      <div className="sm:hidden">
+        <div className="flex items-baseline justify-between">
+          <p className="text-sm font-medium">{STEPS[current]}</p>
+          <p className="tnum text-xs text-[var(--text-muted)]">
+            {current + 1} de {STEPS.length}
+          </p>
+        </div>
+        <div
+          className="mt-2 h-1 overflow-hidden rounded-full bg-[var(--surface-sunken)]"
+          role="progressbar"
+          aria-valuenow={current + 1}
+          aria-valuemin={1}
+          aria-valuemax={STEPS.length}
+          aria-label="Progresso do agendamento"
+        >
+          <div
+            className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-500 ease-[var(--ease-out-quint)]"
+            style={{ width: `${((current + 1) / STEPS.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop: trilha com os passos ja vencidos clicaveis. */}
+      <ol className="hidden items-center gap-2 sm:flex" aria-label="Etapas do agendamento">
+        {STEPS.map((label, index) => {
+          const done = index < current;
+          const active = index === current;
+          return (
+            <li key={label} className="flex flex-1 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onSelect(index)}
+                disabled={index >= current}
                 className={cn(
-                  "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
-                  active && "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]",
-                  done && "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]",
-                  !active && !done && "border-[var(--border-strong)] text-[var(--text-muted)]",
+                  "pressable flex items-center gap-2 rounded-[var(--radius-sm)] py-1 pr-2",
+                  done && "cursor-pointer",
+                  index > current && "cursor-default",
                 )}
               >
-                {done ? <Check className="size-3.5" /> : index + 1}
-              </span>
-              <span
-                className={cn(
-                  "hidden text-sm font-medium sm:inline",
-                  active ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]",
-                )}
-              >
-                {label}
-              </span>
-            </button>
-            {index < STEPS.length - 1 ? (
-              <span
-                className={cn(
-                  "h-px flex-1 transition-colors",
-                  done ? "bg-[var(--accent)]" : "bg-[var(--border-subtle)]",
-                )}
-              />
-            ) : null}
-          </li>
-        );
-      })}
-    </ol>
+                <span
+                  className={cn(
+                    "tnum flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
+                    active &&
+                      "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]",
+                    done && "border-[var(--accent)] text-[var(--accent)]",
+                    !active && !done && "border-[var(--border-default)] text-[var(--text-muted)]",
+                  )}
+                >
+                  {done ? <Check className="size-3.5" strokeWidth={3} /> : index + 1}
+                </span>
+                <span
+                  className={cn(
+                    "text-sm",
+                    active
+                      ? "font-medium text-[var(--text-primary)]"
+                      : "text-[var(--text-muted)]",
+                  )}
+                >
+                  {label}
+                </span>
+              </button>
+              {index < STEPS.length - 1 ? (
+                <span
+                  className={cn(
+                    "h-px flex-1 transition-colors duration-300",
+                    done ? "bg-[var(--accent)]" : "bg-[var(--border-subtle)]",
+                  )}
+                />
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }
 
@@ -529,7 +608,7 @@ function ServiceStep({
                     className={cn(
                       "group relative flex flex-col rounded-xl border p-4 text-left transition-all",
                       isSelected
-                        ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[var(--shadow-soft)]"
+                        ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[var(--shadow-sm)]"
                         : "border-[var(--border-subtle)] bg-[var(--surface-raised)] hover:border-[var(--border-strong)]",
                     )}
                   >
@@ -560,7 +639,7 @@ function ServiceStep({
                         {formatDuration(service.durationMinutes)}
                       </span>
                       {credit ? (
-                        <Badge tone="success" size="sm" className="ml-auto">
+                        <Badge tone="solid" size="sm" className="ml-auto">
                           <BadgeCheck className="size-3" />
                           {credit}
                         </Badge>
@@ -644,7 +723,7 @@ function BarberStep({
                   {barber.headline}
                 </span>
                 {barber.rating ? (
-                  <span className="mt-1 flex items-center gap-1 text-xs font-medium text-brass-600 dark:text-brass-300">
+                  <span className="mt-1 flex items-center gap-1 text-xs font-medium text-[var(--accent)]">
                     <Star className="size-3 fill-current" />
                     {barber.rating.toFixed(1)}
                     <span className="font-normal text-[var(--text-muted)]">
@@ -734,7 +813,7 @@ function ScheduleStep({
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1.5">
+        <div className="snap-row -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-7 sm:overflow-visible">
           {days.map((day) => {
             const parsed = parseDateKey(day);
             const count = dayCounts[day];
@@ -752,7 +831,7 @@ function ScheduleStep({
                   count ? `, ${count} horários` : ", indisponível"
                 }`}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 rounded-lg border px-1 py-2 transition-all",
+                  "pressable flex w-[3.25rem] shrink-0 flex-col items-center gap-0.5 rounded-[var(--radius-md)] border px-1 py-2.5 sm:w-auto",
                   isSelected
                     ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]"
                     : disabled
@@ -770,7 +849,7 @@ function ScheduleStep({
                     isSelected
                       ? "bg-[var(--accent-contrast)]"
                       : count > 0
-                        ? "bg-moss-500"
+                        ? "bg-[var(--accent)]"
                         : "bg-transparent",
                   )}
                 />
@@ -815,7 +894,7 @@ function ScheduleStep({
                           onClick={() => onMinuteChange(slot.minute)}
                           aria-pressed={isSelected}
                           className={cn(
-                            "rounded-lg border py-2.5 text-sm font-medium transition-all",
+                            "pressable rounded-[var(--radius-md)] border py-3 text-sm font-medium tnum",
                             isSelected
                               ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]"
                               : "border-[var(--border-subtle)] bg-[var(--surface-raised)] hover:border-[var(--accent)] hover:text-[var(--accent)]",
@@ -927,7 +1006,7 @@ function ConfirmStep({
           className={cn(
             "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors",
             usePlan
-              ? "border-moss-500/40 bg-moss-500/8"
+              ? "border-[var(--border-strong)] bg-[var(--surface-muted)]"
               : "border-[var(--border-subtle)] bg-[var(--surface-raised)]",
           )}
         >
@@ -939,12 +1018,12 @@ function ConfirmStep({
           />
           <span className="flex-1">
             <span className="flex items-center gap-2 font-medium">
-              <Sparkles className="size-4 text-moss-500" />
+              <Sparkles className="size-4 text-[var(--text-primary)]" />
               Usar meu plano {subscription.planName}
             </span>
             <span className="mt-1 block text-sm text-[var(--text-muted)]">
               {covered.length > 0
-                ? `${covered.length} serviço(s) sairao sem custo usando sua franquia.`
+                ? `${pluralize(covered.length, "serviço sai", "serviços saem")} sem custo usando sua franquia.`
                 : `Sem franquia disponível para estes serviços — você ainda recebe ${subscription.extraDiscountPercent}% de desconto.`}
             </span>
           </span>
@@ -972,7 +1051,7 @@ function ConfirmStep({
       ) : null}
 
       {error ? (
-        <p className="rounded-lg border border-rust-500/30 bg-rust-500/10 px-4 py-3 text-sm text-rust-500" role="alert">
+        <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 py-3 text-sm text-[var(--text-primary)]" role="alert">
           {error}
         </p>
       ) : null}
@@ -1004,7 +1083,7 @@ function SummaryCard({
   planName: string | null;
 }) {
   return (
-    <aside className="lg:sticky lg:top-24">
+    <aside className="hidden lg:sticky lg:top-24 lg:block">
       <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5">
         <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
           <Scissors className="size-4" />
@@ -1028,7 +1107,7 @@ function SummaryCard({
                   </span>
                   <span className="shrink-0 text-right">
                     {charge.coveredByPlan ? (
-                      <Badge tone="success" size="sm">
+                      <Badge tone="solid" size="sm">
                         Plano
                       </Badge>
                     ) : (
@@ -1052,12 +1131,12 @@ function SummaryCard({
                 <span>{formatMoney(subtotalCents)}</span>
               </div>
               {discountCents > 0 ? (
-                <div className="flex justify-between text-moss-600 dark:text-moss-400">
+                <div className="flex justify-between text-[var(--text-primary)]">
                   <span>{planName ? `Plano ${planName}` : "Desconto"}</span>
                   <span>-{formatMoney(discountCents)}</span>
                 </div>
               ) : null}
-              <div className="flex justify-between pt-1.5 text-base font-semibold">
+              <div className="flex justify-between pt-1.5 text-base">
                 <span>Total</span>
                 <span>{totalCents === 0 ? "Coberto pelo plano" : formatMoney(totalCents)}</span>
               </div>
@@ -1108,12 +1187,12 @@ function ConfirmationPanel({
   totalCents: number;
 }) {
   return (
-    <div className="mx-auto max-w-lg animate-[var(--animate-fade-up)] text-center">
-      <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-moss-500/12">
-        <CheckCircle2 className="size-8 text-moss-500" />
+    <div className="mx-auto max-w-lg animate-[var(--animate-rise)] text-center">
+      <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-[var(--surface-muted)]">
+        <CheckCircle2 className="size-8 text-[var(--text-primary)]" />
       </span>
 
-      <h2 className="mt-6 font-[family-name:var(--font-display)] text-3xl font-semibold">
+      <h2 className="mt-6 font-display text-3xl">
         Horário reservado
       </h2>
       <p className="mt-2 text-[var(--text-muted)]">
@@ -1123,28 +1202,28 @@ function ConfirmationPanel({
       <div className="mt-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6 text-left">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
           <span className="text-sm text-[var(--text-muted)]">Código</span>
-          <span className="font-mono text-lg font-semibold tracking-wider">{code}</span>
+          <span className="font-mono text-lg tracking-wider">{code}</span>
         </div>
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between gap-4">
             <dt className="text-[var(--text-muted)]">Quando</dt>
-            <dd className="text-right font-medium first-letter:uppercase">
+            <dd className="text-right first-letter:uppercase">
               {longDate(date)} às {minutesToLabel(minute)}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-[var(--text-muted)]">Serviços</dt>
-            <dd className="text-right font-medium">{services.join(", ")}</dd>
+            <dd className="text-right">{services.join(", ")}</dd>
           </div>
           {barberName ? (
             <div className="flex justify-between gap-4">
               <dt className="text-[var(--text-muted)]">Profissional</dt>
-              <dd className="text-right font-medium">{barberName}</dd>
+              <dd className="text-right">{barberName}</dd>
             </div>
           ) : null}
           <div className="flex justify-between gap-4">
             <dt className="text-[var(--text-muted)]">Total</dt>
-            <dd className="text-right font-semibold">
+            <dd className="text-right">
               {totalCents === 0 ? "Coberto pelo plano" : formatMoney(totalCents)}
             </dd>
           </div>

@@ -49,7 +49,7 @@ export default async function ReviewsPage() {
       <div className="grid gap-4 lg:grid-cols-[20rem_1fr]">
         <Card className="p-5">
           <div className="text-center">
-            <p className="font-[family-name:var(--font-display)] text-5xl font-semibold">
+            <p className="font-display text-5xl">
               {(aggregate._avg.rating ?? 0).toFixed(1).replace(".", ",")}
             </p>
             <div className="mt-2 flex justify-center gap-0.5">
@@ -58,7 +58,7 @@ export default async function ReviewsPage() {
                   key={index}
                   className={
                     index < Math.round(aggregate._avg.rating ?? 0)
-                      ? "size-4 fill-brass-400 text-brass-400"
+                      ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
                       : "size-4 text-[var(--border-strong)]"
                   }
                 />
@@ -75,10 +75,10 @@ export default async function ReviewsPage() {
               return (
                 <li key={rating} className="flex items-center gap-2 text-xs">
                   <span className="w-3 text-[var(--text-muted)]">{rating}</span>
-                  <Star className="size-3 fill-brass-400 text-brass-400" />
+                  <Star className="size-3 fill-[var(--text-primary)] text-[var(--accent)]" />
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
                     <div
-                      className="h-full rounded-full bg-brass-400"
+                      className="h-full rounded-full bg-[var(--accent)]"
                       style={{ width: `${(count / total) * 100}%` }}
                     />
                   </div>
@@ -126,14 +126,14 @@ export default async function ReviewsPage() {
                           key={index}
                           className={
                             index < review.rating
-                              ? "size-4 fill-brass-400 text-brass-400"
+                              ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
                               : "size-4 text-[var(--border-strong)]"
                           }
                         />
                       ))}
                     </div>
                     {review.rating <= 3 ? (
-                      <Badge tone="warning" size="sm">
+                      <Badge tone="dashed" size="sm">
                         Atenção
                       </Badge>
                     ) : null}

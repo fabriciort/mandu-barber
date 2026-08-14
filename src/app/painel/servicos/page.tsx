@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/ui/misc";
 import { ServiceFormDialog, ToggleServiceButton } from "./service-form-dialog";
 import { requireOwner } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, pluralize } from "@/lib/format";
 import { formatDuration } from "@/lib/time";
 import { SERVICE_CATEGORY_LABEL, type ServiceCategory } from "@/lib/enums";
 
@@ -79,11 +79,11 @@ export default async function ServicesPage() {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         {!service.active ? (
-                          <Badge tone="danger" size="sm">
+                          <Badge tone="dashed" size="sm">
                             Inativo
                           </Badge>
                         ) : service.featured ? (
-                          <Badge tone="accent" size="sm">
+                          <Badge tone="solid" size="sm">
                             Destaque
                           </Badge>
                         ) : null}
@@ -100,7 +100,7 @@ export default async function ServicesPage() {
 
                     <div className="mt-3 flex flex-wrap gap-1">
                       {service.barbers.length === 0 ? (
-                        <Badge tone="warning" size="sm">
+                        <Badge tone="dashed" size="sm">
                           Sem profissional habilitado
                         </Badge>
                       ) : (
@@ -117,7 +117,7 @@ export default async function ServicesPage() {
 
                     <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-3">
                       <span className="text-xs text-[var(--text-muted)]">
-                        {service._count.appointments} execução(oes)
+                        {pluralize(service._count.appointments, "execução", "execuções")}
                       </span>
                       <div className="flex gap-1">
                         <ToggleServiceButton id={service.id} active={service.active} />

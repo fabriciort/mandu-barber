@@ -91,12 +91,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             <Avatar name={client.name} src={client.avatarUrl} size="xl" />
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+                <h1 className="font-display text-2xl">
                   {client.name}
                 </h1>
-                {!client.active ? <Badge tone="danger">Inativo</Badge> : null}
+                {!client.active ? <Badge tone="dashed">Inativo</Badge> : null}
                 {subscription ? (
-                  <Badge tone="accent">
+                  <Badge tone="solid">
                     <Sparkles className="size-3" />
                     {subscription.planName}
                   </Badge>
@@ -150,19 +150,16 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           value={totals._count}
           hint={noShows > 0 ? `${noShows} falta(s)` : "sem faltas"}
           icon={CalendarDays}
-          tone={noShows > 1 ? "warning" : "neutral"}
         />
         <StatCard
           label="Receita gerada"
           value={formatMoney(totals._sum.totalCents ?? 0)}
           icon={Wallet}
-          tone="success"
         />
         <StatCard
           label="Descontos de plano"
           value={formatMoney(totals._sum.discountCents ?? 0)}
           icon={Sparkles}
-          tone="accent"
         />
         <StatCard
           label="Profissional preferido"
@@ -224,7 +221,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     </p>
                   </div>
                   <Badge
-                    tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus] as never}
+                    tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
                     size="sm"
                   >
                     {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
@@ -248,7 +245,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex gap-0.5">
                         {Array.from({ length: review.rating }).map((_, index) => (
-                          <Star key={index} className="size-3.5 fill-brass-400 text-brass-400" />
+                          <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--accent)]" />
                         ))}
                       </div>
                       <span className="text-xs text-[var(--text-muted)]">
@@ -278,7 +275,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   >
                     <span className="min-w-0 flex-1 truncate">{invoice.description}</span>
                     <Badge
-                      tone={invoice.status === "PAID" ? "success" : "warning"}
+                      tone={invoice.status === "PAID" ? "solid" : "dashed"}
                       size="sm"
                     >
                       {invoice.status === "PAID" ? "Paga" : "Em aberto"}

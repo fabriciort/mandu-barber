@@ -22,7 +22,7 @@ import { RevenueChart } from "@/components/revenue-chart";
 import { requireStaff } from "@/server/auth/guards";
 import { getDashboard } from "@/server/services/reports";
 import { getShopConfig } from "@/server/services/settings";
-import { formatMoney, formatPercent } from "@/lib/format";
+import { formatMoney, formatPercent, pluralize } from "@/lib/format";
 import { formatTime, todayKey } from "@/lib/time";
 import { APPOINTMENT_STATUS_LABEL, APPOINTMENT_STATUS_TONE, type AppointmentStatus } from "@/lib/enums";
 
@@ -79,14 +79,12 @@ export default async function PanelHomePage() {
             value={data.today.appointments}
             hint={`${data.today.completed} concluídos`}
             icon={CalendarCheck}
-            tone="accent"
           />
           <StatCard
             label="Faturamento"
             value={formatMoney(data.today.revenueCents)}
             hint="atendimentos concluídos"
             icon={Wallet}
-            tone="success"
           />
           <StatCard
             label="Ocupação da cadeira"
@@ -130,13 +128,13 @@ export default async function PanelHomePage() {
             }
           />
         ) : (
-          <ul className="divide-y divide-[var(--border-subtle)] overflow-hidden rounded-xl border border-[var(--border-subtle)]">
+          <ul className="divide-y divide-[var(--border-subtle)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
             {data.today.nextAppointments.map((appointment) => (
               <li
                 key={appointment.id}
-                className="flex flex-wrap items-center gap-3 bg-[var(--surface-raised)] px-4 py-3"
+                className="flex flex-wrap items-center gap-3 bg-[var(--surface-raised)] px-4 py-3.5 transition-colors hover:bg-[var(--surface-muted)]"
               >
-                <span className="w-14 shrink-0 font-semibold">
+                <span className="tnum w-14 shrink-0 font-semibold">
                   {formatTime(appointment.startsAt, shop.timezone)}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -147,12 +145,12 @@ export default async function PanelHomePage() {
                   </p>
                 </div>
                 <Badge
-                  tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus] as never}
+                  tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
                   size="sm"
                 >
                   {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
                 </Badge>
-                <span className="w-20 text-right text-sm font-medium">
+                <span className="tnum w-20 text-right text-sm font-medium">
                   {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
                 </span>
               </li>
@@ -172,7 +170,7 @@ export default async function PanelHomePage() {
               </p>
             </div>
             {revenueDelta !== null ? (
-              <Badge tone={revenueDelta >= 0 ? "success" : "danger"}>
+              <Badge tone={revenueDelta >= 0 ? "solid" : "dashed"}>
                 {revenueDelta >= 0 ? "+" : ""}
                 {revenueDelta}% vs. mês anterior
               </Badge>
@@ -188,7 +186,7 @@ export default async function PanelHomePage() {
           {isOwner ? (
             <Card className="p-5">
               <h2 className="flex items-center gap-2 font-semibold">
-                <Repeat className="size-4 text-[var(--accent)]" />
+                <Repeat className="size-4 text-[var(--text-muted)]" aria-hidden />
                 Assinaturas
               </h2>
 
@@ -210,16 +208,17 @@ export default async function PanelHomePage() {
               </dl>
 
               {data.subscriptions.overdueInvoices > 0 ? (
+                /* Alerta sem vermelho: o bloco invertido e o que grita. */
                 <Link
                   href="/painel/financeiro"
-                  className="mt-4 flex items-center gap-2.5 rounded-lg border border-clay-400/30 bg-clay-400/10 px-3 py-2.5 text-sm transition-colors hover:border-clay-400/60"
+                  className="pressable mt-4 flex items-center gap-2.5 rounded-[var(--radius-md)] bg-[var(--surface-inverse)] px-3.5 py-3 text-sm text-[var(--text-inverse)]"
                 >
-                  <AlertTriangle className="size-4 shrink-0 text-clay-500" />
+                  <AlertTriangle className="size-4 shrink-0" aria-hidden />
                   <span className="flex-1">
-                    {data.subscriptions.overdueInvoices} fatura(s) vencida(s) ·{" "}
+                    {pluralize(data.subscriptions.overdueInvoices, "fatura vencida", "faturas vencidas")} ·{" "}
                     {formatMoney(data.subscriptions.overdueCents)}
                   </span>
-                  <ArrowRight className="size-4 shrink-0 text-clay-500" />
+                  <ArrowRight className="size-4 shrink-0" aria-hidden />
                 </Link>
               ) : null}
 
@@ -243,7 +242,7 @@ export default async function PanelHomePage() {
                 <dt className="text-[var(--text-muted)]">Faltas (no-show)</dt>
                 <dd
                   className={
-                    data.month.noShowPercent > 10 ? "font-medium text-rust-500" : "font-medium"
+                    data.month.noShowPercent > 10 ? "font-medium text-[var(--text-primary)]" : "font-medium"
                   }
                 >
                   {formatPercent(data.month.noShowPercent)}
@@ -263,45 +262,43 @@ export default async function PanelHomePage() {
         <section className="grid gap-4 lg:grid-cols-2">
           <Card className="p-5">
             <h2 className="font-semibold">Desempenho da equipe no mês</h2>
-            <ul className="mt-4 space-y-3">
-              {data.team.map((member) => (
+            <ul className="mt-5 space-y-4">
+              {data.team.map((member, index) => (
                 <li key={member.barberId} className="flex items-center gap-3">
-                  <span
-                    className="size-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: member.color }}
-                  />
+                  {/* Posicao no ranking em vez de bolinha colorida: diz mais e
+                      nao depende de decorar qual cor e de quem. */}
+                  <span className="tnum w-5 shrink-0 text-sm tabular-nums text-[var(--text-muted)]">
+                    {index + 1}
+                  </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
                       <p className="truncate text-sm font-medium">{member.name}</p>
-                      <p className="shrink-0 text-sm font-semibold">
+                      <p className="tnum shrink-0 text-sm font-semibold">
                         {formatMoney(member.revenueCents)}
                       </p>
                     </div>
-                    <div className="mt-1.5 flex items-center gap-2">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
+                    <div className="mt-2 flex items-center gap-2.5">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-sunken)] ring-1 ring-inset ring-[var(--border-subtle)]">
                         <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${member.occupancyPercent}%`,
-                            backgroundColor: member.color,
-                          }}
+                          className="h-full rounded-full bg-[var(--accent)] transition-all duration-500"
+                          style={{ width: `${member.occupancyPercent}%` }}
                         />
                       </div>
-                      <span className="w-24 shrink-0 text-right text-xs text-[var(--text-muted)]">
+                      <span className="tnum w-24 shrink-0 text-right text-xs text-[var(--text-muted)]">
                         {member.appointments} atend. · {member.occupancyPercent}%
                       </span>
                     </div>
                   </div>
                   {member.rating ? (
-                    <span className="flex shrink-0 items-center gap-0.5 text-xs font-medium text-brass-600 dark:text-brass-300">
-                      <Star className="size-3 fill-current" />
+                    <span className="tnum flex shrink-0 items-center gap-1 text-xs font-medium">
+                      <Star className="size-3 fill-current" aria-hidden />
                       {member.rating.toFixed(1)}
                     </span>
                   ) : null}
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-[var(--text-muted)]">
+            <p className="mt-5 text-xs text-[var(--text-muted)]">
               A barra mostra a ocupação do mês: quanto do tempo disponível virou cadeira ocupada.
             </p>
           </Card>
@@ -334,7 +331,7 @@ export default async function PanelHomePage() {
                         />
                       </div>
                       <p className="mt-1 text-xs text-[var(--text-muted)]">
-                        {service.count} execução(oes)
+                        {pluralize(service.count, "execução", "execuções")}
                       </p>
                     </li>
                   );

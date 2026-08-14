@@ -2,65 +2,85 @@
 
 /*
  * Mandu Barber — sistema visual
+ * ============================================================================
  *
- * Base grafite quente + latao (o brilho de navalha e tesoura), sem azul de
- * dashboard generico. Tudo em tokens: telas novas herdam a identidade sem
- * inventar cor propria.
+ * Monocromatico por decisao, nao por falta de cor. Sem matiz para se apoiar, a
+ * hierarquia vem de contraste, peso, escala e espaco — que e o que sustenta um
+ * layout quando a cor e retirada. O acento e uma unica variavel (--accent):
+ * preto no tema claro, branco no escuro. Trocar por uma cor de marca depois e
+ * mudar uma linha, nao repintar o app.
+ *
+ * Status (agendado, concluido, cancelado) NAO usa cor. Usa forma: preenchido,
+ * contornado, tracejado, riscado. Isso funciona no monocromatico, funciona
+ * impresso e funciona para quem nao distingue cores.
  */
 
 @theme {
-  --color-ink-950: #0b0a09;
-  --color-ink-900: #131110;
-  --color-ink-850: #1a1715;
-  --color-ink-800: #221e1b;
-  --color-ink-700: #2e2924;
-  --color-ink-600: #423a33;
-  --color-ink-500: #6b6058;
-  --color-ink-400: #94887e;
-  --color-ink-300: #b9aea5;
-  --color-ink-200: #d9d1ca;
-  --color-ink-100: #ece7e2;
-  --color-ink-50: #f7f4f1;
+  /* ---------------------------------------------------------------------
+   * Escala neutra. Cinzas puros (sem temperatura) para o preto ser preto.
+   * ------------------------------------------------------------------- */
+  --color-ink-0: #ffffff;
+  --color-ink-25: #fcfcfd;
+  --color-ink-50: #f7f7f8;
+  --color-ink-100: #f0f0f2;
+  --color-ink-150: #e8e8eb;
+  --color-ink-200: #dededf;
+  --color-ink-300: #c7c7ca;
+  --color-ink-400: #a1a1a6;
+  --color-ink-500: #7c7c83;
+  --color-ink-600: #5c5c63;
+  --color-ink-700: #3f3f45;
+  --color-ink-800: #27272b;
+  --color-ink-850: #1c1c1f;
+  --color-ink-900: #131316;
+  --color-ink-925: #0d0d0f;
+  --color-ink-950: #08080a;
+  --color-ink-1000: #000000;
 
-  --color-brass-50: #fdf8ef;
-  --color-brass-100: #f8ecd3;
-  --color-brass-200: #f0d7a5;
-  --color-brass-300: #e4bb6d;
-  --color-brass-400: #d9a24a;
-  --color-brass-500: #c98b3a;
-  --color-brass-600: #ab6c2c;
-  --color-brass-700: #8a5227;
-  --color-brass-800: #714325;
-  --color-brass-900: #5e3822;
-
-  --color-clay-400: #c96f4a;
-  --color-clay-500: #b45a37;
-
-  --color-moss-400: #7fa66a;
-  --color-moss-500: #5f8a4c;
-  --color-moss-600: #47693a;
-
-  --color-rust-400: #d0625a;
-  --color-rust-500: #b8453d;
-
+  /* ---------------------------------------------------------------------
+   * Tipografia
+   * ------------------------------------------------------------------- */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-display), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
 
-  --radius-card: 1rem;
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-2xs--letter-spacing: 0.02em;
 
-  --shadow-soft: 0 1px 2px rgb(11 10 9 / 0.06), 0 8px 24px -12px rgb(11 10 9 / 0.18);
-  --shadow-lift: 0 2px 4px rgb(11 10 9 / 0.06), 0 18px 40px -20px rgb(11 10 9 / 0.35);
+  /* Titulos grandes pedem tracking negativo: no tamanho display, o espacamento
+     padrao abre demais e a palavra perde unidade. */
+  --tracking-display: -0.035em;
+  --tracking-tight: -0.018em;
 
-  --animate-fade-up: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-fade-in: fade-in 0.3s ease both;
-  --animate-scale-in: scale-in 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-shimmer: shimmer 1.6s linear infinite;
+  /* ---------------------------------------------------------------------
+   * Raio e elevacao
+   * ------------------------------------------------------------------- */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+
+  /* ---------------------------------------------------------------------
+   * Movimento. Uma curva so, em tres velocidades — consistencia de tempo e o
+   * que faz a interface parecer uma peca unica, e nao telas costuradas.
+   * ------------------------------------------------------------------- */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  --animate-rise: rise 0.5s var(--ease-out-quint) both;
+  --animate-fade: fade 0.3s var(--ease-out-quint) both;
+  --animate-pop: pop 0.18s var(--ease-spring) both;
+  --animate-sheet-up: sheet-up 0.32s var(--ease-out-quint) both;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+  --animate-pulse-ring: pulse-ring 2s var(--ease-out-quint) infinite;
 }
 
-@keyframes fade-up {
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translate3d(0, 14px, 0);
   }
   to {
     opacity: 1;
@@ -68,7 +88,7 @@
   }
 }
 
-@keyframes fade-in {
+@keyframes fade {
   from {
     opacity: 0;
   }
@@ -77,7 +97,7 @@
   }
 }
 
-@keyframes scale-in {
+@keyframes pop {
   from {
     opacity: 0;
     transform: scale(0.96);
@@ -88,49 +108,112 @@
   }
 }
 
-@keyframes shimmer {
+@keyframes sheet-up {
   from {
-    background-position: -200% 0;
+    transform: translate3d(0, 100%, 0);
   }
   to {
-    background-position: 200% 0;
+    transform: none;
   }
 }
 
-/* --------------------------------------------------------------------------
- * Papeis semanticos — claro por padrao, escuro pela classe .dark no <html>.
- * -------------------------------------------------------------------------- */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes toast-timer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 0.18);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgb(0 0 0 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(0 0 0 / 0);
+  }
+}
+
+/* ==========================================================================
+ * Papeis semanticos
+ *
+ * Claro por padrao; escuro pela classe .dark no <html>. Nenhum componente usa
+ * um valor de cor cru — todos falam por estes papeis, entao o tema inteiro
+ * muda a partir deste bloco.
+ * ========================================================================== */
 
 :root {
   --surface: #ffffff;
-  --surface-muted: #f7f4f1;
   --surface-raised: #ffffff;
-  --surface-sunken: #efeae5;
-  --border-subtle: #e4ddd6;
-  --border-strong: #cfc5bb;
-  --text-primary: #131110;
-  --text-secondary: #5d534b;
-  --text-muted: #8a7f75;
-  --accent: #ab6c2c;
+  --surface-muted: #f7f7f8;
+  --surface-sunken: #f0f0f2;
+  --surface-inverse: #08080a;
+
+  --border-subtle: #e8e8eb;
+  --border-default: #dededf;
+  --border-strong: #c7c7ca;
+
+  --text-primary: #08080a;
+  --text-secondary: #5c5c63;
+  --text-muted: #8b8b91;
+  --text-inverse: #ffffff;
+
+  --accent: #08080a;
+  --accent-hover: #27272b;
   --accent-contrast: #ffffff;
-  --accent-soft: #f8ecd3;
-  --ring: #c98b3a;
+  --accent-soft: #f0f0f2;
+
+  --ring: #08080a;
+
+  /* Elevacao por sombra: no tema claro a profundidade vem da sombra. */
+  --shadow-sm: 0 1px 2px rgb(8 8 10 / 0.05);
+  --shadow-md: 0 1px 2px rgb(8 8 10 / 0.04), 0 6px 16px -8px rgb(8 8 10 / 0.14);
+  --shadow-lg: 0 2px 4px rgb(8 8 10 / 0.04), 0 16px 40px -16px rgb(8 8 10 / 0.24);
+  --shadow-xl: 0 4px 8px rgb(8 8 10 / 0.05), 0 32px 64px -24px rgb(8 8 10 / 0.32);
 }
 
 .dark {
-  --surface: #131110;
-  --surface-muted: #1a1715;
-  --surface-raised: #221e1b;
-  --surface-sunken: #0b0a09;
-  --border-subtle: #2b2521;
-  --border-strong: #3c342d;
-  --text-primary: #f2ede8;
-  --text-secondary: #b9aea5;
-  --text-muted: #8a7f75;
-  --accent: #d9a24a;
-  --accent-contrast: #131110;
-  --accent-soft: #2a211a;
-  --ring: #d9a24a;
+  --surface: #000000;
+  --surface-raised: #101013;
+  --surface-muted: #0a0a0c;
+  --surface-sunken: #000000;
+  --surface-inverse: #ffffff;
+
+  --border-subtle: #1e1e22;
+  --border-default: #27272b;
+  --border-strong: #3a3a41;
+
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1a8;
+  --text-muted: #71717a;
+  --text-inverse: #08080a;
+
+  --accent: #ffffff;
+  --accent-hover: #e8e8eb;
+  --accent-contrast: #08080a;
+  --accent-soft: #1c1c1f;
+
+  --ring: #ffffff;
+
+  /* No escuro, sombra nao cria profundidade — a borda e a luz da superficie
+     e que fazem. As sombras ficam so para separar camadas sobrepostas. */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px -6px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 16px 40px -16px rgb(0 0 0 / 0.7);
+  --shadow-xl: 0 32px 64px -24px rgb(0 0 0 / 0.8);
 }
 
 @layer base {
@@ -141,14 +224,20 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* Compensa o header fixo quando um link ancora leva a uma secao. */
+    scroll-padding-top: 5rem;
   }
 
   body {
     background-color: var(--surface);
     color: var(--text-primary);
     font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Evita o "pulo" horizontal quando uma pagina tem scroll e outra nao. */
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -159,13 +248,37 @@
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: var(--radius-xs);
   }
 
-  /* Barra de rolagem discreta, alinhada ao tema */
+  /* O anel de foco so aparece para quem navega por teclado. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
   * {
     scrollbar-width: thin;
     scrollbar-color: var(--border-strong) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--border-default);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-strong);
   }
 
   input,
@@ -176,11 +289,16 @@
     color: inherit;
   }
 
-  /* Remove as setas de input[type=number] — usamos steppers proprios */
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
+  }
+
+  /* Campos de data no iOS vem com altura propria e alinhamento estranho. */
+  input[type="date"],
+  input[type="time"] {
+    min-height: 2.5rem;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -196,12 +314,176 @@
 }
 
 @layer components {
+  /* ---------------------------------------------------------------------
+   * Tipografia de display
+   * ------------------------------------------------------------------- */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-display);
+    font-weight: 400;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Superficies
+   * ------------------------------------------------------------------- */
   .surface-card {
     background-color: var(--surface-raised);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-xl);
   }
 
+  /* ---------------------------------------------------------------------
+   * Microinteracao base de item clicavel: afunda de leve ao toque. Em telas
+   * de toque a resposta imediata vale mais que hover nenhum.
+   * ------------------------------------------------------------------- */
+  .pressable {
+    transition:
+      transform 0.12s var(--ease-out-quint),
+      background-color 0.16s var(--ease-out-quint),
+      border-color 0.16s var(--ease-out-quint),
+      color 0.16s var(--ease-out-quint),
+      box-shadow 0.16s var(--ease-out-quint);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pressable:active {
+    transform: scale(0.975);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Esqueleto de carregamento
+   * ------------------------------------------------------------------- */
+  .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      var(--surface-muted) 0%,
+      var(--surface-sunken) 40%,
+      var(--surface-muted) 80%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: var(--radius-sm);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Hachura diagonal: marca area indisponivel/cancelada sem usar cor.
+   * ------------------------------------------------------------------- */
+  .hatched {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      var(--border-subtle) 5px,
+      var(--border-subtle) 6px
+    );
+  }
+
+  /* ---------------------------------------------------------------------
+   * Grao sutil sobre superficies escuras grandes — tira o "plano digital"
+   * do preto chapado sem introduzir cor.
+   * ------------------------------------------------------------------- */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------------------------------------------------------------------
+   * Revelacao em cascata. O atraso vem de --i, definido no elemento.
+   * ------------------------------------------------------------------- */
+  .stagger > * {
+    animation: var(--animate-rise);
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Area segura do iPhone (barra de gestos) para barras fixas embaixo.
+   * ------------------------------------------------------------------- */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .h-safe-bottom {
+    height: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Sanfona (<details>). O Safari ainda mostra o triangulo padrao mesmo com
+   * list-style: none no summary, entao precisa da regra -webkit.
+   * ------------------------------------------------------------------- */
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq[open] > p {
+    animation: var(--animate-fade);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Barra fixa no rodape (celular).
+   *
+   * Opaca de proposito: com fundo translucido o texto da pagina atravessa a
+   * barra e briga com o preco. O desvanecimento acontece ACIMA da barra, num
+   * pseudo-elemento — o conteudo some ao chegar nela, em vez de vazar por ela.
+   * ------------------------------------------------------------------- */
+  .sticky-bar {
+    position: relative;
+    background-color: var(--surface);
+  }
+
+  .sticky-bar::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: 28px;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--surface), transparent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Rolagem horizontal com encaixe — usada nas faixas de dia e de horario.
+   * ------------------------------------------------------------------- */
+  .snap-row {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .snap-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-row > * {
+    scroll-snap-align: start;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Desvanecer nas bordas de uma lista rolavel, indicando que ha mais.
+   * ------------------------------------------------------------------- */
+  .fade-edges {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent
+    );
+  }
+}
+
+@layer utilities {
   .text-secondary {
     color: var(--text-secondary);
   }
@@ -210,29 +492,22 @@
     color: var(--text-muted);
   }
 
-  /* Textura sutil de fundo para as areas de marketing */
-  .grain::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.045;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Numeros em tabela e agenda precisam de largura fixa para alinhar coluna. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
   }
 
-  .skeleton {
-    background-image: linear-gradient(
-      90deg,
-      var(--surface-muted) 0%,
-      var(--surface-sunken) 50%,
-      var(--surface-muted) 100%
-    );
-    background-size: 200% 100%;
-    animation: var(--animate-shimmer);
+  .balance {
+    text-wrap: balance;
+  }
+
+  .pretty {
+    text-wrap: pretty;
   }
 }
 
-/* Impressao: comandas e relatorios saem limpos do painel */
+/* Impressao: comandas e relatorios saem limpos do painel. */
 @media print {
   .no-print {
     display: none !important;

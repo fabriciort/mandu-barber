@@ -23,7 +23,7 @@ type NavItem = {
   href: string;
   label: string;
   short: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   roles: Role[];
   /** Aparece na barra inferior do mobile. */
   primary?: boolean;
@@ -121,15 +121,20 @@ export function PanelNav({
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                    "pressable relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm",
                     active
-                      ? "bg-[var(--surface-raised)] font-medium text-[var(--text-primary)] shadow-[var(--shadow-soft)]"
+                      ? "bg-[var(--surface-raised)] font-medium text-[var(--text-primary)] shadow-[var(--shadow-sm)]"
                       : "text-[var(--text-secondary)] hover:bg-[var(--surface-raised)]/60 hover:text-[var(--text-primary)]",
                   )}
                 >
-                  <Icon
-                    className={cn("size-4 shrink-0", active ? "text-[var(--accent)]" : "opacity-70")}
-                  />
+                  {/* Marca a rota atual sem depender de cor. */}
+                  {active ? (
+                    <span
+                      className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-[var(--accent)]"
+                      aria-hidden
+                    />
+                  ) : null}
+                  <Icon className={cn("size-[18px] shrink-0", active ? "" : "opacity-60")} />
                   {item.label}
                 </Link>
               </li>
@@ -146,11 +151,17 @@ export function PanelNav({
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
-                active ? "text-[var(--accent)]" : "text-[var(--text-muted)]",
+                "pressable relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-medium",
+                active ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]",
               )}
             >
-              <Icon className="size-5" />
+              {active ? (
+                <span
+                  className="absolute inset-x-4 top-0 h-0.5 rounded-full bg-[var(--accent)]"
+                  aria-hidden
+                />
+              ) : null}
+              <Icon className="size-5" strokeWidth={active ? 2.2 : 1.8} />
               {item.short}
             </Link>
           );

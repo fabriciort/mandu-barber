@@ -36,12 +36,14 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
       <Popover.Trigger asChild>
         <button
           type="button"
-          className="relative inline-flex size-9 items-center justify-center rounded-lg text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]"
+          className="pressable relative inline-flex size-10 items-center justify-center rounded-[var(--radius-md)] text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]"
           aria-label={unread > 0 ? `${unread} avisos não lidos` : "Avisos"}
         >
-          <Bell className="size-4" />
+          <Bell className="size-[18px]" aria-hidden />
           {unread > 0 ? (
-            <span className="absolute right-1.5 top-1.5 flex min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-semibold leading-4 text-[var(--accent-contrast)]">
+            // O contador ganha um anel da cor da superficie para nao encostar
+            // no sino e virar uma mancha unica.
+            <span className="tnum absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-semibold leading-4 text-[var(--accent-contrast)] ring-2 ring-[var(--surface)]">
               {unread > 9 ? "9+" : unread}
             </span>
           ) : null}
@@ -52,7 +54,8 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
         <Popover.Content
           align="end"
           sideOffset={8}
-          className="z-50 w-80 animate-[var(--animate-scale-in)] overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface-raised)] shadow-[var(--shadow-lift)]"
+          collisionPadding={12}
+          className="z-50 w-[min(20rem,calc(100vw-1.5rem))] animate-[var(--animate-pop)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-raised)] shadow-[var(--shadow-xl)]"
         >
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
             <p className="text-sm font-semibold">Avisos</p>
@@ -61,9 +64,9 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
                 type="button"
                 onClick={markAllRead}
                 disabled={pending}
-                className="flex items-center gap-1 text-xs text-[var(--accent)] transition-opacity hover:opacity-80 disabled:opacity-50"
+                className="flex items-center gap-1 text-xs font-medium underline decoration-[var(--border-strong)] underline-offset-4 transition-colors hover:decoration-[var(--accent)] disabled:opacity-50"
               >
-                <CheckCheck className="size-3.5" />
+                <CheckCheck className="size-3.5" aria-hidden />
                 Marcar como lidos
               </button>
             ) : null}
@@ -77,26 +80,30 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
             <ul className="max-h-96 divide-y divide-[var(--border-subtle)] overflow-y-auto">
               {notifications.map((item) => {
                 const content = (
+                  /* Nao lido: barra vertical na borda esquerda. Marca a linha
+                     inteira sem pintar o fundo, que no monocromatico ficaria
+                     igual ao hover. */
                   <div
                     className={cn(
-                      "px-4 py-3 transition-colors hover:bg-[var(--surface-muted)]",
-                      !item.read && "bg-[var(--accent-soft)]/40",
+                      "relative py-3 pl-5 pr-4 transition-colors hover:bg-[var(--surface-muted)]",
+                      !item.read && "bg-[var(--surface-muted)]",
                     )}
                   >
-                    <div className="flex items-start gap-2">
-                      {!item.read ? (
-                        <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                      ) : (
-                        <span className="mt-1.5 size-1.5 shrink-0" />
-                      )}
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium">{item.title}</p>
-                        <p className="mt-0.5 text-sm text-[var(--text-muted)]">{item.body}</p>
-                        <p className="mt-1 text-xs text-[var(--text-muted)]">
-                          {formatRelative(new Date(item.createdAt))}
-                        </p>
-                      </div>
-                    </div>
+                    {!item.read ? (
+                      <span
+                        className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-[var(--accent)]"
+                        aria-hidden
+                      />
+                    ) : null}
+                    <p className={cn("text-sm", item.read ? "font-medium" : "font-semibold")}>
+                      {item.title}
+                    </p>
+                    <p className="mt-0.5 text-pretty text-sm text-[var(--text-secondary)]">
+                      {item.body}
+                    </p>
+                    <p className="mt-1.5 text-2xs uppercase tracking-[0.08em] text-[var(--text-muted)]">
+                      {formatRelative(new Date(item.createdAt))}
+                    </p>
                   </div>
                 );
 

@@ -77,7 +77,7 @@ export function AppointmentDrawer({
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <Badge tone={APPOINTMENT_STATUS_TONE[status] as never} size="sm">
+            <Badge tone={APPOINTMENT_STATUS_TONE[status]} size="sm">
               {APPOINTMENT_STATUS_LABEL[status]}
             </Badge>
             <span className="font-mono text-xs text-[var(--text-muted)]">{appointment.code}</span>

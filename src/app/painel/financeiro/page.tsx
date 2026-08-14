@@ -157,14 +157,12 @@ export default async function FinancePage({
           value={formatMoney(serviceRevenue)}
           hint={`${appointments.length} atendimentos`}
           icon={Wallet}
-          tone="success"
         />
         <StatCard
           label="Receita de assinaturas"
           value={formatMoney(subscriptionRevenue)}
           hint="faturas pagas no período"
           icon={Receipt}
-          tone="accent"
         />
         <StatCard
           label="Descontos concedidos"
@@ -177,7 +175,6 @@ export default async function FinancePage({
           value={formatMoney(pendingInvoices)}
           hint="faturas em aberto"
           icon={Banknote}
-          tone={pendingInvoices > 0 ? "warning" : "neutral"}
         />
       </div>
 

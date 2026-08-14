@@ -27,7 +27,7 @@ export function SignUpForm({ next }: { next?: string }) {
     <form action={formAction} className="mt-8 space-y-4" noValidate>
       {state.message && !state.ok ? (
         <p
-          className="flex items-start gap-2 rounded-lg border border-rust-500/30 bg-rust-500/10 px-3 py-2.5 text-sm text-rust-500"
+          className="flex items-start gap-2 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text-primary)]"
           role="alert"
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />

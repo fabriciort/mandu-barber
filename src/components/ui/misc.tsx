@@ -24,9 +24,13 @@ export function PageHeader({
 }) {
   return (
     <div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {description ? <p className="text-sm text-[var(--text-muted)]">{description}</p> : null}
+      <div className="min-w-0 space-y-1.5">
+        <h1 className="text-[1.75rem] font-semibold leading-none tracking-[var(--tracking-tight)]">
+          {title}
+        </h1>
+        {description ? (
+          <p className="text-pretty text-sm text-[var(--text-muted)]">{description}</p>
+        ) : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
     </div>
@@ -44,13 +48,18 @@ export function DataItem({
   className?: string;
 }) {
   return (
-    <div className={cn("space-y-0.5", className)}>
-      <dt className="text-xs uppercase tracking-wide text-[var(--text-muted)]">{label}</dt>
+    <div className={cn("space-y-1", className)}>
+      <dt className="text-2xs uppercase tracking-[0.14em] text-[var(--text-muted)]">{label}</dt>
       <dd className="text-sm font-medium">{children}</dd>
     </div>
   );
 }
 
+/**
+ * Titulo de secao com fio: o filete horizontal ocupa o espaco vazio entre o
+ * rotulo e a acao. Sem cor para separar blocos, e a regra tipografica que
+ * organiza a pagina — e ela funciona igual nos dois temas.
+ */
 export function SectionTitle({
   children,
   action,
@@ -61,11 +70,12 @@ export function SectionTitle({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-3 flex items-center justify-between gap-3", className)}>
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+    <div className={cn("mb-4 flex items-center gap-4", className)}>
+      <h2 className="shrink-0 text-2xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
         {children}
       </h2>
-      {action}
+      <span className="h-px flex-1 bg-[var(--border-subtle)]" aria-hidden />
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }

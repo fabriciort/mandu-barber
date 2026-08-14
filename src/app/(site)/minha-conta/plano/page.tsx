@@ -11,7 +11,8 @@ import { requireUser } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
 import { getActiveSubscription } from "@/server/services/subscriptions";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, pluralize } from "@/lib/format";
+import { cn } from "@/lib/cn";
 import { formatDate } from "@/lib/time";
 import { INVOICE_STATUS_LABEL, type InvoiceStatus } from "@/lib/enums";
 
@@ -75,16 +76,16 @@ export default async function MyPlanPage() {
   return (
     <div className="space-y-8">
       <Card className="overflow-hidden">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-subtle)] bg-[var(--surface-muted)] px-6 py-5">
-          <div className="flex items-center gap-3">
-            <span className="flex size-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)]">
-              <Sparkles className="size-6 text-[var(--accent)]" />
+        {/* Cabecalho invertido: o plano assinado e a informacao mais forte da
+            pagina, entao ele carrega o bloco de maior contraste. */}
+        <div className="flex flex-wrap items-start justify-between gap-4 bg-[var(--surface-inverse)] px-6 py-6 text-[var(--text-inverse)]">
+          <div className="flex items-center gap-3.5">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-lg)] border border-current/25">
+              <Sparkles className="size-5" aria-hidden />
             </span>
             <div>
-              <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
-                {subscription.planName}
-              </h2>
-              <p className="text-sm text-[var(--text-muted)]">
+              <h2 className="font-display text-[1.75rem] leading-none">{subscription.planName}</h2>
+              <p className="mt-2 text-sm opacity-70">
                 {formatMoney(subscription.priceCents)} por mês ·{" "}
                 {subscription.cancelAtPeriodEnd
                   ? `Encerra em ${formatDate(subscription.currentPeriodEnd, shop.timezone)}`
@@ -95,11 +96,11 @@ export default async function MyPlanPage() {
 
           <div className="flex flex-col items-end gap-2">
             {subscription.status === "PAST_DUE" ? (
-              <Badge tone="danger">Pagamento pendente</Badge>
+              <Badge tone="on-dashed">Pagamento pendente</Badge>
             ) : subscription.cancelAtPeriodEnd ? (
-              <Badge tone="warning">Encerra no fim do ciclo</Badge>
+              <Badge tone="on-dashed">Encerra no fim do ciclo</Badge>
             ) : (
-              <Badge tone="success">Ativa</Badge>
+              <Badge tone="on-solid">Ativa</Badge>
             )}
             <SubscriptionControls
               subscriptionId={subscription.id}
@@ -110,10 +111,10 @@ export default async function MyPlanPage() {
         </div>
 
         <div className="p-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+          <h3 className="text-2xs font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
             Saldo deste ciclo
           </h3>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <p className="mt-1.5 text-sm text-[var(--text-muted)]">
             Ciclo de {formatDate(subscription.currentPeriodStart, shop.timezone)} a{" "}
             {formatDate(subscription.currentPeriodEnd, shop.timezone)}
           </p>
@@ -122,43 +123,58 @@ export default async function MyPlanPage() {
             {subscription.credits.map((credit) => {
               const unlimited = credit.total < 0;
               const left = unlimited ? 0 : Math.max(0, credit.total - credit.used);
-              const percent = unlimited ? 100 : credit.total ? (left / credit.total) * 100 : 0;
+              const total = Math.max(0, credit.total);
 
               return (
                 <div
                   key={credit.serviceId}
-                  className="rounded-xl border border-[var(--border-subtle)] p-4"
+                  className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] p-4"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <p className="font-medium">{credit.serviceName}</p>
-                    <p className="font-semibold text-[var(--accent)]">
-                      {unlimited ? "Ilimitado" : `${left}/${credit.total}`}
+                    <p className="tnum font-semibold">
+                      {unlimited ? "Ilimitado" : `${left}/${total}`}
                     </p>
                   </div>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
-                    <div
-                      className="h-full rounded-full bg-[var(--accent)] transition-all"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-xs text-[var(--text-muted)]">
+
+                  {/* Um traco por credito: da para contar quantos cortes sobram
+                      sem traduzir porcentagem de cabeca. */}
+                  {unlimited ? (
+                    <div className="mt-3.5 h-2 rounded-full bg-[var(--accent)] opacity-90" />
+                  ) : (
+                    <div className="mt-3.5 flex gap-1" aria-hidden>
+                      {Array.from({ length: Math.min(total, 12) }).map((_, index) => (
+                        <span
+                          key={index}
+                          className={cn(
+                            "h-2 flex-1 rounded-full",
+                            index < left
+                              ? "bg-[var(--accent)]"
+                              : "bg-[var(--surface-sunken)] ring-1 ring-inset ring-[var(--border-subtle)]",
+                          )}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <p className="mt-2.5 text-pretty text-xs text-[var(--text-muted)]">
                     {unlimited
-                      ? `${credit.used} usados neste ciclo`
+                      ? `${pluralize(credit.used, "uso", "usos")} neste ciclo`
                       : left === 0
                         ? "Franquia esgotada — os próximos entram com desconto do plano."
-                        : `${left} disponível(is) até o fim do ciclo`}
+                        : `${pluralize(left, "disponível", "disponíveis")} até o fim do ciclo`}
                   </p>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-4 rounded-xl bg-[var(--surface-muted)] px-5 py-4">
+          <div className="mt-5 flex flex-wrap gap-x-8 gap-y-4 rounded-[var(--radius-lg)] bg-[var(--surface-muted)] px-5 py-4">
             <div className="flex items-center gap-2.5">
-              <TrendingUp className="size-5 text-moss-500" />
+              <TrendingUp className="size-5 text-[var(--text-muted)]" aria-hidden />
               <div>
                 <p className="text-xs text-[var(--text-muted)]">Economia acumulada</p>
-                <p className="font-semibold">{formatMoney(totalSaved)}</p>
+                <p className="tnum font-semibold">{formatMoney(totalSaved)}</p>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
@@ -170,7 +186,7 @@ export default async function MyPlanPage() {
             </div>
             {subscription.priorityBooking ? (
               <div className="flex items-center gap-2.5">
-                <CalendarClock className="size-5 text-[var(--accent)]" />
+                <CalendarClock className="size-5 text-[var(--text-muted)]" aria-hidden />
                 <div>
                   <p className="text-xs text-[var(--text-muted)]">Agenda</p>
                   <p className="font-semibold">Prioridade em horários de pico</p>
@@ -194,7 +210,7 @@ export default async function MyPlanPage() {
                 key={entry.id}
                 className="flex items-center gap-3 bg-[var(--surface-raised)] px-4 py-3 text-sm"
               >
-                <Badge tone={entry.delta > 0 ? "neutral" : "success"} size="sm">
+                <Badge tone={entry.delta > 0 ? "muted" : "solid"} size="sm">
                   {entry.delta > 0 ? `-${entry.delta}` : `+${Math.abs(entry.delta)}`}
                 </Badge>
                 <div className="min-w-0 flex-1">
@@ -260,12 +276,12 @@ function InvoiceList({
           <Badge
             tone={
               invoice.status === "PAID"
-                ? "success"
+                ? "solid"
                 : invoice.status === "OVERDUE"
-                  ? "danger"
+                  ? "dashed"
                   : invoice.status === "VOID"
-                    ? "neutral"
-                    : "warning"
+                    ? "muted"
+                    : "dashed"
             }
             size="sm"
           >

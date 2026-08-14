@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { StatCard } from "@/components/ui/stat-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { FilterPill, FilterRow } from "@/components/ui/filter-pill";
 import { PageHeader, SectionTitle } from "@/components/ui/misc";
 import { AssignSubscriptionDialog, PayInvoiceButton } from "./subscription-admin";
 import { requireOwner } from "@/server/auth/guards";
@@ -88,49 +89,39 @@ export default async function SubscriptionsPage({
           value={formatMoney(mrr)}
           hint="por mês, normalizada"
           icon={Repeat}
-          tone="success"
         />
-        <StatCard label="Assinantes ativos" value={active} icon={Users} tone="accent" />
+        <StatCard label="Assinantes ativos" value={active} icon={Users} />
         <StatCard
           label="Cancelam no fim do ciclo"
           value={canceling}
           hint={active > 0 ? `${Math.round((canceling / active) * 100)}% da base` : undefined}
           icon={TrendingDown}
-          tone={canceling > 0 ? "warning" : "neutral"}
         />
         <StatCard
           label="Faturas vencidas"
           value={formatMoney(overdueTotal)}
           hint={`${openInvoices.length} em aberto`}
           icon={AlertTriangle}
-          tone={overdueTotal > 0 ? "warning" : "neutral"}
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <FilterRow label="Filtrar assinaturas por situação">
         {[
           { value: "todos", label: "Todas" },
           { value: "ACTIVE", label: "Ativas" },
           { value: "PAST_DUE", label: "Em atraso" },
           { value: "PAUSED", label: "Pausadas" },
           { value: "CANCELED", label: "Canceladas" },
-        ].map((option) => {
-          const selected = (params.status ?? "todos") === option.value;
-          return (
-            <Link
-              key={option.value}
-              href={`/painel/assinaturas${option.value === "todos" ? "" : `?status=${option.value}`}`}
-              className={
-                selected
-                  ? "rounded-full border border-[var(--accent)] bg-[var(--accent-soft)] px-3.5 py-1.5 text-sm font-medium text-[var(--accent)]"
-                  : "rounded-full border border-[var(--border-strong)] px-3.5 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:border-[var(--accent)]"
-              }
-            >
-              {option.label}
-            </Link>
-          );
-        })}
-      </div>
+        ].map((option) => (
+          <FilterPill
+            key={option.value}
+            href={`/painel/assinaturas${option.value === "todos" ? "" : `?status=${option.value}`}`}
+            active={(params.status ?? "todos") === option.value}
+          >
+            {option.label}
+          </FilterPill>
+        ))}
+      </FilterRow>
 
       {subscriptions.length === 0 ? (
         <EmptyState
@@ -205,11 +196,11 @@ export default async function SubscriptionsPage({
                         tone={
                           subscription.status === "ACTIVE"
                             ? subscription.cancelAtPeriodEnd
-                              ? "warning"
-                              : "success"
+                              ? "dashed"
+                              : "solid"
                             : subscription.status === "PAST_DUE"
-                              ? "danger"
-                              : "neutral"
+                              ? "dashed"
+                              : "muted"
                         }
                         size="sm"
                       >
@@ -248,11 +239,11 @@ export default async function SubscriptionsPage({
                     </p>
                   </div>
                   {overdue ? (
-                    <Badge tone="danger" size="sm">
+                    <Badge tone="dashed" size="sm">
                       Vencida
                     </Badge>
                   ) : (
-                    <Badge tone="warning" size="sm">
+                    <Badge tone="dashed" size="sm">
                       Em aberto
                     </Badge>
                   )}

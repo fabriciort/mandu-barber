@@ -28,12 +28,16 @@ export function CancelAppointmentButton({
   variant = "ghost",
   label = "Cancelar",
   staff = false,
+  size = "sm",
+  className,
 }: {
   appointmentId: string;
   when: string;
-  variant?: "ghost" | "secondary" | "danger" | "outline";
+  variant?: "ghost" | "secondary" | "danger" | "outline" | "inverse-outline";
   label?: string;
   staff?: boolean;
+  size?: "sm" | "md" | "lg";
+  className?: string;
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -56,7 +60,7 @@ export function CancelAppointmentButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={variant} size="sm">
+        <Button variant={variant} size={size} className={className}>
           <CalendarX2 className="size-4" />
           {label}
         </Button>
@@ -99,6 +103,15 @@ export function CancelAppointmentButton({
     </Dialog>
   );
 }
+
+/** Sem cor nas estrelas, a palavra e que traduz a nota escolhida. */
+const RATING_LABEL: Record<number, string> = {
+  1: "Muito abaixo do esperado",
+  2: "Deixou a desejar",
+  3: "Foi ok",
+  4: "Muito bom",
+  5: "Excelente, voltaria",
+};
 
 export function ReviewButton({
   appointmentId,
@@ -146,31 +159,45 @@ export function ReviewButton({
           <input type="hidden" name="rating" value={rating} />
 
           <DialogBody className="space-y-4">
-            <div
-              className="flex justify-center gap-1"
-              role="radiogroup"
-              aria-label="Nota do atendimento"
-            >
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  role="radio"
-                  aria-checked={rating === value}
-                  aria-label={`${value} estrela${value > 1 ? "s" : ""}`}
-                  onClick={() => setRating(value)}
-                  className="rounded-lg p-1 transition-transform hover:scale-110"
-                >
-                  <Star
-                    className={cn(
-                      "size-8 transition-colors",
-                      value <= rating
-                        ? "fill-brass-400 text-brass-400"
-                        : "text-[var(--border-strong)]",
-                    )}
-                  />
-                </button>
-              ))}
+            <div>
+              <div
+                className="flex justify-center gap-1.5"
+                role="radiogroup"
+                aria-label="Nota do atendimento"
+              >
+                {[1, 2, 3, 4, 5].map((value) => {
+                  const filled = value <= rating;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      role="radio"
+                      aria-checked={rating === value}
+                      aria-label={`${value} estrela${value > 1 ? "s" : ""}`}
+                      onClick={() => setRating(value)}
+                      // A estrela escolhida cresce um pouco: sem cor, a escala
+                      // e o preenchimento e que confirmam a nota.
+                      className={cn(
+                        "pressable rounded-[var(--radius-sm)] p-1.5",
+                        filled ? "scale-105" : "opacity-70 hover:opacity-100",
+                      )}
+                    >
+                      <Star
+                        className={cn(
+                          "size-9 transition-all duration-200",
+                          filled
+                            ? "fill-[var(--text-primary)] text-[var(--text-primary)]"
+                            : "fill-transparent text-[var(--border-strong)]",
+                        )}
+                        strokeWidth={1.5}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-center text-sm text-[var(--text-muted)]" aria-live="polite">
+                {RATING_LABEL[rating]}
+              </p>
             </div>
 
             <div>

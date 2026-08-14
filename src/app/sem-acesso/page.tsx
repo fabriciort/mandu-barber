@@ -14,10 +14,10 @@ export default async function ForbiddenPage() {
       id="conteudo"
       className="flex min-h-dvh flex-col items-center justify-center px-4 text-center"
     >
-      <span className="flex size-14 items-center justify-center rounded-full bg-clay-400/12">
-        <ShieldAlert className="size-7 text-clay-500" />
+      <span className="flex size-14 items-center justify-center rounded-full bg-[var(--surface-muted)]">
+        <ShieldAlert className="size-7 text-[var(--text-primary)]" />
       </span>
-      <h1 className="mt-6 font-[family-name:var(--font-display)] text-3xl font-semibold">
+      <h1 className="mt-6 font-display text-3xl">
         Esta área não é sua
       </h1>
       <p className="mt-2 max-w-sm text-[var(--text-muted)]">

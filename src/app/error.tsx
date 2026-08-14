@@ -19,10 +19,10 @@ export default function GlobalError({
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-4 text-center">
-      <span className="flex size-14 items-center justify-center rounded-full bg-rust-500/12">
-        <TriangleAlert className="size-7 text-rust-500" />
+      <span className="flex size-14 items-center justify-center rounded-full bg-[var(--surface-muted)]">
+        <TriangleAlert className="size-7 text-[var(--text-primary)]" />
       </span>
-      <h1 className="mt-6 font-[family-name:var(--font-display)] text-2xl font-semibold">
+      <h1 className="mt-6 font-display text-2xl">
         Algo saiu do lugar
       </h1>
       <p className="mt-2 max-w-sm text-[var(--text-muted)]">

@@ -210,7 +210,7 @@ export default async function AppointmentsListPage({
                     </td>
                     <td className="px-4 py-3">
                       <Badge
-                        tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus] as never}
+                        tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
                         size="sm"
                       >
                         {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}

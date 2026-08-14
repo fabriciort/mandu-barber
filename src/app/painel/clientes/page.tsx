@@ -4,14 +4,16 @@ import { Search, Sparkles, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { FilterPill } from "@/components/ui/filter-pill";
 import { PageHeader } from "@/components/ui/misc";
 import { Input } from "@/components/ui/field";
 import { ClientFormDialog } from "./client-form-dialog";
 import { requireStaff } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
-import { formatMoney, formatPhone } from "@/lib/format";
+import { formatMoney, formatPhone, pluralize } from "@/lib/format";
 import { formatDate, formatRelative } from "@/lib/time";
 
 export const metadata = { title: "Clientes" };
@@ -86,49 +88,37 @@ export default async function ClientsPage({
     <div className="space-y-6">
       <PageHeader
         title="Clientes"
-        description={`${total} cliente(s) · ${subscriberCount} com assinatura ativa.`}
+        description={`${pluralize(total, "cliente", "clientes")} · ${subscriberCount} com assinatura ativa.`}
         actions={<ClientFormDialog />}
       />
 
       <Card className="p-4">
-        <form className="flex flex-wrap gap-3" method="get">
+        <form className="flex flex-col gap-3 sm:flex-row sm:items-center" method="get">
           <div className="relative min-w-56 flex-1">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-muted)]" />
+            <Search
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[var(--text-muted)]"
+              aria-hidden
+            />
             <Input
               name="q"
+              type="search"
               defaultValue={query}
               placeholder="Buscar por nome, e-mail ou telefone"
-              className="pl-9"
+              className="pl-10"
               aria-label="Buscar cliente"
             />
           </div>
-          <div className="flex gap-2">
-            <Link
-              href="/painel/clientes"
-              className={
-                !onlySubscribers
-                  ? "flex h-10 items-center rounded-lg border border-[var(--accent)] bg-[var(--accent-soft)] px-4 text-sm font-medium text-[var(--accent)]"
-                  : "flex h-10 items-center rounded-lg border border-[var(--border-strong)] px-4 text-sm transition-colors hover:border-[var(--accent)]"
-              }
-            >
+
+          <div className="flex items-center gap-2">
+            <FilterPill href="/painel/clientes" active={!onlySubscribers}>
               Todos
-            </Link>
-            <Link
-              href="/painel/clientes?filtro=assinantes"
-              className={
-                onlySubscribers
-                  ? "flex h-10 items-center rounded-lg border border-[var(--accent)] bg-[var(--accent-soft)] px-4 text-sm font-medium text-[var(--accent)]"
-                  : "flex h-10 items-center rounded-lg border border-[var(--border-strong)] px-4 text-sm transition-colors hover:border-[var(--accent)]"
-              }
-            >
+            </FilterPill>
+            <FilterPill href="/painel/clientes?filtro=assinantes" active={onlySubscribers}>
               Assinantes
-            </Link>
-            <button
-              type="submit"
-              className="h-10 rounded-lg bg-[var(--accent)] px-4 text-sm font-medium text-[var(--accent-contrast)] transition-all hover:brightness-110"
-            >
+            </FilterPill>
+            <Button type="submit" className="ml-auto sm:ml-0">
               Buscar
-            </button>
+            </Button>
           </div>
         </form>
       </Card>
@@ -163,11 +153,11 @@ export default async function ClientsPage({
                         </p>
                       </div>
                       {!client.active ? (
-                        <Badge tone="danger" size="sm">
+                        <Badge tone="dashed" size="sm">
                           Inativo
                         </Badge>
                       ) : subscription ? (
-                        <Badge tone="accent" size="sm">
+                        <Badge tone="solid" size="sm">
                           <Sparkles className="size-3" />
                           {subscription.plan.name.replace("Mandu ", "")}
                         </Badge>

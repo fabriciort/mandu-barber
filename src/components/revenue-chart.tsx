@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatMoney, formatMoneyCompact } from "@/lib/format";
+import { formatMoney, formatMoneyCompact, pluralize } from "@/lib/format";
 import { parseDateKey } from "@/lib/time";
 
 type Point = { date: string; revenueCents: number; appointments: number };
@@ -75,18 +75,20 @@ export function RevenueChart({ data }: { data: Point[] }) {
               if (!active || !payload?.length) return null;
               const point = payload[0].payload as Point;
               return (
-                <div className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] px-3 py-2 shadow-[var(--shadow-lift)]">
-                  <p className="text-xs text-[var(--text-muted)]">
+                /* Mesma linguagem dos avisos: bloco invertido. No monocromatico
+                   e o que separa "camada flutuante" de "conteudo da pagina". */
+                <div className="rounded-[var(--radius-md)] bg-[var(--surface-inverse)] px-3 py-2 text-[var(--text-inverse)] shadow-[var(--shadow-lg)]">
+                  <p className="text-2xs uppercase tracking-[0.1em] opacity-60">
                     {parseDateKey(point.date).toLocaleDateString("pt-BR", {
                       weekday: "short",
                       day: "2-digit",
                       month: "short",
                     })}
                   </p>
-                  <p className="mt-1 text-sm font-semibold">{formatMoney(point.revenueCents)}</p>
-                  <p className="text-xs text-[var(--text-muted)]">
-                    {point.appointments} atendimento(s)
+                  <p className="tnum mt-1 text-sm font-semibold">
+                    {formatMoney(point.revenueCents)}
                   </p>
+                  <p className="tnum text-xs opacity-60">{pluralize(point.appointments, "atendimento", "atendimentos")}</p>
                 </div>
               );
             }}
@@ -99,7 +101,15 @@ export function RevenueChart({ data }: { data: Point[] }) {
             strokeWidth={2}
             fill="url(#fill-receita)"
             dot={false}
-            activeDot={{ r: 4, strokeWidth: 0, fill: "var(--accent)" }}
+            // O ponto ativo ganha um anel na cor da superficie: destaca sem
+            // precisar de uma segunda cor.
+            activeDot={{
+              r: 4,
+              fill: "var(--accent)",
+              stroke: "var(--surface-raised)",
+              strokeWidth: 2,
+            }}
+            animationDuration={700}
           />
         </AreaChart>
       </ResponsiveContainer>

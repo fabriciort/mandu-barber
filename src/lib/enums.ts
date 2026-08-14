@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { BadgeTone } from "@/components/ui/badge";
+
 /**
  * O provider SQLite nao suporta enums nativos do Prisma, entao os "enums" do
  * dominio vivem aqui: uma unica fonte de verdade para validacao (Zod), tipos
@@ -93,13 +95,17 @@ export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
   NO_SHOW: "Não compareceu",
 };
 
-export const APPOINTMENT_STATUS_TONE: Record<AppointmentStatus, string> = {
-  SCHEDULED: "info",
-  CONFIRMED: "success",
-  IN_PROGRESS: "accent",
-  COMPLETED: "neutral",
-  CANCELED: "danger",
-  NO_SHOW: "warning",
+/**
+ * Status -> forma da etiqueta. Sem cor, o significado vem da silhueta
+ * (ver src/components/ui/badge.tsx).
+ */
+export const APPOINTMENT_STATUS_TONE: Record<AppointmentStatus, BadgeTone> = {
+  SCHEDULED: "outline",
+  CONFIRMED: "solid",
+  IN_PROGRESS: "solid",
+  COMPLETED: "muted",
+  CANCELED: "strike",
+  NO_SHOW: "dashed",
 };
 
 export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {

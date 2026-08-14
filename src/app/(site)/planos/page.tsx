@@ -5,11 +5,12 @@ import { Check, Crown, Sparkles, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/cn";
 import { SubscribeButton } from "./subscribe-button";
 import { prisma } from "@/server/db";
 import { getCurrentUser } from "@/server/auth/session";
 import { getActiveSubscription } from "@/server/services/subscriptions";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, pluralize } from "@/lib/format";
 import { planSavings } from "@/lib/pricing";
 import { formatDuration } from "@/lib/time";
 
@@ -38,33 +39,33 @@ export default async function PlansPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-20">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+        <p className="text-2xs font-semibold uppercase tracking-[0.28em] text-[var(--text-muted)]">
           Assinatura
         </p>
-        <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="mt-4 text-balance font-display text-[2.75rem] leading-[1.05] sm:text-6xl">
           Corte sempre em dia, preço travado
         </h1>
-        <p className="mt-4 text-lg text-[var(--text-muted)]">
+        <p className="mx-auto mt-5 max-w-lg text-pretty text-lg leading-relaxed text-[var(--text-secondary)]">
           Escolha a franquia que combina com sua rotina. Sem fidelidade — você cancela quando
           quiser e usa tudo o que já pagou.
         </p>
       </div>
 
       {subscription ? (
-        <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-between gap-3 rounded-xl border border-moss-500/30 bg-moss-500/8 px-5 py-4">
+        <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-between gap-3 rounded-[var(--radius-lg)] bg-[var(--surface-inverse)] px-5 py-4 text-[var(--text-inverse)]">
           <p className="text-sm">
-            Você já assina o <strong>{subscription.planName}</strong>.
+            Você já assina o <strong className="font-semibold">{subscription.planName}</strong>.
           </p>
-          <Button asChild size="sm" variant="secondary">
+          <Button asChild size="sm" variant="inverse">
             <Link href="/minha-conta/plano">Gerenciar meu plano</Link>
           </Button>
         </div>
       ) : null}
 
-      <div className="mt-12 grid gap-6 lg:grid-cols-3">
-        {plans.map((plan) => {
+      <div className="stagger mt-14 grid items-start gap-5 lg:grid-cols-3">
+        {plans.map((plan, planIndex) => {
           const perks = parseList(plan.perks);
           const savings = planSavings(
             plan.priceCents,
@@ -75,62 +76,107 @@ export default async function PlansPage() {
           );
           const isCurrent = subscription?.planId === plan.id;
 
+          // O destaque no monocromatico e o bloco invertido: preto no tema
+          // claro, branco no escuro. Chama mais atencao que qualquer borda
+          // colorida e nao depende de matiz para funcionar.
+          const featured = plan.highlight;
+
           return (
             <Card
               key={plan.id}
               id={plan.slug}
-              className={`relative flex scroll-mt-24 flex-col p-7 ${
-                plan.highlight
-                  ? "border-[var(--accent)] shadow-[var(--shadow-lift)] lg:-my-3 lg:py-10"
-                  : ""
-              }`}
+              style={{ "--i": planIndex } as React.CSSProperties}
+              className={cn(
+                "relative flex scroll-mt-24 flex-col p-6 sm:p-7",
+                featured
+                  ? "border-transparent bg-[var(--surface-inverse)] text-[var(--text-inverse)] shadow-[var(--shadow-xl)] lg:-my-4 lg:py-11"
+                  : "",
+              )}
             >
-              {plan.highlight ? (
-                <Badge tone="accent" className="absolute -top-3 left-7">
-                  <Crown className="size-3" />
-                  Mais assinado
-                </Badge>
-              ) : null}
-              {isCurrent ? (
-                <Badge tone="success" className="absolute -top-3 right-7">
-                  Seu plano
-                </Badge>
-              ) : null}
+              {/* Altura minima no cabecalho para que a linha do preco caia na
+                  mesma altura nos tres cartoes, mesmo com chamadas de tamanhos
+                  diferentes — desalinhado, o olho le como tres pecas soltas. */}
+              <div className="flex items-start justify-between gap-3 lg:min-h-[5.25rem]">
+                <div className="min-w-0">
+                  <h2 className="font-display text-[1.75rem] leading-none">{plan.name}</h2>
+                  {plan.tagline ? (
+                    <p
+                      className={cn(
+                        "mt-2 text-pretty text-sm",
+                        featured ? "opacity-65" : "text-[var(--text-muted)]",
+                      )}
+                    >
+                      {plan.tagline}
+                    </p>
+                  ) : null}
+                </div>
 
-              <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
-                {plan.name}
-              </h2>
-              {plan.tagline ? (
-                <p className="mt-1 text-sm text-[var(--text-muted)]">{plan.tagline}</p>
-              ) : null}
+                {featured ? (
+                  <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-current/40 px-2.5 py-1 text-2xs font-semibold uppercase tracking-[0.14em]">
+                    <Crown className="size-3" aria-hidden />
+                    Mais assinado
+                  </span>
+                ) : isCurrent ? (
+                  <Badge tone="solid" className="shrink-0">
+                    Seu plano
+                  </Badge>
+                ) : null}
+              </div>
 
-              <div className="mt-6">
+              <div className="mt-7">
                 <p className="flex items-baseline gap-1.5">
-                  <span className="font-[family-name:var(--font-display)] text-4xl font-semibold">
+                  <span className="tnum font-display text-5xl leading-none">
                     {formatMoney(plan.priceCents)}
                   </span>
-                  <span className="text-sm text-[var(--text-muted)]">
+                  <span className={cn("text-sm", featured ? "opacity-60" : "text-[var(--text-muted)]")}>
                     /{plan.intervalMonths === 1 ? "mês" : `${plan.intervalMonths} meses`}
                   </span>
                 </p>
                 {savings.savingsCents > 0 ? (
-                  <p className="mt-1.5 text-sm font-medium text-moss-600 dark:text-moss-400">
-                    Economia de {formatMoney(savings.savingsCents)} vs. avulso
-                    {savings.hasUnlimited ? " (uso médio)" : ""}
+                  // O filete alinha com a PRIMEIRA linha do texto; centralizado
+                  // ele escorrega para o meio quando a frase quebra em duas.
+                  <p className="mt-3 flex gap-2 text-sm font-medium">
+                    <span
+                      className="mt-[0.55em] h-px w-4 shrink-0 bg-current opacity-40"
+                      aria-hidden
+                    />
+                    <span className="text-pretty">
+                      Economia de {formatMoney(savings.savingsCents)} vs. avulso
+                      {savings.hasUnlimited ? " (uso médio)" : ""}
+                    </span>
                   </p>
                 ) : null}
               </div>
 
               {plan.benefits.length > 0 ? (
-                <div className="mt-6 rounded-xl bg-[var(--surface-muted)] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                <div
+                  className={cn(
+                    "mt-7 rounded-[var(--radius-lg)] p-4",
+                    featured ? "bg-white/8 dark:bg-black/10" : "bg-[var(--surface-muted)]",
+                  )}
+                >
+                  <p
+                    className={cn(
+                      "text-2xs font-semibold uppercase tracking-[0.16em]",
+                      featured ? "opacity-60" : "text-[var(--text-muted)]",
+                    )}
+                  >
                     Franquia mensal
                   </p>
-                  <ul className="mt-2.5 space-y-2">
+                  <ul className="mt-3 space-y-2.5">
                     {plan.benefits.map((benefit) => (
-                      <li key={benefit.id} className="flex items-baseline justify-between gap-3 text-sm">
-                        <span>{benefit.service.name}</span>
-                        <span className="shrink-0 font-semibold text-[var(--accent)]">
+                      <li
+                        key={benefit.id}
+                        className="flex items-baseline gap-2 text-sm"
+                      >
+                        <span className="shrink-0">{benefit.service.name}</span>
+                        {/* Linha pontilhada ligando nome e quantidade: leitura de
+                            cardapio, e o olho nao se perde entre as colunas. */}
+                        <span
+                          className="min-w-4 flex-1 translate-y-[-0.2em] border-b border-dashed border-current opacity-25"
+                          aria-hidden
+                        />
+                        <span className="tnum shrink-0 font-semibold">
                           {benefit.quantityPerCycle < 0
                             ? "Ilimitado"
                             : `${benefit.quantityPerCycle}x`}
@@ -138,7 +184,7 @@ export default async function PlansPage() {
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-2.5 text-xs text-[var(--text-muted)]">
+                  <p className={cn("mt-3 text-xs", featured ? "opacity-55" : "text-[var(--text-muted)]")}>
                     Equivale a{" "}
                     {formatDuration(
                       plan.benefits.reduce(
@@ -153,29 +199,40 @@ export default async function PlansPage() {
                 </div>
               ) : null}
 
-              <ul className="mt-6 flex-1 space-y-2.5">
+              <ul className="mt-6 flex-1 space-y-3">
                 {perks.map((perk) => (
-                  <li key={perk} className="flex gap-2.5 text-sm text-[var(--text-secondary)]">
-                    <Check className="mt-0.5 size-4 shrink-0 text-moss-500" />
+                  <li
+                    key={perk}
+                    className={cn(
+                      "flex gap-2.5 text-sm leading-snug",
+                      featured ? "opacity-85" : "text-[var(--text-secondary)]",
+                    )}
+                  >
+                    <Check className="mt-0.5 size-4 shrink-0" strokeWidth={2.5} aria-hidden />
                     {perk}
                   </li>
                 ))}
               </ul>
 
               {plan._count.subscriptions > 0 ? (
-                <p className="mt-5 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                  <Star className="size-3.5 fill-brass-400 text-brass-400" />
-                  {plan._count.subscriptions} assinante(s) ativos
+                <p
+                  className={cn(
+                    "mt-6 flex items-center gap-1.5 text-xs",
+                    featured ? "opacity-60" : "text-[var(--text-muted)]",
+                  )}
+                >
+                  <Star className="size-3.5 fill-current" aria-hidden />
+                  {pluralize(plan._count.subscriptions, "assinante ativo", "assinantes ativos")}
                 </p>
               ) : null}
 
               <div className="mt-6">
                 {isCurrent ? (
-                  <Button asChild block variant="secondary">
+                  <Button asChild block size="lg" variant={featured ? "inverse" : "secondary"}>
                     <Link href="/minha-conta/plano">Gerenciar assinatura</Link>
                   </Button>
                 ) : subscription ? (
-                  <Button block variant="secondary" disabled>
+                  <Button block size="lg" variant={featured ? "inverse" : "secondary"} disabled>
                     Você já tem um plano ativo
                   </Button>
                 ) : (
@@ -193,36 +250,44 @@ export default async function PlansPage() {
         })}
       </div>
 
-      {/* ---------------------------------------------------------- duvidas */}
-      <section className="mx-auto mt-20 max-w-3xl">
-        <h2 className="text-center font-[family-name:var(--font-display)] text-3xl font-semibold">
+      {/* ---------------------------------------------------------- duvidas
+          Sanfona nativa (<details>): abre sem JavaScript, e no celular a lista
+          fechada cabe inteira na tela em vez de virar um paredao de texto. */}
+      <section className="mx-auto mt-24 max-w-3xl">
+        <h2 className="text-balance text-center font-display text-[2rem] leading-tight sm:text-4xl">
           Perguntas que sempre aparecem
         </h2>
 
-        <dl className="mt-8 space-y-4">
+        <div className="mt-10 divide-y divide-[var(--border-subtle)] border-y border-[var(--border-subtle)]">
           {FAQ.map((item) => (
-            <div
-              key={item.question}
-              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5"
-            >
-              <dt className="font-medium">{item.question}</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
+            <details key={item.question} className="faq group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-medium transition-colors hover:text-[var(--text-secondary)]">
+                <span className="text-pretty">{item.question}</span>
+                <span
+                  className="relative size-5 shrink-0 rounded-full border border-[var(--border-strong)] transition-transform duration-300 group-open:rotate-45"
+                  aria-hidden
+                >
+                  <span className="absolute left-1/2 top-1/2 h-px w-2.5 -translate-x-1/2 -translate-y-1/2 bg-current" />
+                  <span className="absolute left-1/2 top-1/2 h-2.5 w-px -translate-x-1/2 -translate-y-1/2 bg-current" />
+                </span>
+              </summary>
+              <p className="pb-5 pr-9 text-pretty text-sm leading-relaxed text-[var(--text-secondary)]">
                 {item.answer}
-              </dd>
-            </div>
+              </p>
+            </details>
           ))}
-        </dl>
+        </div>
       </section>
 
-      <div className="mt-16 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] px-6 py-10 text-center">
-        <Sparkles className="mx-auto size-6 text-[var(--accent)]" />
-        <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl font-semibold">
+      <div className="grain relative mt-20 overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-inverse)] px-6 py-14 text-center text-[var(--text-inverse)]">
+        <Sparkles className="mx-auto size-6 opacity-70" aria-hidden />
+        <h2 className="mt-5 text-balance font-display text-[2rem] leading-tight sm:text-4xl">
           Ainda na dúvida?
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-[var(--text-muted)]">
+        <p className="mx-auto mt-3 max-w-md text-pretty opacity-70">
           Marque um corte avulso primeiro. Se gostar, a assinatura fica esperando por você.
         </p>
-        <Button asChild className="mt-6">
+        <Button asChild size="lg" variant="inverse" className="mt-7">
           <Link href="/agendar">Agendar um corte avulso</Link>
         </Button>
       </div>

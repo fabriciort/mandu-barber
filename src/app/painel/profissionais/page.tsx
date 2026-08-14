@@ -83,16 +83,16 @@ export default async function BarbersPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="truncate font-semibold">{barber.user.name}</h3>
                       {!barber.active ? (
-                        <Badge tone="danger" size="sm">
+                        <Badge tone="dashed" size="sm">
                           Inativo
                         </Badge>
                       ) : !barber.acceptsNewClients ? (
-                        <Badge tone="warning" size="sm">
+                        <Badge tone="dashed" size="sm">
                           Agenda fechada
                         </Badge>
                       ) : null}
                       {rating ? (
-                        <span className="flex items-center gap-1 text-xs font-medium text-brass-600 dark:text-brass-300">
+                        <span className="flex items-center gap-1 text-xs font-medium text-[var(--accent)]">
                           <Star className="size-3 fill-current" />
                           {rating.toFixed(1)} ({ratings.length})
                         </span>

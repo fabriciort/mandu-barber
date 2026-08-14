@@ -37,10 +37,8 @@ export function Logo({
       <BrandMark className="transition-transform duration-300 group-hover:rotate-[-8deg]" />
       {compact ? null : (
         <span className="flex flex-col leading-none">
-          <span className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
-            Mandu
-          </span>
-          <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-muted)]">
+          <span className="font-display text-lg leading-none">Mandu</span>
+          <span className="mt-1 text-[9px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
             Barber
           </span>
         </span>

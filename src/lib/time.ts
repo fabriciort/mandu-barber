@@ -125,11 +125,11 @@ export function formatDuration(minutes: number): string {
   return m === 0 ? `${h} h` : `${h} h ${m} min`;
 }
 
-/** "em 2 dias", "ha 3 horas" — texto relativo enxuto para listas. */
+/** "em 2 dias", "há 3 horas" — texto relativo enxuto para listas. */
 export function formatRelative(date: Date, now = new Date()): string {
   const diff = differenceInMinutes(date, now);
   const abs = Math.abs(diff);
-  const suffix = (label: string) => (diff >= 0 ? `em ${label}` : `ha ${label}`);
+  const suffix = (label: string) => (diff >= 0 ? `em ${label}` : `há ${label}`);
   if (abs < 1) return "agora";
   if (abs < 60) return suffix(`${abs} min`);
   if (abs < 60 * 24) return suffix(`${Math.round(abs / 60)} h`);

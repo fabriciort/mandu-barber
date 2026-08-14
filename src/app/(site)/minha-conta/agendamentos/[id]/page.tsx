@@ -64,14 +64,14 @@ export default async function AppointmentDetailPage({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <Badge tone={APPOINTMENT_STATUS_TONE[status] as never}>
+                <Badge tone={APPOINTMENT_STATUS_TONE[status]}>
                   {APPOINTMENT_STATUS_LABEL[status]}
                 </Badge>
                 <span className="font-mono text-sm text-[var(--text-muted)]">
                   {appointment.code}
                 </span>
               </div>
-              <h1 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold">
+              <h1 className="mt-2 font-display text-2xl">
                 {appointment.services.map((s) => s.name).join(" + ")}
               </h1>
               <p className="mt-1 text-sm first-letter:uppercase text-[var(--text-muted)]">
@@ -145,7 +145,7 @@ export default async function AppointmentDetailPage({
                   </span>
                 </span>
                 {service.coveredByPlan ? (
-                  <Badge tone="success" size="sm">
+                  <Badge tone="solid" size="sm">
                     Coberto pelo plano
                   </Badge>
                 ) : (
@@ -161,7 +161,7 @@ export default async function AppointmentDetailPage({
               <span>{formatMoney(appointment.subtotalCents)}</span>
             </div>
             {appointment.discountCents > 0 ? (
-              <div className="flex justify-between text-moss-600 dark:text-moss-400">
+              <div className="flex justify-between text-[var(--text-primary)]">
                 <span>
                   {appointment.subscription
                     ? `Plano ${appointment.subscription.plan.name}`
@@ -219,7 +219,7 @@ export default async function AppointmentDetailPage({
                     key={index}
                     className={
                       index < appointment.review!.rating
-                        ? "size-4 fill-brass-400 text-brass-400"
+                        ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
                         : "size-4 text-[var(--border-strong)]"
                     }
                   />

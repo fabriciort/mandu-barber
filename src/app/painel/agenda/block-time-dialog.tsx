@@ -137,7 +137,7 @@ export function BlockTimeDialog({
             </div>
 
             {state.message && !state.ok ? (
-              <p className="rounded-lg border border-rust-500/30 bg-rust-500/10 px-3 py-2 text-sm text-rust-500">
+              <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text-primary)]">
                 {state.message}
               </p>
             ) : null}

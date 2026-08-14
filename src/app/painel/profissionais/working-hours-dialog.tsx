@@ -203,12 +203,12 @@ export function WorkingHoursDialog({
                             label={`Fim do intervalo ${index + 1} de ${label}`}
                           />
                           {block.end <= block.start ? (
-                            <span className="text-xs text-rust-500">inválido</span>
+                            <span className="text-xs text-[var(--text-primary)]">inválido</span>
                           ) : null}
                           <button
                             type="button"
                             onClick={() => removeBlock(weekday, index)}
-                            className="ml-auto rounded-md p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-muted)] hover:text-rust-500"
+                            className="ml-auto rounded-md p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]"
                             aria-label="Remover intervalo"
                           >
                             <X className="size-4" />
@@ -222,7 +222,7 @@ export function WorkingHoursDialog({
             })}
 
             {state.message && !state.ok ? (
-              <p className="rounded-lg border border-rust-500/30 bg-rust-500/10 px-3 py-2 text-sm text-rust-500">
+              <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-muted)] px-3 py-2 text-sm text-[var(--text-primary)]">
                 {state.message}
               </p>
             ) : null}

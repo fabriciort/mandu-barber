@@ -15,21 +15,21 @@ export default async function AccountLayout({ children }: { children: React.Reac
   const user = await requireUser("/minha-conta");
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-9 sm:px-6 sm:py-12">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+          <p className="text-2xs font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
             Minha conta
           </p>
-          <h1 className="mt-1.5 font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight">
-            Ola, {user.name.split(" ")[0]}
+          <h1 className="mt-2 font-display text-[2.25rem] leading-none sm:text-5xl">
+            Olá, {user.name.split(" ")[0]}
           </h1>
         </div>
 
         {user.role !== "CLIENT" ? (
           <Link
             href="/painel"
-            className="rounded-lg border border-[var(--border-strong)] px-3 py-2 text-sm font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            className="pressable rounded-[var(--radius-md)] border border-[var(--border-default)] px-3.5 py-2 text-sm font-medium hover:border-[var(--border-strong)] hover:bg-[var(--surface-muted)]"
           >
             Ir para o painel da equipe
           </Link>
@@ -38,7 +38,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
 
       <AccountTabs tabs={TABS.map(({ icon: _icon, ...tab }) => tab)} />
 
-      <div className="mt-8">{children}</div>
+      <div className="mt-9">{children}</div>
     </div>
   );
 }

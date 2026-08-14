@@ -81,7 +81,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </div>
         </header>
 
-        <main id="conteudo" className="flex-1 px-4 py-6 pb-24 sm:px-6 lg:pb-8">
+        <main id="conteudo" className="flex-1 px-4 py-6 pb-28 sm:px-6 lg:pb-10">
           {children}
         </main>
       </div>
@@ -90,7 +90,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <PanelNav
         role={user.role}
         variant="bottom"
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[var(--border-subtle)] bg-[var(--surface)]/95 backdrop-blur-md lg:hidden"
+        className="sticky-bar fixed inset-x-0 bottom-0 z-30 flex border-t border-[var(--border-subtle)] pb-safe lg:hidden"
       />
     </div>
   );
