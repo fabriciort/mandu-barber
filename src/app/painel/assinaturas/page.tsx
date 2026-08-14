@@ -127,13 +127,13 @@ export default async function SubscriptionsPage({
         <EmptyState
           icon={BarChart3}
           title="Nenhuma assinatura neste filtro"
-          description="Ative um plano para um cliente pelo botao acima ou aguarde as contratacoes pelo site."
+          description="Ative um plano para um cliente pelo botão acima ou aguarde as contratações pelo site."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
+        <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
           <table className="w-full min-w-[820px] text-sm">
             <thead className="bg-[var(--surface-muted)] text-left">
-              <tr className="text-xs uppercase tracking-wide text-[var(--text-muted)]">
+              <tr className="text-2xs uppercase tracking-[0.12em] text-[var(--text-muted)]">
                 <th className="px-4 py-2.5 font-medium">Cliente</th>
                 <th className="px-4 py-2.5 font-medium">Plano</th>
                 <th className="px-4 py-2.5 font-medium">Ciclo atual</th>
@@ -149,11 +149,11 @@ export default async function SubscriptionsPage({
                 );
 
                 return (
-                  <tr key={subscription.id} className="transition-colors hover:bg-[var(--surface-muted)]/50">
+                  <tr key={subscription.id} className="transition-colors hover:bg-[var(--surface-muted)]">
                     <td className="px-4 py-3">
                       <Link
                         href={`/painel/clientes/${subscription.client.id}`}
-                        className="flex items-center gap-2 font-medium hover:text-[var(--accent)]"
+                        className="flex items-center gap-2 font-medium underline-offset-4 hover:underline"
                       >
                         <Avatar
                           name={subscription.client.name}

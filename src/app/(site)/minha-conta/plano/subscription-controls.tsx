@@ -88,14 +88,14 @@ export function SubscriptionControls({
         <DialogHeader>
           <DialogTitle>Cancelar assinatura</DialogTitle>
           <DialogDescription>
-            Você continua com todos os beneficios até {periodEnd}. Depois disso, a cobranca para e
+            Você continua com todos os benefícios até {periodEnd}. Depois disso, a cobrança para e
             os créditos não renovam.
           </DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <p className="text-sm text-[var(--text-secondary)]">
-            Se mudar de ideia antes do fim do ciclo, da para reativar em um clique — nada se perde.
+            Se mudar de ideia antes do fim do ciclo, dá para reativar em um clique — nada se perde.
           </p>
         </DialogBody>
 

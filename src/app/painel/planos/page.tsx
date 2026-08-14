@@ -68,7 +68,7 @@ export default async function PlansAdminPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <h3 className="flex items-center gap-1.5 truncate font-semibold">
-                      {plan.highlight ? <Crown className="size-4 text-[var(--accent)]" /> : null}
+                      {plan.highlight ? <Crown className="size-4" aria-hidden /> : null}
                       {plan.name}
                     </h3>
                     <p className="truncate text-sm text-[var(--text-muted)]">{plan.tagline}</p>

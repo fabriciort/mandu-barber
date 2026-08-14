@@ -39,7 +39,7 @@ export default async function SignInPage({
 
       <div className="mt-8 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-          Acessos de demonstracao
+          Acessos de demonstração
         </p>
         <ul className="mt-2 space-y-1 text-xs text-[var(--text-secondary)]">
           <li>

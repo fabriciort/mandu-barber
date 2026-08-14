@@ -86,7 +86,7 @@ export default async function MyAppointmentsPage({
           description={
             filter === "proximos"
               ? "Quando você agendar, seus próximos horários aparecem aqui."
-              : "Seus atendimentos concluídos vao ficar guardados nesta aba."
+              : "Seus atendimentos concluídos ficam guardados nesta aba."
           }
           action={
             filter === "proximos" ? (

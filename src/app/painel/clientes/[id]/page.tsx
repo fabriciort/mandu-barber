@@ -245,7 +245,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex gap-0.5">
                         {Array.from({ length: review.rating }).map((_, index) => (
-                          <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--accent)]" />
+                          <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--text-primary)]" />
                         ))}
                       </div>
                       <span className="text-xs text-[var(--text-muted)]">

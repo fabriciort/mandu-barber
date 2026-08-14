@@ -2,6 +2,8 @@ import { Banknote, Percent, Receipt, TrendingUp, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/ui/stat-card";
 import { PageHeader, SectionTitle } from "@/components/ui/misc";
 import { Input } from "@/components/ui/field";
@@ -97,7 +99,6 @@ export default async function FinancePage({
     return {
       id: barber.id,
       name: barber.user.name,
-      color: barber.agendaColor,
       percent: barber.commissionPercent,
       revenueCents: revenue,
       commissionCents: Math.round((revenue * barber.commissionPercent) / 100),
@@ -142,12 +143,7 @@ export default async function FinancePage({
               <Input id="ate" type="date" name="ate" defaultValue={to} />
             </div>
           </div>
-          <button
-            type="submit"
-            className="h-10 rounded-lg bg-[var(--accent)] px-4 text-sm font-medium text-[var(--accent-contrast)] transition-all hover:brightness-110"
-          >
-            Aplicar período
-          </button>
+          <Button type="submit">Aplicar período</Button>
         </form>
       </Card>
 
@@ -193,34 +189,33 @@ export default async function FinancePage({
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-5">
           <h2 className="flex items-center gap-2 font-semibold">
-            <TrendingUp className="size-4 text-[var(--accent)]" />
+            <TrendingUp className="size-4 text-[var(--text-muted)]" aria-hidden />
             Repasse da equipe
           </h2>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
             Base: receita de serviços concluídos no período.
           </p>
 
-          <ul className="mt-4 space-y-3">
+          {/* Iniciais em vez de bolinha colorida: identificam a pessoa mesmo
+              sem cor e ainda dizem QUEM e, sem depender de decorar a legenda. */}
+          <ul className="mt-5 space-y-3.5">
             {commissions.map((member) => (
               <li key={member.id} className="flex items-center gap-3">
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: member.color }}
-                />
+                <Avatar name={member.name} size="xs" />
                 <span className="min-w-0 flex-1 truncate text-sm">{member.name}</span>
-                <span className="shrink-0 text-xs text-[var(--text-muted)]">
+                <span className="tnum shrink-0 text-xs text-[var(--text-muted)]">
                   {formatMoney(member.revenueCents)} × {member.percent}%
                 </span>
-                <span className="w-24 shrink-0 text-right font-semibold">
+                <span className="tnum w-24 shrink-0 text-right font-semibold">
                   {formatMoney(member.commissionCents)}
                 </span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-4 flex justify-between border-t border-[var(--border-subtle)] pt-3 font-semibold">
+          <div className="mt-5 flex justify-between border-t border-[var(--border-subtle)] pt-3.5 font-semibold">
             <span>Total a repassar</span>
-            <span>{formatMoney(commissionTotal)}</span>
+            <span className="tnum">{formatMoney(commissionTotal)}</span>
           </div>
           <p className="mt-2 text-xs text-[var(--text-muted)]">
             Sobra para a casa: {formatMoney(serviceRevenue - commissionTotal)}.

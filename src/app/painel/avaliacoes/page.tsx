@@ -10,6 +10,7 @@ import { requireStaff, scopeToBarber } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
 import { formatDate } from "@/lib/time";
+import { pluralize } from "@/lib/format";
 
 export const metadata = { title: "Avaliações" };
 export const dynamic = "force-dynamic";
@@ -58,14 +59,14 @@ export default async function ReviewsPage() {
                   key={index}
                   className={
                     index < Math.round(aggregate._avg.rating ?? 0)
-                      ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
-                      : "size-4 text-[var(--border-strong)]"
+                      ? "size-4 fill-[var(--text-primary)] text-[var(--text-primary)]"
+                      : "size-4 fill-transparent text-[var(--border-strong)]"
                   }
                 />
               ))}
             </div>
-            <p className="mt-1.5 text-sm text-[var(--text-muted)]">
-              {aggregate._count} avaliação(oes)
+            <p className="mt-2 text-sm text-[var(--text-muted)]">
+              {pluralize(aggregate._count, "avaliação", "avaliações")}
             </p>
           </div>
 
@@ -75,23 +76,25 @@ export default async function ReviewsPage() {
               return (
                 <li key={rating} className="flex items-center gap-2 text-xs">
                   <span className="w-3 text-[var(--text-muted)]">{rating}</span>
-                  <Star className="size-3 fill-[var(--text-primary)] text-[var(--accent)]" />
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
+                  <Star className="size-3 fill-[var(--text-primary)] text-[var(--text-primary)]" aria-hidden />
+                  {/* O trilho precisa de anel: no tema escuro o fundo afundado
+                      e preto puro e sem borda ele viraria uma barra cheia. */}
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-sunken)] ring-1 ring-inset ring-[var(--border-subtle)]">
                     <div
-                      className="h-full rounded-full bg-[var(--accent)]"
+                      className="h-full rounded-full bg-[var(--accent)] transition-all duration-500"
                       style={{ width: `${(count / total) * 100}%` }}
                     />
                   </div>
-                  <span className="w-6 text-right text-[var(--text-muted)]">{count}</span>
+                  <span className="tnum w-6 text-right text-[var(--text-muted)]">{count}</span>
                 </li>
               );
             })}
           </ul>
 
           {pending > 0 ? (
-            <p className="mt-6 rounded-lg bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text-secondary)]">
-              {pending} avaliação(oes) sem resposta. Responder mostra ao cliente que a crítica foi
-              lida.
+            <p className="mt-6 text-pretty rounded-[var(--radius-md)] border border-dashed border-[var(--border-strong)] px-3.5 py-3 text-sm text-[var(--text-secondary)]">
+              {pluralize(pending, "avaliação sem resposta", "avaliações sem resposta")}. Responder
+              mostra ao cliente que a crítica foi lida.
             </p>
           ) : null}
         </Card>
@@ -126,7 +129,7 @@ export default async function ReviewsPage() {
                           key={index}
                           className={
                             index < review.rating
-                              ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
+                              ? "size-4 fill-[var(--text-primary)] text-[var(--text-primary)]"
                               : "size-4 text-[var(--border-strong)]"
                           }
                         />

@@ -3,8 +3,13 @@ import { ArrowLeft } from "lucide-react";
 
 import { Logo } from "@/components/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { getShopConfig, formatAddress } from "@/server/services/settings";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  // O endereco vem das configuracoes da loja: fixo no codigo, ele contradiz o
+  // rodape do site assim que a barbearia muda de ponto.
+  const shop = await getShopConfig();
+
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1fr_minmax(0,46%)]">
       <div className="flex flex-col px-5 py-6 sm:px-8">
@@ -27,7 +32,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <p className="text-center text-2xs text-[var(--text-muted)] sm:text-left">
-          Mandu Barber · Rua Augusta, 1200 · São Paulo
+          {shop.name}
+          {shop.addressLine ? ` · ${formatAddress(shop)}` : ""}
         </p>
       </div>
 

@@ -897,7 +897,7 @@ function ScheduleStep({
                             "pressable rounded-[var(--radius-md)] border py-3 text-sm font-medium tnum",
                             isSelected
                               ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]"
-                              : "border-[var(--border-subtle)] bg-[var(--surface-raised)] hover:border-[var(--accent)] hover:text-[var(--accent)]",
+                              : "border-[var(--border-default)] bg-[var(--surface-raised)] hover:border-[var(--accent)] hover:bg-[var(--surface-muted)]",
                           )}
                         >
                           {slot.label}

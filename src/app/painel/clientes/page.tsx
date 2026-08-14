@@ -130,7 +130,7 @@ export default async function ClientsPage({
           description={
             query
               ? "Tente outro termo de busca ou cadastre este cliente."
-              : "Cadastre o primeiro cliente para começar a lancar atendimentos."
+              : "Cadastre o primeiro cliente para começar a lançar atendimentos."
           }
           action={<ClientFormDialog />}
         />

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ClipboardList, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -10,7 +11,7 @@ import { Input, Select } from "@/components/ui/field";
 import { requireStaff, scopeToBarber } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig } from "@/server/services/settings";
-import { formatMoney, formatPhone } from "@/lib/format";
+import { formatMoney, formatPhone, pluralize } from "@/lib/format";
 import { formatDate, formatTime, rangeBoundaries, todayKey, addDaysISO, isValidDateKey } from "@/lib/time";
 import {
   APPOINTMENT_STATUS_LABEL,
@@ -92,7 +93,7 @@ export default async function AppointmentsListPage({
     <div className="space-y-6">
       <PageHeader
         title="Agendamentos"
-        description={`${total} registro(s) no período selecionado.`}
+        description={`${pluralize(total, "registro", "registros")} no período selecionado.`}
       />
 
       <Card className="p-4">
@@ -137,12 +138,9 @@ export default async function AppointmentsListPage({
             <Input type="date" name="ate" defaultValue={to} aria-label="Data final" />
           </div>
 
-          <button
-            type="submit"
-            className="h-10 rounded-lg bg-[var(--accent)] px-4 text-sm font-medium text-[var(--accent-contrast)] transition-all hover:brightness-110 sm:col-span-2 lg:col-span-1"
-          >
+          <Button type="submit" className="sm:col-span-2 lg:col-span-1">
             Filtrar
-          </button>
+          </Button>
         </form>
       </Card>
 
@@ -154,10 +152,10 @@ export default async function AppointmentsListPage({
         />
       ) : (
         <>
-          <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
+          <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
             <table className="w-full min-w-[720px] text-sm">
               <thead className="bg-[var(--surface-muted)] text-left">
-                <tr className="text-xs uppercase tracking-wide text-[var(--text-muted)]">
+                <tr className="text-2xs uppercase tracking-[0.12em] text-[var(--text-muted)]">
                   <th className="px-4 py-2.5 font-medium">Quando</th>
                   <th className="px-4 py-2.5 font-medium">Cliente</th>
                   <th className="px-4 py-2.5 font-medium">Serviços</th>
@@ -169,11 +167,11 @@ export default async function AppointmentsListPage({
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)] bg-[var(--surface-raised)]">
                 {appointments.map((appointment) => (
-                  <tr key={appointment.id} className="transition-colors hover:bg-[var(--surface-muted)]/50">
+                  <tr key={appointment.id} className="transition-colors hover:bg-[var(--surface-muted)]">
                     <td className="whitespace-nowrap px-4 py-3">
                       <Link
                         href={`/painel/agenda?data=${formatDateKey(appointment.startsAt, shop.timezone)}`}
-                        className="font-medium hover:text-[var(--accent)]"
+                        className="font-medium underline-offset-4 hover:underline"
                       >
                         {formatDate(appointment.startsAt, shop.timezone)}
                       </Link>
@@ -184,7 +182,7 @@ export default async function AppointmentsListPage({
                     <td className="px-4 py-3">
                       <Link
                         href={`/painel/clientes/${appointment.client.id}`}
-                        className="font-medium hover:text-[var(--accent)]"
+                        className="font-medium underline-offset-4 hover:underline"
                       >
                         {appointment.client.name}
                       </Link>

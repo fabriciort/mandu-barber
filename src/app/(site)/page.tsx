@@ -177,7 +177,7 @@ export default async function HomePage() {
                 <Badge tone={service.featured ? "solid" : "muted"} size="sm">
                   {SERVICE_CATEGORY_LABEL[service.category as ServiceCategory] ?? service.category}
                 </Badge>
-                {service.featured ? <Star className="size-4 fill-[var(--text-primary)] text-[var(--accent)]" /> : null}
+                {service.featured ? <Star className="size-4 fill-[var(--text-primary)] text-[var(--text-primary)]" /> : null}
               </div>
 
               <h3 className="mt-3 font-medium">{service.name}</h3>
@@ -318,7 +318,7 @@ export default async function HomePage() {
                     .slice(0, 4)
                     .map((perk) => (
                       <li key={perk} className="flex gap-2 text-[var(--text-secondary)]">
-                        <Scissors className="mt-0.5 size-3.5 shrink-0 text-[var(--accent)]" />
+                        <Scissors className="mt-0.5 size-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden />
                         {perk}
                       </li>
                     ))}
@@ -351,7 +351,7 @@ export default async function HomePage() {
             <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {reviews.map((review) => (
                 <Card key={review.id} className="flex flex-col p-5">
-                  <Quote className="size-5 text-[var(--accent)] opacity-50" />
+                  <Quote className="size-5 opacity-30" aria-hidden />
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--text-secondary)]">
                     {review.comment}
                   </p>
@@ -365,7 +365,7 @@ export default async function HomePage() {
                     </div>
                     <div className="flex gap-0.5" aria-label={`${review.rating} de 5`}>
                       {Array.from({ length: review.rating }).map((_, index) => (
-                        <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--accent)]" />
+                        <Star key={index} className="size-3.5 fill-[var(--text-primary)] text-[var(--text-primary)]" />
                       ))}
                     </div>
                   </div>

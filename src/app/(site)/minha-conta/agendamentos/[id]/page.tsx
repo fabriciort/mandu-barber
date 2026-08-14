@@ -219,7 +219,7 @@ export default async function AppointmentDetailPage({
                     key={index}
                     className={
                       index < appointment.review!.rating
-                        ? "size-4 fill-[var(--text-primary)] text-[var(--accent)]"
+                        ? "size-4 fill-[var(--text-primary)] text-[var(--text-primary)]"
                         : "size-4 text-[var(--border-strong)]"
                     }
                   />

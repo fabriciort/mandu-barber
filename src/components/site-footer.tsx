@@ -34,7 +34,7 @@ export async function SiteFooter() {
                 <Phone className="size-4 shrink-0 text-[var(--text-muted)]" />
                 <a
                   href={`https://wa.me/55${shop.whatsapp}`}
-                  className="hover:text-[var(--accent)]"
+                  className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -47,7 +47,7 @@ export async function SiteFooter() {
                 <Instagram className="size-4 shrink-0 text-[var(--text-muted)]" />
                 <a
                   href={`https://instagram.com/${shop.instagram}`}
-                  className="hover:text-[var(--accent)]"
+                  className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -59,10 +59,10 @@ export async function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold">Horários</h3>
+          <h3 className="text-2xs font-semibold uppercase tracking-[0.16em] text-[var(--text-primary)]">Horários</h3>
           <ul className="mt-3 space-y-1.5 text-sm text-[var(--text-muted)]">
             {shop.businessHours.map((blocks, weekday) => (
-              <li key={weekday} className="flex justify-between gap-4">
+              <li key={weekday} className="flex justify-between gap-4 tabular-nums">
                 <span>{WEEKDAY_LABEL[weekday]}</span>
                 <span className={blocks.length === 0 ? "text-[var(--text-muted)]" : "font-medium text-[var(--text-secondary)]"}>
                   {blocks.length === 0
@@ -77,25 +77,25 @@ export async function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold">Atalhos</h3>
+          <h3 className="text-2xs font-semibold uppercase tracking-[0.16em] text-[var(--text-primary)]">Atalhos</h3>
           <ul className="mt-3 space-y-2 text-sm text-[var(--text-muted)]">
             <li>
-              <Link href="/agendar" className="hover:text-[var(--accent)]">
+              <Link href="/agendar" className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline">
                 Agendar horário
               </Link>
             </li>
             <li>
-              <Link href="/planos" className="hover:text-[var(--accent)]">
+              <Link href="/planos" className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline">
                 Planos de assinatura
               </Link>
             </li>
             <li>
-              <Link href="/minha-conta" className="hover:text-[var(--accent)]">
+              <Link href="/minha-conta" className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline">
                 Minha conta
               </Link>
             </li>
             <li>
-              <Link href="/entrar" className="hover:text-[var(--accent)]">
+              <Link href="/entrar" className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline">
                 Área da equipe
               </Link>
             </li>

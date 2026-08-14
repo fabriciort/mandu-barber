@@ -120,10 +120,10 @@ export default async function PanelHomePage() {
           <EmptyState
             icon={CalendarCheck}
             title="Nada mais marcado para hoje"
-            description="Aproveite para revisar o cardápio ou lancar um atendimento de balcão."
+            description="Aproveite para revisar o cardápio ou lançar um atendimento de balcão."
             action={
               <Button asChild variant="secondary" size="sm">
-                <Link href="/painel/agendamentos?novo=1">Lancar atendimento</Link>
+                <Link href="/painel/agendamentos?novo=1">Lançar atendimento</Link>
               </Button>
             }
           />

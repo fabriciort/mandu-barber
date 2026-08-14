@@ -78,7 +78,7 @@ export function SettingsForm({
 
       <Card className="p-6">
         <h2 className="flex items-center gap-2 font-semibold">
-          <Store className="size-4 text-[var(--accent)]" />
+          <Store className="size-4 text-[var(--text-muted)]" aria-hidden />
           Identidade
         </h2>
 
@@ -92,7 +92,7 @@ export function SettingsForm({
           <Field label="Telefone fixo" htmlFor="phone">
             <PhoneInput id="phone" name="phone" defaultValue={settings.phone} />
           </Field>
-          <Field label="WhatsApp" htmlFor="whatsapp" hint="Usado nos botoes de contato do site.">
+          <Field label="WhatsApp" htmlFor="whatsapp" hint="Usado nos botões de contato do site.">
             <PhoneInput id="whatsapp" name="whatsapp" defaultValue={settings.whatsapp} />
           </Field>
           <Field label="E-mail" htmlFor="email" error={state.fieldErrors?.email}>
@@ -106,7 +106,7 @@ export function SettingsForm({
 
       <Card className="p-6">
         <h2 className="flex items-center gap-2 font-semibold">
-          <MapPin className="size-4 text-[var(--accent)]" />
+          <MapPin className="size-4 text-[var(--text-muted)]" aria-hidden />
           Endereço
         </h2>
 
@@ -139,7 +139,7 @@ export function SettingsForm({
 
       <Card className="p-6">
         <h2 className="flex items-center gap-2 font-semibold">
-          <Clock className="size-4 text-[var(--accent)]" />
+          <Clock className="size-4 text-[var(--text-muted)]" aria-hidden />
           Funcionamento
         </h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
@@ -191,7 +191,7 @@ export function SettingsForm({
 
       <Card className="p-6">
         <h2 className="flex items-center gap-2 font-semibold">
-          <Settings2 className="size-4 text-[var(--accent)]" />
+          <Settings2 className="size-4 text-[var(--text-muted)]" aria-hidden />
           Regras do agendamento
         </h2>
 
@@ -273,11 +273,21 @@ export function SettingsForm({
         </p>
       ) : null}
 
-      <div className="sticky bottom-20 flex justify-end lg:bottom-4">
-        <Button type="submit" size="lg" loading={pending} disabled={Boolean(invalidDay)}>
-          <Save className="size-4" />
-          Salvar configurações
-        </Button>
+      {/* Barra de salvar: fica grudada no rodape, mas sobre uma superficie
+          propria. Solto sobre o formulario, o botao pousava em cima do campo
+          seguinte e o texto aparecia por baixo dele. */}
+      <div className="sticky bottom-20 -mx-4 border-t border-[var(--border-subtle)] bg-[var(--surface)] px-4 py-3 sm:-mx-6 sm:px-6 lg:bottom-0">
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {invalidDay ? (
+            <p className="mr-auto text-sm text-[var(--text-secondary)]">
+              Revise os horários antes de salvar.
+            </p>
+          ) : null}
+          <Button type="submit" size="lg" loading={pending} disabled={Boolean(invalidDay)}>
+            <Save className="size-4" />
+            Salvar configurações
+          </Button>
+        </div>
       </div>
     </form>
   );
