@@ -166,6 +166,28 @@ criou para o próximo deploy tentar de novo, em vez de deixar o banco pela metad
 
 **4. A rotina já está agendada** no `vercel.json`, de hora em hora.
 
+### Quando algo não sobe
+
+Abra **`/api/saude`**. Ele diz exatamente o que falta, sem expor segredo (a senha
+do banco nunca aparece — só o host):
+
+| Resposta | O que significa |
+| --- | --- |
+| `ok` | Conectado, com tabelas e dados. Se a tela ainda quebra, o problema é outro. |
+| `sem-configuracao` | Nenhuma variável de conexão chegou ao ambiente. |
+| `sem-conexao` | A string existe mas o banco não responde — host errado, ou falta `sslmode=require`. |
+| `sem-tabelas` | O banco responde mas as migrações não rodaram. |
+| `vazio` | Tudo criado, mas sem dados: publique de novo para a carga inicial rodar. |
+
+O nome da variável não precisa ser exatamente `DATABASE_URL`: também são aceitos
+`POSTGRES_PRISMA_URL`, `POSTGRES_URL`, `DATABASE_URL_UNPOOLED` e
+`POSTGRES_URL_NON_POOLING`, porque cada integração batiza de um jeito. A resposta
+de `/api/saude` mostra de qual delas veio.
+
+E o build **nunca falha por causa do banco**: se ele estiver mal configurado, o
+deploy sobe assim mesmo com o aviso no log, em vez de ser descartado e deixar a
+versão antiga (quebrada) no ar.
+
 ## Rotina agendada
 
 `GET /api/cron/lembretes` — chame de hora em hora pelo agendador do seu provedor:

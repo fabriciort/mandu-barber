@@ -1,13 +1,12 @@
 /**
- * Preparo do banco no deploy.
+ * Carga inicial da barbearia.
  *
- * Roda no build (veja o script "build" no package.json) logo depois das
- * migracoes. Popula a barbearia de demonstracao APENAS quando o banco esta
- * vazio — a partir do primeiro usuario cadastrado, nunca mais toca em nada.
+ * Popula os dados de demonstracao APENAS quando o banco esta vazio — a partir
+ * do primeiro usuario cadastrado, nunca mais toca em nada. E o que permite
+ * subir o projeto sem abrir terminal e, ao mesmo tempo, garante que deploys
+ * seguintes preservem os dados reais da loja.
  *
- * E o que permite subir o projeto sem abrir terminal: cria o banco no provedor,
- * aponta a DATABASE_URL e o primeiro deploy ja entrega o site com dados.
- *
+ * Chamado por prisma/deploy.ts durante o build.
  * Para repovoar do zero (apaga tudo): npm run db:seed
  */
 import { PrismaClient } from "@prisma/client";
@@ -16,7 +15,7 @@ import { seed } from "./seed";
 
 const prisma = new PrismaClient();
 
-async function bootstrap() {
+export async function bootstrap() {
   const existing = await prisma.user.count();
 
   if (existing > 0) {
@@ -25,53 +24,59 @@ async function bootstrap() {
   }
 
   console.log("[bootstrap] Banco vazio — populando a barbearia de demonstracao.");
-  await seed();
+
+  try {
+    await seed();
+  } catch (error) {
+    console.error("[bootstrap] Falha ao popular:", error);
+    await rollbackPartialSeed();
+    console.error("[bootstrap] Dados parciais removidos — o proximo deploy tenta de novo.");
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 /**
  * O seed nao e transacional: se parar no meio, deixa o banco pela metade e a
  * proxima execucao veria "ja tem usuario" e pularia, congelando o estado
- * quebrado. Como so chegamos aqui com o banco vazio, desfazer e seguro e
- * devolve o banco ao ponto de partida para o proximo deploy tentar de novo.
+ * quebrado. Como so chegamos aqui com o banco vazio, desfazer e seguro.
  */
 async function rollbackPartialSeed() {
-  await prisma.$transaction([
-    prisma.auditLog.deleteMany(),
-    prisma.notification.deleteMany(),
-    prisma.review.deleteMany(),
-    prisma.payment.deleteMany(),
-    prisma.invoice.deleteMany(),
-    prisma.subscriptionUsage.deleteMany(),
-    prisma.subscriptionCredit.deleteMany(),
-    prisma.subscription.deleteMany(),
-    prisma.appointmentService.deleteMany(),
-    prisma.appointment.deleteMany(),
-    prisma.planBenefit.deleteMany(),
-    prisma.plan.deleteMany(),
-    prisma.barberService.deleteMany(),
-    prisma.workingHour.deleteMany(),
-    prisma.timeOff.deleteMany(),
-    prisma.barberProfile.deleteMany(),
-    prisma.service.deleteMany(),
-    prisma.session.deleteMany(),
-    prisma.user.deleteMany(),
-    prisma.businessHour.deleteMany(),
-    prisma.shopSettings.deleteMany(),
-  ]);
+  try {
+    await prisma.$transaction([
+      prisma.auditLog.deleteMany(),
+      prisma.notification.deleteMany(),
+      prisma.review.deleteMany(),
+      prisma.payment.deleteMany(),
+      prisma.invoice.deleteMany(),
+      prisma.subscriptionUsage.deleteMany(),
+      prisma.subscriptionCredit.deleteMany(),
+      prisma.subscription.deleteMany(),
+      prisma.appointmentService.deleteMany(),
+      prisma.appointment.deleteMany(),
+      prisma.planBenefit.deleteMany(),
+      prisma.plan.deleteMany(),
+      prisma.barberService.deleteMany(),
+      prisma.workingHour.deleteMany(),
+      prisma.timeOff.deleteMany(),
+      prisma.barberProfile.deleteMany(),
+      prisma.service.deleteMany(),
+      prisma.session.deleteMany(),
+      prisma.user.deleteMany(),
+      prisma.businessHour.deleteMany(),
+      prisma.shopSettings.deleteMany(),
+    ]);
+  } catch (cleanupError) {
+    console.error("[bootstrap] Falha ao limpar os dados parciais:", cleanupError);
+  }
 }
 
-bootstrap()
-  .catch(async (error) => {
-    // Falhar aqui nao pode derrubar o deploy por causa de dados de exemplo:
-    // as migracoes ja rodaram e o app sobe, com o gestor populando pelo painel.
-    console.error("[bootstrap] Nao foi possivel popular o banco:", error);
-    try {
-      await rollbackPartialSeed();
-      console.error("[bootstrap] Dados parciais removidos — o proximo deploy tenta de novo.");
-    } catch (cleanupError) {
-      console.error("[bootstrap] Falha ao limpar os dados parciais:", cleanupError);
-    }
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Permite rodar sozinho: npx tsx prisma/bootstrap.ts
+if (process.argv[1]?.endsWith("bootstrap.ts")) {
+  bootstrap()
+    .catch(() => process.exit(1))
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
