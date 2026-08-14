@@ -164,7 +164,10 @@ criou para o próximo deploy tentar de novo, em vez de deixar o banco pela metad
 > Para começar com a base limpa em vez dos dados de exemplo, rode
 > `DATABASE_URL="..." npx prisma migrate deploy` e pule o bootstrap.
 
-**4. A rotina já está agendada** no `vercel.json`, de hora em hora.
+**4. A rotina já está agendada** no `vercel.json`: uma vez por dia, às 12:00 UTC
+(09:00 em Brasília), que é o limite do plano Hobby da Vercel. Se um dia migrar
+para o Pro, dá para deixar de hora em hora (`0 * * * *`) e os lembretes ficam
+mais próximos do horário do cliente.
 
 ### Quando algo não sobe
 
@@ -190,7 +193,7 @@ versão antiga (quebrada) no ar.
 
 ## Rotina agendada
 
-`GET /api/cron/lembretes` — chame de hora em hora pelo agendador do seu provedor:
+`GET /api/cron/lembretes` — agendado pelo `vercel.json`, ou chamado à mão:
 
 ```bash
 curl -H "Authorization: Bearer $CRON_SECRET" https://seu-dominio/api/cron/lembretes
@@ -199,6 +202,12 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://seu-dominio/api/cron/lembre
 Faz três coisas, todas idempotentes: envia lembrete dos atendimentos das próximas
 24 h (uma vez por agendamento), marca faturas vencidas e coloca a assinatura em
 atraso, e vira o ciclo das assinaturas cujo período terminou.
+
+Rodando uma vez por dia, o lembrete sai com até 24 h de antecedência — quem
+agenda hoje à tarde para amanhã cedo recebe o aviso na execução da manhã. A
+virada de ciclo da assinatura **não depende** desta rotina: ela também acontece
+em qualquer leitura da assinatura, justamente para o saldo do cliente nunca
+aparecer desatualizado por causa da frequência do cron.
 
 ## Pagamentos
 
