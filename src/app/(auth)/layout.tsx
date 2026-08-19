@@ -5,6 +5,13 @@ import { Logo } from "@/components/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getShopConfig, formatAddress } from "@/server/services/settings";
 
+/**
+ * Estas telas leem a configuracao da loja, entao sao renderizadas a cada
+ * requisicao. Sem isto, o Next tenta gerar a casca no build e o build inteiro
+ * cai quando o banco ainda nao esta acessivel na maquina que compila.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   // O endereco vem das configuracoes da loja: fixo no codigo, ele contradiz o
   // rodape do site assim que a barbearia muda de ponto.

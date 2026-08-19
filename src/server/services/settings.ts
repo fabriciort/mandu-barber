@@ -41,40 +41,55 @@ const FALLBACK_HOURS: Interval[][] = [
 ];
 
 /**
- * Configuracao da loja, memoizada por requisicao. Se o registro ainda nao
- * existir (primeiro boot antes do seed), devolve um padrao coerente em vez de
- * quebrar a home.
+ * Padrao usado quando ainda nao ha registro no banco (primeiro boot, antes da
+ * carga inicial) ou quando o banco esta fora do ar.
+ */
+const FALLBACK_SHOP: ShopConfig = {
+  id: "shop",
+  name: "Mandu Barber",
+  tagline: "Barbearia de bairro com padrão de alta costura.",
+  phone: null,
+  whatsapp: null,
+  email: null,
+  addressLine: null,
+  district: null,
+  city: null,
+  state: null,
+  zipCode: null,
+  instagram: null,
+  mapsUrl: null,
+  timezone: DEFAULT_TIMEZONE,
+  slotStepMinutes: 15,
+  minLeadMinutes: 60,
+  maxAdvanceDays: 60,
+  cancellationWindowHours: 3,
+  allowOnlineBooking: true,
+  businessHours: FALLBACK_HOURS,
+};
+
+/**
+ * Configuracao da loja, memoizada por requisicao.
+ *
+ * NUNCA lanca. Isto aqui e enfeite de pagina — nome, endereco, horario de
+ * funcionamento — e nao dado de negocio: se o banco estiver fora do ar ou a
+ * variavel de conexao vier vazia, e melhor a pagina abrir com o padrao do que
+ * o site inteiro virar tela de erro. Quem depende de dado real (agenda, preco,
+ * credito de plano) faz a propria consulta e falha alto, como deve.
  */
 export const getShopConfig = cache(async (): Promise<ShopConfig> => {
-  const shop = await prisma.shopSettings.findUnique({
-    where: { id: "shop" },
-    include: { businessHours: { orderBy: { weekday: "asc" } } },
-  });
+  let shop: Awaited<ReturnType<typeof findShop>> = null;
 
-  if (!shop) {
-    return {
-      id: "shop",
-      name: "Mandu Barber",
-      tagline: "Barbearia de bairro com padrão de alta costura.",
-      phone: null,
-      whatsapp: null,
-      email: null,
-      addressLine: null,
-      district: null,
-      city: null,
-      state: null,
-      zipCode: null,
-      instagram: null,
-      mapsUrl: null,
-      timezone: DEFAULT_TIMEZONE,
-      slotStepMinutes: 15,
-      minLeadMinutes: 60,
-      maxAdvanceDays: 60,
-      cancellationWindowHours: 3,
-      allowOnlineBooking: true,
-      businessHours: FALLBACK_HOURS,
-    };
+  try {
+    shop = await findShop();
+  } catch (error) {
+    console.error(
+      "[settings] banco indisponivel ao ler a configuracao da loja; usando o padrao.",
+      error instanceof Error ? error.message : error,
+    );
+    return FALLBACK_SHOP;
   }
+
+  if (!shop) return FALLBACK_SHOP;
 
   const businessHours: Interval[][] = Array.from({ length: 7 }, () => [] as Interval[]);
   for (const hour of shop.businessHours) {
@@ -105,6 +120,13 @@ export const getShopConfig = cache(async (): Promise<ShopConfig> => {
     businessHours,
   };
 });
+
+function findShop() {
+  return prisma.shopSettings.findUnique({
+    where: { id: "shop" },
+    include: { businessHours: { orderBy: { weekday: "asc" } } },
+  });
+}
 
 export function formatAddress(shop: ShopConfig): string {
   return [shop.addressLine, shop.district, [shop.city, shop.state].filter(Boolean).join("/")]

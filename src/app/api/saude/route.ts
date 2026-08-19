@@ -16,15 +16,21 @@ export const dynamic = "force-dynamic";
  *   GET /api/saude
  */
 export async function GET() {
-  const { url, source } = resolveDatabaseUrl();
+  const { url, source, emptyNames } = resolveDatabaseUrl();
 
   if (!url) {
+    // "Existe porem vazia" e "nao existe" mandam a pessoa para lugares
+    // diferentes no painel do provedor. Vale a pena separar as duas.
+    const vazias = emptyNames.join(", ");
     return NextResponse.json(
       {
         status: "sem-configuracao",
-        problema: "A variavel DATABASE_URL nao esta definida neste ambiente.",
-        solucao:
-          "No painel do provedor, em Environment Variables, defina DATABASE_URL com a string do Postgres e faca um novo deploy.",
+        problema: vazias
+          ? `A variavel ${vazias} existe neste ambiente, mas esta vazia.`
+          : "Nenhuma variavel de conexao (DATABASE_URL, POSTGRES_URL...) esta definida neste ambiente.",
+        solucao: vazias
+          ? `No painel do provedor, em Environment Variables, abra ${emptyNames[0]}, cole a string do Postgres, confirme que ela vale para Production, Preview e Development, e faca um novo deploy.`
+          : "No painel do provedor, em Environment Variables, defina DATABASE_URL com a string do Postgres (marcando Production, Preview e Development) e faca um novo deploy.",
       },
       { status: 503 },
     );

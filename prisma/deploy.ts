@@ -64,12 +64,21 @@ function listMigrations(): string[] {
 
 async function main() {
   loadDotEnv();
-  const { url, source } = resolveDatabaseUrl();
+  const { url, source, emptyNames } = resolveDatabaseUrl();
 
   if (!url) {
-    log("NENHUMA variavel de conexao encontrada (DATABASE_URL, POSTGRES_URL...).");
+    if (emptyNames.length > 0) {
+      // Diferenca que economiza uma hora de procura: no painel da Vercel a
+      // linha existe na lista, entao "nao encontrada" faz a pessoa jurar que
+      // o codigo esta errado. O problema e o VALOR, nao o nome.
+      log(`A variavel ${emptyNames.join(", ")} existe neste ambiente, mas esta VAZIA.`);
+      log(`Abra Environment Variables, edite ${emptyNames[0]} e cole a string do Postgres.`);
+      log("Confirme que ela esta marcada para Production, Preview e Development.");
+    } else {
+      log("NENHUMA variavel de conexao encontrada (DATABASE_URL, POSTGRES_URL...).");
+      log("Defina DATABASE_URL nas variaveis de ambiente e publique de novo.");
+    }
     log("O site vai subir, mas toda pagina que le dados vai falhar.");
-    log("Defina DATABASE_URL nas variaveis de ambiente e publique de novo.");
     log("Depois do deploy, abra /api/saude para confirmar.");
     return;
   }

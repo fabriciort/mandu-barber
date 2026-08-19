@@ -23,15 +23,32 @@ export type ResolvedDatabaseUrl = {
   url: string | null;
   /** Nome da variavel de onde veio — util no diagnostico. */
   source: string | null;
+  /**
+   * Variaveis que existem no ambiente mas estao vazias.
+   *
+   * Vale ouro no diagnostico: no painel da Vercel a linha DATABASE_URL aparece
+   * na lista, entao quem olha jura que configurou. Dizer "nao definida" manda a
+   * pessoa procurar a linha errada; dizer "definida, porem vazia" manda ela
+   * abrir a linha certa e colar o valor.
+   */
+  emptyNames: string[];
 };
 
-export function resolveDatabaseUrl(env: NodeJS.ProcessEnv = process.env): ResolvedDatabaseUrl {
+export function resolveDatabaseUrl(
+  env: Record<string, string | undefined> = process.env,
+): ResolvedDatabaseUrl {
+  const emptyNames: string[] = [];
+
   for (const name of CANDIDATES) {
-    const value = env[name]?.trim();
-    // Variavel definida como string vazia e o mesmo que ausente.
-    if (value) return { url: value, source: name };
+    const raw = env[name];
+    const value = raw?.trim();
+    if (value) return { url: value, source: name, emptyNames };
+    // Definida como string vazia: para conectar e o mesmo que ausente, mas para
+    // explicar o erro e uma situacao bem diferente.
+    if (raw !== undefined) emptyNames.push(name);
   }
-  return { url: null, source: null };
+
+  return { url: null, source: null, emptyNames };
 }
 
 /** Host e nome do banco, sem usuario nem senha — seguro para log e diagnostico. */
