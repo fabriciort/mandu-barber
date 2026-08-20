@@ -63,9 +63,13 @@ export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
         aria-hidden
       />
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex items-center justify-center gap-2.5 px-4 pb-3 pb-safe md:hidden">
+      {/* justify-between + capsula flexivel: assim a capsula comeca na margem
+          esquerda e o botao termina na direita, exatamente onde a pilula do logo
+          comeca e o circulo do menu termina la em cima. As quatro pecas se
+          alinham pelas mesmas duas linhas verticais. */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-2.5 px-4 pb-3 pb-safe md:hidden">
         <nav
-          className="glass pointer-events-auto rounded-full p-1.5"
+          className="glass pointer-events-auto min-w-0 flex-1 rounded-full p-1.5"
           aria-label="Navegação principal"
         >
           <div className="relative grid grid-cols-3">
@@ -110,7 +114,7 @@ function TabLink({ tab, active }: { tab: Tab; active: boolean }) {
     <Link
       href={tab.href}
       aria-current={active ? "page" : undefined}
-      className="relative flex h-[3.25rem] min-w-[4.75rem] flex-col items-center justify-center gap-0.5 rounded-full outline-offset-[-3px]"
+      className="relative flex h-[3.25rem] min-w-0 flex-col items-center justify-center gap-0.5 rounded-full outline-offset-[-3px]"
     >
       <TabContent tab={tab} active={active} />
     </Link>

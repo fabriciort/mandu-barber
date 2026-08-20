@@ -61,15 +61,17 @@ export function MobileNav({
 
   return (
     <>
+      {/* Circulo de vidro, do mesmo tamanho e no mesmo alinhamento do botao de
+          agendar la embaixo: as duas pontas da tela conversam. */}
       <button
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="pressable inline-flex size-10 items-center justify-center rounded-[var(--radius-md)] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] md:hidden"
+        className="glass flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[var(--text-primary)] transition-transform duration-200 active:scale-90 md:hidden"
         aria-label="Abrir menu"
         aria-expanded={open}
       >
-        <Menu className="size-5" />
+        <Menu className="size-[22px]" strokeWidth={2} />
       </button>
 
       {open ? (

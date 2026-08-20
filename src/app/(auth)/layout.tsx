@@ -3,6 +3,9 @@ import { ArrowLeft } from "lucide-react";
 
 import { Logo } from "@/components/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { MobileTopBar } from "@/components/mobile-top-bar";
+import { SiteTabBar } from "@/components/site-tabbar";
+import { getCurrentUser } from "@/server/auth/session";
 import { getShopConfig, formatAddress } from "@/server/services/settings";
 
 /**
@@ -15,12 +18,18 @@ export const dynamic = "force-dynamic";
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   // O endereco vem das configuracoes da loja: fixo no codigo, ele contradiz o
   // rodape do site assim que a barbearia muda de ponto.
-  const shop = await getShopConfig();
+  const [shop, user] = await Promise.all([getShopConfig(), getCurrentUser()]);
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1fr_minmax(0,46%)]">
-      <div className="flex flex-col px-5 py-6 sm:px-8">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col px-5 pb-6 sm:px-8 md:pt-6">
+        {/* Celular: o mesmo cromo do resto do site. Antes estas telas tinham
+            cabecalho proprio e nenhuma barra embaixo — entrar era o unico lugar
+            do app onde a navegacao sumia, e quem chegava aqui ficava sem saida
+            a nao ser o botao do navegador. */}
+        <MobileTopBar action={<ThemeToggle className="glass size-[3.25rem] shrink-0 rounded-full" />} />
+
+        <div className="hidden items-center justify-between md:flex">
           <Logo />
           <div className="flex items-center gap-1">
             <ThemeToggle />
@@ -42,6 +51,8 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
           {shop.name}
           {shop.addressLine ? ` · ${formatAddress(shop)}` : ""}
         </p>
+
+        <SiteTabBar authenticated={Boolean(user)} />
       </div>
 
       {/* Painel de marca: some no mobile para nao roubar espaco do formulario.

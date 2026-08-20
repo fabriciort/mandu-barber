@@ -51,7 +51,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-[var(--border-subtle)] bg-[var(--surface)]/90 px-4 backdrop-blur-md sm:px-6">
+        {/* Mesmo material da navegacao: o painel carrega tres acoes no topo
+            (avisos, tema, perfil) e nao cabe no par "pilula + circulo" do site,
+            mas o vidro mantem a familia. */}
+        <header className="glass sticky top-0 z-20 flex h-16 items-center gap-3 px-4 sm:px-6">
           <div className="lg:hidden">
             <Logo href="/painel" compact />
           </div>
