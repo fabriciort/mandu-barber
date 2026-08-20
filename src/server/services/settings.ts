@@ -46,7 +46,7 @@ const FALLBACK_HOURS: Interval[][] = [
  */
 const FALLBACK_SHOP: ShopConfig = {
   id: "shop",
-  name: "Mandu Barber",
+  name: "mr. mandu",
   tagline: "Barbearia de bairro com padrão de alta costura.",
   phone: null,
   whatsapp: null,

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Mandu Barber — sistema visual
+ * mr. mandu — sistema visual
  * ============================================================================
  *
  * Monocromatico por decisao, nao por falta de cor. Sem matiz para se apoiar, a
@@ -41,7 +41,7 @@
    * Tipografia
    * ------------------------------------------------------------------- */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-display), ui-rounded, "Segoe UI", system-ui, sans-serif;
 
   --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
@@ -178,6 +178,31 @@
 
   --ring: #08080a;
 
+  /* -------------------------------------------------------------------
+   * Cor da marca.
+   *
+   * O produto inteiro e monocromatico por decisao. A UNICA excecao e o
+   * poste de barbeiro do logotipo: o vermelho e o azul sao a identidade da
+   * casa e o simbolo mais reconhecivel da profissao — sem eles o logo vira
+   * um retangulo qualquer. Ficam isolados aqui, entao virar tudo preto e
+   * branco e trocar duas linhas, nao repintar o app.
+   * ------------------------------------------------------------------- */
+  --pole-red: #e30613;
+  --pole-blue: #0022e0;
+  --pole-body: #ffffff;
+
+  /* -------------------------------------------------------------------
+   * Tela escura de tela cheia (heroi do site).
+   *
+   * Diferente de --surface-inverse de proposito. Inverter funciona em peca
+   * pequena: um aviso, uma etiqueta, um cartao — ali a inversao le como
+   * "camada em destaque". Numa faixa que ocupa a tela inteira, inverter no
+   * modo escuro joga um retangulo branco gigante na cara de quem escolheu
+   * o modo escuro justamente para nao levar luz na cara. Entao esta
+   * superficie e escura NOS DOIS TEMAS.
+   * ------------------------------------------------------------------- */
+  --canvas-deep: #08080a;
+
   /* Elevacao por sombra: no tema claro a profundidade vem da sombra. */
   --shadow-sm: 0 1px 2px rgb(8 8 10 / 0.05);
   --shadow-md: 0 1px 2px rgb(8 8 10 / 0.04), 0 6px 16px -8px rgb(8 8 10 / 0.14);
@@ -207,6 +232,16 @@
   --accent-soft: #1c1c1f;
 
   --ring: #ffffff;
+
+  /* No escuro o poste clareia um tom: vermelho e azul puros sobre preto
+     vibram e cansam a vista. */
+  --pole-red: #ff3b45;
+  --pole-blue: #4d63ff;
+  --pole-body: #f2f2f4;
+
+  /* Um passo acima do preto puro da pagina: assim a faixa ainda se separa
+     do fundo em vez de derreter nele. */
+  --canvas-deep: #131316;
 
   /* No escuro, sombra nao cria profundidade — a borda e a luz da superficie
      e que fazem. As sombras ficam so para separar camadas sobrepostas. */
@@ -320,7 +355,9 @@
   .font-display {
     font-family: var(--font-display);
     letter-spacing: var(--tracking-display);
-    font-weight: 400;
+    /* Geometrica pede peso: no 400 os titulos grandes ficam anemicos ao lado
+       do Inter do corpo de texto. */
+    font-weight: 500;
   }
 
   /* ---------------------------------------------------------------------

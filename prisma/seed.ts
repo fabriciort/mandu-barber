@@ -1,5 +1,5 @@
 /**
- * Semente da Mandu Barber.
+ * Semente da mr. mandu.
  *
  * Cria uma barbearia crivel: equipe, catalogo, planos, clientes com historico e
  * agenda povoada nas proximas semanas. O objetivo e que qualquer pessoa que
@@ -70,7 +70,7 @@ export async function seed() {
   await prisma.shopSettings.create({
     data: {
       id: "shop",
-      name: "Mandu Barber",
+      name: "mr. mandu",
       tagline: "Barbearia de bairro com padrão de alta costura.",
       phone: "1133334444",
       whatsapp: "11987654321",

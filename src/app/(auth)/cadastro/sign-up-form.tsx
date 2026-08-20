@@ -36,11 +36,26 @@ export function SignUpForm({ next }: { next?: string }) {
       ) : null}
 
       <Field label="Nome completo" htmlFor="name" required error={state.fieldErrors?.name}>
-        <Input id="name" name="name" autoComplete="name" required placeholder="Como podemos te chamar" />
+        <Input
+          id="name"
+          name="name"
+          autoComplete="name"
+          enterKeyHint="next"
+          required
+          placeholder="Como podemos te chamar"
+        />
       </Field>
 
       <Field label="E-mail" htmlFor="email" required error={state.fieldErrors?.email}>
-        <Input id="email" name="email" type="email" autoComplete="email" required placeholder="voce@email.com" />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          enterKeyHint="next"
+          required
+          placeholder="voce@email.com"
+        />
       </Field>
 
       <Field
@@ -64,6 +79,7 @@ export function SignUpForm({ next }: { next?: string }) {
           name="password"
           type="password"
           autoComplete="new-password"
+          enterKeyHint="go"
           minLength={8}
           required
         />

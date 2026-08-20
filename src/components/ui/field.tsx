@@ -28,14 +28,36 @@ const controlBase = [
 const controlInvalid =
   "border-[var(--text-primary)] border-2 focus:ring-[var(--accent)]/15";
 
+/**
+ * Ajustes que so existem no teclado do celular.
+ *
+ * Sao aqueles detalhes que ninguem elogia mas todo mundo sente: o iOS
+ * capitaliza a primeira letra de um e-mail se voce nao pedir para ele parar, e
+ * corrige "gmail" para "e-mail". CEP e telefone abrem o teclado alfabetico
+ * inteiro quando so precisam de numero. Fica aqui no componente base para
+ * valer em todo campo do app, e nao so nos que alguem lembrou de configurar.
+ */
+const MOBILE_HINTS: Record<string, React.InputHTMLAttributes<HTMLInputElement>> = {
+  email: { inputMode: "email", autoCapitalize: "none", autoCorrect: "off", spellCheck: false },
+  tel: { inputMode: "tel", autoCorrect: "off" },
+  url: { inputMode: "url", autoCapitalize: "none", autoCorrect: "off", spellCheck: false },
+  number: { inputMode: "numeric" },
+  password: { autoCapitalize: "none", autoCorrect: "off", spellCheck: false },
+  search: { autoCapitalize: "none", autoCorrect: "off" },
+};
+
 export const Input = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }
->(({ className, invalid, ...props }, ref) => (
+>(({ className, invalid, type, ...props }, ref) => (
   <input
     ref={ref}
+    type={type}
     aria-invalid={invalid || undefined}
     className={cn(controlBase, "h-11", invalid && controlInvalid, className)}
+    // Vem antes de {...props} de proposito: e padrao, nao imposicao. Quem
+    // passar inputMode explicito continua mandando.
+    {...(type ? MOBILE_HINTS[type] : undefined)}
     {...props}
   />
 ));

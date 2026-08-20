@@ -25,7 +25,7 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-5 sm:px-6">
         <Logo />
 
-        <nav className="ml-6 hidden items-center gap-0.5 md:flex" aria-label="Navegação principal">
+        <nav className="ml-6 hidden items-center gap-0.5 md:flex" aria-label="Seções do site">
           {LINKS.map((link) => (
             <Link
               key={link.href}

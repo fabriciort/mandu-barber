@@ -42,6 +42,7 @@ export function SignInForm({ next }: { next?: string }) {
           name="email"
           type="email"
           autoComplete="email"
+          enterKeyHint="next"
           required
           placeholder="voce@email.com"
         />
@@ -54,6 +55,7 @@ export function SignInForm({ next }: { next?: string }) {
             name="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            enterKeyHint="go"
             required
             className="pr-11"
           />

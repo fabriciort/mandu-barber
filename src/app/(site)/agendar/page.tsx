@@ -13,7 +13,7 @@ import { todayKey } from "@/lib/time";
 
 export const metadata: Metadata = {
   title: "Agendar horário",
-  description: "Escolha serviço, profissional e horário na Mandu Barber.",
+  description: "Escolha serviço, profissional e horário na mr. mandu.",
 };
 
 export const dynamic = "force-dynamic";

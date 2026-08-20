@@ -17,7 +17,7 @@ import { formatDuration } from "@/lib/time";
 export const metadata: Metadata = {
   title: "Planos de assinatura",
   description:
-    "Assine a Mandu Barber: franquia mensal de cortes e barbas, desconto no cardápio e prioridade na agenda.",
+    "Assine a mr. mandu: franquia mensal de cortes e barbas, desconto no cardápio e prioridade na agenda.",
 };
 
 export const dynamic = "force-dynamic";

@@ -62,7 +62,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ------------------------------------------------------------ hero */}
-      <section className="grain relative isolate overflow-hidden bg-[var(--surface-inverse)] text-[var(--text-inverse)]">
+      <section className="grain relative isolate overflow-hidden bg-[var(--canvas-deep)] text-white">
         {/* Vinheta: escurece as bordas e puxa o olho para o centro do texto.
             Sem cor, a profundidade vem da luz. */}
         <div

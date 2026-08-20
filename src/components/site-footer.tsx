@@ -15,10 +15,12 @@ export async function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2.5">
-            <BrandMark />
-            <span className="font-display text-xl">
+            {/* Mesma ordem do cabecalho: nome e depois o poste, como no
+                logotipo da casa. */}
+            <span className="font-display text-xl leading-none tracking-[-0.02em]">
               {shop.name}
             </span>
+            <BrandMark className="h-8" />
           </div>
           <p className="mt-3 max-w-sm text-sm text-[var(--text-muted)]">{shop.tagline}</p>
 

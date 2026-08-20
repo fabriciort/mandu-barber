@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 
 import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
@@ -10,13 +10,13 @@ const inter = Inter({
   display: "swap",
 });
 
-// Serifa editorial de alto contraste: no monocromatico, a diferenca entre
-// hastes grossas e finas e o que substitui a cor como ornamento.
-const display = Instrument_Serif({
+// Sans geometrica, a mesma familia visual do logotipo "mr. mandu": bojos
+// circulares, traco de espessura constante, caixa baixa amigavel. Uma serifa
+// editorial ao lado daquele logo faria a pagina parecer de outra empresa.
+const display = Outfit({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: "400",
 });
 
 /**
@@ -51,16 +51,16 @@ function resolveAppUrl(): URL {
 export const metadata: Metadata = {
   metadataBase: resolveAppUrl(),
   title: {
-    default: "Mandu Barber — Barbearia em São Paulo",
-    template: "%s · Mandu Barber",
+    default: "mr. mandu — Barbearia em São Paulo",
+    template: "%s · mr. mandu",
   },
   description:
-    "Agende seu corte na Mandu Barber, acompanhe seu plano de assinatura e escolha o profissional pelo horário que cabe no seu dia.",
+    "Agende seu corte na mr. mandu, acompanhe seu plano de assinatura e escolha o profissional pelo horário que cabe no seu dia.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    siteName: "Mandu Barber",
-    title: "Mandu Barber — Barbearia em São Paulo",
+    siteName: "mr. mandu",
+    title: "mr. mandu — Barbearia em São Paulo",
     description: "Agendamento online, planos de assinatura e uma equipe que conhece seu corte.",
   },
   robots: { index: true, follow: true },
