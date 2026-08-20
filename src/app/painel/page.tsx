@@ -130,29 +130,49 @@ export default async function PanelHomePage() {
         ) : (
           <ul className="divide-y divide-[var(--border-subtle)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
             {data.today.nextAppointments.map((appointment) => (
+              /* No celular a etiqueta e o valor descem para uma segunda linha.
+                 Lado a lado numa tela de 390px sobravam ~90px para o nome, e
+                 todo cliente virava "Tiago F..." — o dado mais importante da
+                 linha era o unico ilegivel. */
               <li
                 key={appointment.id}
-                className="flex flex-wrap items-center gap-3 bg-[var(--surface-raised)] px-4 py-3.5 transition-colors hover:bg-[var(--surface-muted)]"
+                className="flex items-start gap-3 bg-[var(--surface-raised)] px-4 py-3.5 transition-colors hover:bg-[var(--surface-muted)] sm:items-center"
               >
-                <span className="tnum w-14 shrink-0 font-semibold">
+                <span className="tnum w-12 shrink-0 pt-0.5 font-semibold sm:w-14 sm:pt-0">
                   {formatTime(appointment.startsAt, shop.timezone)}
                 </span>
+
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{appointment.clientName}</p>
                   <p className="truncate text-sm text-[var(--text-muted)]">
                     {appointment.services}
                     {isOwner ? ` · ${appointment.barberName}` : ""}
                   </p>
+
+                  <div className="mt-2 flex items-center gap-2 sm:hidden">
+                    <Badge
+                      tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
+                      size="sm"
+                    >
+                      {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
+                    </Badge>
+                    <span className="tnum text-sm font-medium">
+                      {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
+                    </span>
+                  </div>
                 </div>
-                <Badge
-                  tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
-                  size="sm"
-                >
-                  {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
-                </Badge>
-                <span className="tnum w-20 text-right text-sm font-medium">
-                  {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
-                </span>
+
+                <div className="hidden shrink-0 items-center gap-3 sm:flex">
+                  <Badge
+                    tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
+                    size="sm"
+                  >
+                    {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
+                  </Badge>
+                  <span className="tnum w-20 text-right text-sm font-medium">
+                    {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
@@ -160,7 +180,9 @@ export default async function PanelHomePage() {
       </section>
 
       {/* ------------------------------------------------------- mes e serie */}
-      <section className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+      {/* [&>*]:min-w-0 — item de grid nao encolhe abaixo do conteudo por
+          padrao, e a tabela de dentro estica a coluna para fora da tela. */}
+      <section className="grid gap-4 [&>*]:min-w-0 lg:grid-cols-[1.6fr_1fr]">
         <Card className="p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div>
@@ -259,7 +281,7 @@ export default async function PanelHomePage() {
 
       {/* ------------------------------------------------------------ equipe */}
       {isOwner ? (
-        <section className="grid gap-4 lg:grid-cols-2">
+        <section className="grid gap-4 [&>*]:min-w-0 lg:grid-cols-2">
           <Card className="p-5">
             <h2 className="font-semibold">Desempenho da equipe no mês</h2>
             <ul className="mt-5 space-y-4">

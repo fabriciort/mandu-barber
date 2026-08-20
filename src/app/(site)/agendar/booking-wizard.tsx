@@ -317,7 +317,12 @@ export function BookingWizard({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
-      <div>
+      {/* min-w-0 e obrigatorio aqui: item de grid tem min-width:auto, ou seja,
+          se recusa a encolher abaixo da largura natural do conteudo. A faixa de
+          dias tem ~840px de largura natural, entao sem isto ela estica a coluna
+          inteira, o overflow-x-auto dela nunca chega a rolar e o conteudo sai
+          pela direita da tela. */}
+      <div className="min-w-0">
         <Stepper current={step} onSelect={(index) => index < step && setStep(index)} />
 
         <div className="mt-8">
@@ -402,24 +407,30 @@ export function BookingWizard({
           )}
         </div>
 
-        {/* Celular: barra fixa no rodape, sempre ao alcance do polegar, com o
-            total visivel — a pessoa nao precisa rolar para saber o preco. */}
-        <div className="h-28 sm:hidden" aria-hidden />
-        <div className="sticky-bar fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border-subtle)] pb-safe sm:hidden">
-          <div className="flex items-center gap-3 px-4 py-3">
+        {/* Celular: barra flutuante no rodape, sempre ao alcance do polegar,
+            com o total visivel — a pessoa nao precisa rolar para saber o preco.
+            Flutua em vez de colar na borda para o proximo horario da lista
+            continuar aparecendo por baixo, desfocado: fica claro que a lista
+            segue, coisa que uma barra opaca esconde. */}
+        <div className="h-32 sm:hidden" aria-hidden />
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-20 h-32 bg-gradient-to-t from-[var(--surface)] via-[var(--surface)]/55 to-transparent sm:hidden"
+          aria-hidden
+        />
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 px-3 pb-3 pb-safe sm:hidden">
+          <div className="glass pointer-events-auto flex items-center gap-2.5 rounded-[1.75rem] p-2.5">
             {step > 0 ? (
-              <Button
-                variant="secondary"
-                size="lg"
+              <button
+                type="button"
                 onClick={goBack}
                 aria-label="Voltar"
-                className="w-12 shrink-0 px-0"
+                className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--surface-raised)]/60 text-[var(--text-primary)] transition-transform duration-200 active:scale-90"
               >
                 <ArrowLeft className="size-[18px]" />
-              </Button>
+              </button>
             ) : null}
 
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 pl-1.5">
               {pricing.charges.length > 0 ? (
                 <>
                   <p className="truncate text-2xs text-[var(--text-muted)]">
@@ -438,12 +449,22 @@ export function BookingWizard({
             </div>
 
             {step < STEPS.length - 1 ? (
-              <Button onClick={goNext} disabled={!canAdvance} size="lg" className="shrink-0">
+              <Button
+                onClick={goNext}
+                disabled={!canAdvance}
+                size="lg"
+                className="shrink-0 rounded-full px-5"
+              >
                 Continuar
                 <ArrowRight className="size-[18px]" />
               </Button>
             ) : (
-              <Button onClick={submit} loading={submitting} size="lg" className="shrink-0">
+              <Button
+                onClick={submit}
+                loading={submitting}
+                size="lg"
+                className="shrink-0 rounded-full px-5"
+              >
                 Confirmar
               </Button>
             )}
@@ -1248,7 +1269,7 @@ function groupByPeriod(slots: Slot[]) {
   return [
     {
       key: "manha",
-      label: "Manha",
+      label: "Manhã",
       icon: Sunrise,
       items: slots.filter((s) => s.minute < 12 * 60),
     },

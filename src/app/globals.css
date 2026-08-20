@@ -203,6 +203,27 @@
    * ------------------------------------------------------------------- */
   --canvas-deep: #08080a;
 
+  /* -------------------------------------------------------------------
+   * Vidro.
+   *
+   * A camada de navegacao flutua sobre o conteudo em vez de ficar colada
+   * na borda. O que faz o efeito nao virar "texto borrado por cima de
+   * texto" e o desfoque ALTO somado a saturacao: com blur pequeno da para
+   * ler o que passa por baixo e os dois brigam; com 36px o conteudo vira
+   * uma mancha de luz e so a navegacao se le.
+   *
+   * A borda tem duas partes, como lente de verdade: um fio de contorno e
+   * um brilho no topo, onde a luz bateria.
+   * ------------------------------------------------------------------- */
+  --glass-fill: rgb(255 255 255 / 0.86);
+  --glass-edge: rgb(8 8 10 / 0.1);
+  --glass-highlight: rgb(255 255 255 / 0.9);
+  --glass-blur: 36px;
+  --shadow-glass:
+    0 1px 1px rgb(8 8 10 / 0.04),
+    0 8px 20px -6px rgb(8 8 10 / 0.16),
+    0 20px 44px -12px rgb(8 8 10 / 0.18);
+
   /* Elevacao por sombra: no tema claro a profundidade vem da sombra. */
   --shadow-sm: 0 1px 2px rgb(8 8 10 / 0.05);
   --shadow-md: 0 1px 2px rgb(8 8 10 / 0.04), 0 6px 16px -8px rgb(8 8 10 / 0.14);
@@ -242,6 +263,16 @@
   /* Um passo acima do preto puro da pagina: assim a faixa ainda se separa
      do fundo em vez de derreter nele. */
   --canvas-deep: #131316;
+
+  /* No escuro o vidro e uma pelicula clara sobre o preto: escuro demais
+     ele some no fundo e deixa de parecer uma camada acima. */
+  --glass-fill: rgb(26 26 30 / 0.88);
+  --glass-edge: rgb(255 255 255 / 0.14);
+  --glass-highlight: rgb(255 255 255 / 0.18);
+  --glass-blur: 36px;
+  --shadow-glass:
+    0 8px 28px -8px rgb(0 0 0 / 0.8),
+    0 24px 56px -16px rgb(0 0 0 / 0.7);
 
   /* No escuro, sombra nao cria profundidade — a borda e a luz da superficie
      e que fazem. As sombras ficam so para separar camadas sobrepostas. */
@@ -458,6 +489,64 @@
 
   .faq[open] > p {
     animation: var(--animate-fade);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Material de vidro — a camada de navegacao.
+   *
+   * position:relative e obrigatorio: o brilho da borda e um ::before
+   * posicionado. isolation:isolate impede que a sombra de quem esta abaixo
+   * suje o desfoque.
+   * ------------------------------------------------------------------- */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--glass-fill);
+    box-shadow: var(--shadow-glass);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  }
+
+  /* Fio de contorno + brilho no topo, desenhados como borda de gradiente:
+     pinta so a moldura de 1px, sem tapar o conteudo. */
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to bottom,
+      var(--glass-highlight) 0%,
+      var(--glass-edge) 45%,
+      var(--glass-edge) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Navegador sem backdrop-filter (Firefox com a flag desligada, versoes
+     antigas): sem o desfoque o vidro translucido viraria texto sobre texto,
+     entao o fundo vira solido. Melhor perder o efeito que perder a leitura. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background-color: var(--surface);
+    }
+  }
+
+  /* Item selecionado dentro do vidro: pilula solida, como o botao fisico
+     que afunda. */
+  .glass-pill {
+    background-color: var(--surface-inverse);
+    color: var(--text-inverse);
   }
 
   /* ---------------------------------------------------------------------

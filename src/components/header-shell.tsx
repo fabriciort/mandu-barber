@@ -25,10 +25,12 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300",
+        "sticky top-0 z-40 transition-[background-color,box-shadow] duration-300",
+        // Ao rolar vira a mesma camada de vidro da navegacao de baixo: a
+        // interface toda passa a ter um material so.
         scrolled
-          ? "border-b border-[var(--border-subtle)] bg-[var(--surface)]/80 backdrop-blur-xl"
-          : "border-b border-transparent bg-transparent",
+          ? "glass rounded-b-[var(--radius-2xl)]"
+          : "bg-transparent",
       )}
     >
       {children}

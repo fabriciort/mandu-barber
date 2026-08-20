@@ -150,17 +150,16 @@ export function PanelNav({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
+              // Mesma pilula da navegacao do site: o painel e a mesma casa, nao
+              // pode parecer outro aplicativo.
               className={cn(
-                "pressable relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-medium",
-                active ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]",
+                "relative flex flex-1 flex-col items-center gap-1 rounded-full py-2.5 text-[10px] font-medium",
+                "transition-all duration-300 active:scale-95",
+                active
+                  ? "glass-pill font-semibold"
+                  : "text-[var(--text-primary)] opacity-70",
               )}
             >
-              {active ? (
-                <span
-                  className="absolute inset-x-4 top-0 h-0.5 rounded-full bg-[var(--accent)]"
-                  aria-hidden
-                />
-              ) : null}
               <Icon className="size-5" strokeWidth={active ? 2.2 : 1.8} />
               {item.short}
             </Link>

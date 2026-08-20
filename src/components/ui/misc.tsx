@@ -70,11 +70,13 @@ export function SectionTitle({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-4 flex items-center gap-4", className)}>
+    /* flex-wrap: numa tela de 320px o rotulo, o fio e o botao nao cabem na
+       mesma linha — sem isto a acao empurrava a secao inteira para fora. */
+    <div className={cn("mb-4 flex flex-wrap items-center gap-x-4 gap-y-2", className)}>
       <h2 className="shrink-0 text-2xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
         {children}
       </h2>
-      <span className="h-px flex-1 bg-[var(--border-subtle)]" aria-hidden />
+      <span className="h-px min-w-6 flex-1 bg-[var(--border-subtle)]" aria-hidden />
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );

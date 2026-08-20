@@ -97,7 +97,7 @@ export default async function AppointmentsListPage({
       />
 
       <Card className="p-4">
-        <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" method="get">
+        <form className="grid gap-3 [&>*]:min-w-0 sm:grid-cols-2 lg:grid-cols-5" method="get">
           <div className="relative lg:col-span-2">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-muted)]" />
             <Input
@@ -133,7 +133,10 @@ export default async function AppointmentsListPage({
             </Select>
           ) : null}
 
-          <div className="flex gap-2">
+          {/* Campo de data nativo tem largura minima propria e nao encolhe:
+              dois lado a lado nao cabem numa tela de 320px. Abaixo disso eles
+              empilham. */}
+          <div className="flex flex-col gap-2 [&>*]:min-w-0 min-[360px]:flex-row">
             <Input type="date" name="de" defaultValue={from} aria-label="Data inicial" />
             <Input type="date" name="ate" defaultValue={to} aria-label="Data final" />
           </div>
