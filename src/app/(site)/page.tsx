@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -62,23 +63,54 @@ export default async function HomePage() {
   return (
     <>
       {/* ------------------------------------------------------------ hero */}
-      <section className="grain relative isolate overflow-hidden bg-[var(--canvas-deep)] text-white">
-        {/* Vinheta: escurece as bordas e puxa o olho para o centro do texto.
-            Sem cor, a profundidade vem da luz. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-70"
-          style={{
-            background:
-              "radial-gradient(80% 60% at 12% 0%, rgb(255 255 255 / 0.14) 0%, transparent 60%), radial-gradient(60% 60% at 100% 100%, rgb(255 255 255 / 0.07) 0%, transparent 60%)",
-          }}
-        />
+      {/* -mt cancela o espacador da barra flutuante: a foto passa a comecar no
+          topo da tela e a pilula do logo e o circulo do menu ficam SOBRE ela,
+          em vez de flutuarem numa faixa vazia acima. O padding de volta entra
+          no conteudo, para o titulo nao nascer atras da barra. */}
+      <section className="grain relative isolate z-30 -mt-[4.25rem] overflow-hidden bg-[var(--canvas-deep)] text-white md:-mt-16">
+        {/* Foto do salao.
+         *
+         * A imagem e vertical (768x1376). Esticada como fundo de um heroi
+         * largo, os 768px de largura virariam 1440 e a foto ficaria borrada.
+         * Entao ela ocupa a FAIXA DA DIREITA — no desktop com ~55% da largura,
+         * que a devolve perto do tamanho nativo — e se funde no preto pela
+         * esquerda, onde o texto mora. No celular a tela ja e vertical: a foto
+         * preenche tudo, no mesmo formato em que foi tirada. */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full lg:w-[58%]" aria-hidden>
+          <Image
+            src="/salao.jpg"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 1023px) 100vw, 58vw"
+            className="object-cover object-[50%_38%]"
+          />
 
-        <div className="relative mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:pb-28 lg:pt-24">
+          {/* Escurecimento base. Leve: a foto precisa ser vista. O trabalho
+              pesado fica para os degrades abaixo, que escurecem SO onde ha
+              texto — escurecer tudo por igual apaga a foto inteira. */}
+          <div className="absolute inset-0 bg-[var(--canvas-deep)]/45 lg:bg-[var(--canvas-deep)]/20" />
+
+          {/* Celular: o texto ocupa a tela inteira de cima para baixo, entao o
+              degrade tambem e vertical. Libera a parte de baixo da foto, que e
+              onde estao a cadeira e os espelhos. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--canvas-deep)]/92 from-[6%] via-[var(--canvas-deep)]/72 via-[44%] to-transparent to-[82%] lg:hidden" />
+
+          {/* Desktop: o texto fica numa coluna a esquerda, entao o degrade e
+              lateral. Ele abre cedo (55%) de proposito: mais fechado, enterrava
+              a silhueta do barbeiro, que e a melhor parte da foto. */}
+          <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--canvas-deep)] from-[10%] via-[var(--canvas-deep)]/45 via-[35%] to-transparent to-[55%] lg:block" />
+
+          {/* Pontas: a foto nao pode terminar num corte reto contra o preto. */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[var(--canvas-deep)] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[var(--canvas-deep)] to-transparent" />
+        </div>
+
+        <div className="relative mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-[8.25rem] sm:px-6 md:pt-[8rem] lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:pb-28 lg:pt-[10rem]">
           <div className="stagger">
             <p
               style={{ "--i": 0 } as React.CSSProperties}
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/70"
+              className="glass-on-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/85"
             >
               <span className="size-1.5 rounded-full bg-white" />
               {shop.district ? `${shop.district} · ${shop.city}` : "São Paulo"}
@@ -105,10 +137,13 @@ export default async function HomePage() {
               style={{ "--i": 3 } as React.CSSProperties}
               className="mt-9 flex flex-col gap-3 sm:flex-row"
             >
+              {/* Mesma dupla da barra de baixo: acao principal em bloco solido,
+                  a secundaria em vidro. Pilula nas duas, para o heroi falar a
+                  mesma lingua da navegacao. */}
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-black shadow-none hover:bg-white/90"
+                className="rounded-full bg-white px-7 text-black shadow-[var(--shadow-glass)] hover:bg-white/90"
               >
                 <Link href="/agendar">
                   Agendar agora
@@ -118,8 +153,8 @@ export default async function HomePage() {
               <Button
                 asChild
                 size="lg"
-                variant="outline"
-                className="border-white/25 text-white hover:bg-white/10"
+                variant="ghost"
+                className="glass-on-dark rounded-full px-7 text-white"
               >
                 <Link href="/planos">Ver planos</Link>
               </Button>

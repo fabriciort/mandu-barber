@@ -31,10 +31,11 @@ export function HeaderShell({
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 transition-[background-color,box-shadow] duration-300",
-        // Ao rolar vira a mesma camada de vidro da navegacao de baixo: a
-        // interface toda passa a ter um material so.
-        scrolled ? "glass rounded-b-[var(--radius-2xl)]" : "bg-transparent",
+        "glass sticky top-0 z-40 transition-[border-radius] duration-300",
+        // Vidro SEMPRE, e nao so depois de rolar: o heroi da home agora comeca
+        // no topo da tela e passa por baixo do cabecalho. Transparente ali, o
+        // texto preto do menu cairia sobre a foto escura e sumiria.
+        scrolled ? "rounded-b-[var(--radius-2xl)]" : "rounded-none",
         className,
       )}
     >

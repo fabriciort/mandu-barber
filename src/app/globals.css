@@ -542,6 +542,23 @@
     }
   }
 
+  /* Vidro sobre a tela escura de tela cheia (heroi).
+   *
+   * Nao da para usar .glass ali: --glass-fill e branco a 86%, entao sobre o
+   * preto do heroi a peca viraria quase branca e competiria com o botao
+   * principal. Aqui o vidro e uma pelicula de luz sobre o escuro. */
+  .glass-on-dark {
+    position: relative;
+    background-color: rgb(255 255 255 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+  }
+
+  .glass-on-dark:hover {
+    background-color: rgb(255 255 255 / 0.16);
+  }
+
   /* Item selecionado dentro do vidro: pilula solida, como o botao fisico
      que afunda. */
   .glass-pill {

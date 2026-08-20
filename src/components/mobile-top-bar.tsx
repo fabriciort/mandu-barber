@@ -30,9 +30,14 @@ export function MobileTopBar({
 
       {/* Veu, igual ao da barra de baixo. Sem ele o conteudo rolava por tras da
           pilula e colidia com ela: o texto aparecia inteiro no vao entre a
-          pilula e o circulo, e cortado atras dos dois. */}
+          pilula e o circulo, e cortado atras dos dois.
+          
+          Ele e pintado com a cor da PAGINA, entao serve para conteudo comum.
+          Sobre uma faixa escura de tela cheia — o heroi da home — ele viraria
+          uma nevoa branca no tema claro; por isso fica em z-20, e quem tem
+          fundo proprio se declara acima dele (ver o heroi em page.tsx). */}
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-30 h-24 bg-gradient-to-b from-[var(--surface)] via-[var(--surface)]/70 to-transparent md:hidden"
+        className="pointer-events-none fixed inset-x-0 top-0 z-20 h-24 bg-gradient-to-b from-[var(--surface)] via-[var(--surface)]/70 to-transparent md:hidden"
         aria-hidden
       />
 
