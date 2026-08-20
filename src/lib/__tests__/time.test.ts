@@ -5,6 +5,7 @@ import {
   dayBoundaries,
   diffInDaysISO,
   formatDuration,
+  formatMonthShort,
   isValidDateKey,
   minutesOfDay,
   toDateKey,
@@ -73,6 +74,13 @@ describe("formatacao", () => {
     expect(formatDuration(45)).toBe("45 min");
     expect(formatDuration(60)).toBe("1 h");
     expect(formatDuration(90)).toBe("1 h 30 min");
+  });
+
+  it("resume mes e ano no fuso da loja", () => {
+    // 1o de janeiro as 01:00 UTC ainda e 31 de dezembro em Sao Paulo: o mes
+    // curto tem de sair do calendario da loja, nao do UTC.
+    expect(formatMonthShort(new Date("2026-08-04T15:00:00Z"), TZ)).toBe("ago/2026");
+    expect(formatMonthShort(new Date("2027-01-01T01:00:00Z"), TZ)).toBe("dez/2026");
   });
 
   it("formata dinheiro em centavos", () => {

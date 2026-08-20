@@ -111,6 +111,15 @@ export function formatMonth(date: Date, timezone = DEFAULT_TIMEZONE): string {
   return formatInTimeZone(date, timezone, "MMMM 'de' yyyy", { locale: ptBR });
 }
 
+/**
+ * Mes e ano em forma curta ("ago/2026"). Para rotulos em que o dia exato nao
+ * acrescenta nada — "cliente desde", por exemplo — e a data completa so rouba
+ * largura de coluna nas telas estreitas.
+ */
+export function formatMonthShort(date: Date, timezone = DEFAULT_TIMEZONE): string {
+  return formatInTimeZone(date, timezone, "MMM/yyyy", { locale: ptBR });
+}
+
 export function formatMinutesLabel(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;

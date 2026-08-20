@@ -116,9 +116,12 @@ const RATING_LABEL: Record<number, string> = {
 export function ReviewButton({
   appointmentId,
   barberName,
+  block = false,
 }: {
   appointmentId: string;
   barberName: string;
+  /** Ocupa a linha inteira — usado quando o botao desce para a propria linha. */
+  block?: boolean;
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -142,7 +145,7 @@ export function ReviewButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size={block ? "md" : "sm"} block={block}>
           <Star className="size-4" />
           Avaliar
         </Button>

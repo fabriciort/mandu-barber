@@ -70,14 +70,17 @@ export function SectionTitle({
   className?: string;
 }) {
   return (
-    /* flex-wrap: numa tela de 320px o rotulo, o fio e o botao nao cabem na
-       mesma linha — sem isto a acao empurrava a secao inteira para fora. */
-    <div className={cn("mb-4 flex flex-wrap items-center gap-x-4 gap-y-2", className)}>
-      <h2 className="shrink-0 text-2xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+    /* flex-wrap: em tela estreita o rotulo, o fio e a acao nao cabem na mesma
+       linha — sem isto a acao empurrava a secao inteira para fora da tela.
+       O fio pode encolher ate sumir (min-w-0), o que costuma evitar a quebra;
+       quando ela acontece mesmo assim, ml-auto joga a acao para a direita, em
+       vez de deixa-la orfa embaixo do rotulo. */
+    <div className={cn("mb-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:gap-x-4", className)}>
+      <h2 className="shrink-0 text-2xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)] sm:tracking-[0.18em]">
         {children}
       </h2>
-      <span className="h-px min-w-6 flex-1 bg-[var(--border-subtle)]" aria-hidden />
-      {action ? <div className="shrink-0">{action}</div> : null}
+      <span className="h-px min-w-0 flex-1 bg-[var(--border-subtle)]" aria-hidden />
+      {action ? <div className="ml-auto shrink-0">{action}</div> : null}
     </div>
   );
 }

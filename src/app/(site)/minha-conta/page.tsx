@@ -27,6 +27,7 @@ import {
   formatDateTime,
   formatDuration,
   formatLongDate,
+  formatMonthShort,
   formatRelative,
   formatTime,
 } from "@/lib/time";
@@ -91,9 +92,13 @@ export default async function AccountOverviewPage() {
         <SectionTitle
           action={
             <Button asChild size="sm" variant="ghost">
-              <Link href="/agendar">
+              {/* O rotulo encurta no celular: com "Novo agendamento" inteiro,
+                  o titulo da secao quebrava em duas linhas ate 375px. O
+                  aria-label mantem o nome acessivel completo nos dois casos. */}
+              <Link href="/agendar" aria-label="Novo agendamento">
                 <CalendarPlus className="size-4" />
-                Novo agendamento
+                <span className="sm:hidden">Novo</span>
+                <span className="hidden sm:inline">Novo agendamento</span>
               </Link>
             </Button>
           }
@@ -204,16 +209,19 @@ export default async function AccountOverviewPage() {
               <li key={appointment.id}>
                 <Link
                   href={`/minha-conta/agendamentos/${appointment.id}`}
-                  className="flex items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-4 py-3 text-sm transition-colors hover:border-[var(--border-strong)]"
+                  className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-4 py-3 text-sm transition-colors hover:border-[var(--border-strong)]"
                 >
-                  <span className="font-medium">
+                  {/* shrink-0 + whitespace-nowrap: sem isto "20/08/2026 · 16:30"
+                      quebrava no meio e a linha virava duas, com o nome do
+                      servico truncado do lado. Data e hora sao um bloco so. */}
+                  <span className="tnum shrink-0 whitespace-nowrap font-medium">
                     {formatDate(appointment.startsAt, shop.timezone)} ·{" "}
                     {formatTime(appointment.startsAt, shop.timezone)}
                   </span>
-                  <span className="truncate text-[var(--text-muted)]">
+                  <span className="min-w-0 flex-1 truncate text-[var(--text-muted)]">
                     {appointment.services.map((s) => s.name).join(" + ")}
                   </span>
-                  <ArrowRight className="ml-auto size-4 shrink-0 text-[var(--text-muted)]" />
+                  <ArrowRight className="size-4 shrink-0 text-[var(--text-muted)]" />
                 </Link>
               </li>
             ))}
@@ -227,23 +235,39 @@ export default async function AccountOverviewPage() {
           <SectionTitle>Como foi seu último corte?</SectionTitle>
           <div className="grid gap-3 sm:grid-cols-2">
             {pendingReviews.map((appointment) => (
-              <Card key={appointment.id} className="flex items-center gap-3.5 p-4">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-dashed border-[var(--border-strong)]">
-                  <Star className="size-[18px]" aria-hidden />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">
-                    {appointment.services.map((s) => s.name).join(" + ")}
-                  </p>
-                  <p className="truncate text-xs text-[var(--text-muted)]">
-                    {formatDate(appointment.startsAt, shop.timezone)} ·{" "}
-                    {appointment.barber.user.name}
-                  </p>
+              /* No celular o botao desce para a propria linha. Ao lado do texto
+                 ele consumia ~120px dos 412 da tela e o nome do servico ficava
+                 com 138px — "Corte Mandu + Ba...". O nome e o motivo do cartao
+                 existir; ele nao pode ser a parte cortada. */
+              <Card key={appointment.id} className="p-4">
+                <div className="flex items-center gap-3.5">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-dashed border-[var(--border-strong)]">
+                    <Star className="size-[18px]" aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-pretty text-sm font-medium">
+                      {appointment.services.map((s) => s.name).join(" + ")}
+                    </p>
+                    <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">
+                      {formatDate(appointment.startsAt, shop.timezone)} ·{" "}
+                      {appointment.barber.user.name}
+                    </p>
+                  </div>
+                  <div className="hidden shrink-0 sm:block">
+                    <ReviewButton
+                      appointmentId={appointment.id}
+                      barberName={appointment.barber.user.name}
+                    />
+                  </div>
                 </div>
-                <ReviewButton
-                  appointmentId={appointment.id}
-                  barberName={appointment.barber.user.name}
-                />
+
+                <div className="mt-3.5 sm:hidden">
+                  <ReviewButton
+                    appointmentId={appointment.id}
+                    barberName={appointment.barber.user.name}
+                    block
+                  />
+                </div>
               </Card>
             ))}
           </div>
@@ -364,6 +388,10 @@ export default async function AccountOverviewPage() {
           </p>
         ) : (
           <>
+            {/* Tres colunas em qualquer largura: o recuo e o corpo do rotulo
+                cedem primeiro, e o valor fica encostado na base (mt-auto) para
+                que os tres numeros compartilhem a mesma linha mesmo quando um
+                rotulo precisa de duas linhas. */}
             <dl className="mb-5 grid grid-cols-3 divide-x divide-[var(--border-subtle)] rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
               {[
                 { label: "Atendimentos", value: String(totals._count) },
@@ -372,15 +400,15 @@ export default async function AccountOverviewPage() {
                   label: "Cliente desde",
                   value:
                     history.length > 0
-                      ? formatDate(history[history.length - 1].startsAt, shop.timezone)
+                      ? formatMonthShort(history[history.length - 1].startsAt, shop.timezone)
                       : "—",
                 },
               ].map((item) => (
-                <div key={item.label} className="px-3 py-3.5 sm:px-5">
-                  <dt className="text-2xs uppercase tracking-[0.1em] text-[var(--text-muted)] sm:tracking-[0.14em]">
+                <div key={item.label} className="flex flex-col px-2.5 py-3 sm:px-5 sm:py-3.5">
+                  <dt className="text-[0.625rem] uppercase leading-tight tracking-normal text-[var(--text-muted)] sm:text-2xs sm:tracking-[0.14em]">
                     {item.label}
                   </dt>
-                  <dd className="tnum mt-1 text-[0.9375rem] font-semibold tracking-[var(--tracking-tight)] sm:text-lg">
+                  <dd className="tnum mt-auto pt-1 text-[0.9375rem] font-semibold tracking-[var(--tracking-tight)] sm:text-lg">
                     {item.value}
                   </dd>
                 </div>
@@ -392,7 +420,7 @@ export default async function AccountOverviewPage() {
                 <li
                   key={appointment.id}
                   className={cn(
-                    "flex flex-wrap items-center gap-3 bg-[var(--surface-raised)] px-4 py-3.5",
+                    "flex items-start gap-3 bg-[var(--surface-raised)] px-4 py-3.5 sm:items-center",
                     // Cancelado/faltou fica visualmente recuado: continua legivel,
                     // mas nao disputa atencao com o que de fato aconteceu.
                     appointment.status !== "COMPLETED" && "opacity-60",
@@ -403,26 +431,48 @@ export default async function AccountOverviewPage() {
                     src={appointment.barber.user.avatarUrl}
                     size="sm"
                   />
+                  {/* No celular a etiqueta e o valor descem para a segunda linha.
+                      Lado a lado numa tela de 412px sobravam ~140px para o nome
+                      do servico, que e justamente o que a pessoa procura na
+                      lista — virava "Corte Mandu + Ba...". */}
                   <div className="min-w-0 flex-1">
                     <p
                       className={cn(
-                        "truncate text-sm font-medium",
+                        "text-pretty text-sm font-medium",
                         appointment.status === "CANCELED" && "line-through",
                       )}
                     >
                       {appointment.services.map((s) => s.name).join(" + ")}
                     </p>
-                    <p className="truncate text-xs text-[var(--text-muted)]">
+                    <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">
                       {formatLongDate(appointment.startsAt, shop.timezone)} ·{" "}
                       {appointment.barber.user.name}
                     </p>
+
+                    <div className="mt-2 flex items-center gap-2 sm:hidden">
+                      <Badge
+                        tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
+                        size="sm"
+                      >
+                        {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
+                      </Badge>
+                      <span className="tnum text-sm font-medium">
+                        {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
+                      </span>
+                    </div>
                   </div>
-                  <Badge tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]} size="sm">
-                    {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
-                  </Badge>
-                  <span className="tnum text-sm font-medium">
-                    {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
-                  </span>
+
+                  <div className="hidden shrink-0 items-center gap-3 sm:flex">
+                    <Badge
+                      tone={APPOINTMENT_STATUS_TONE[appointment.status as AppointmentStatus]}
+                      size="sm"
+                    >
+                      {APPOINTMENT_STATUS_LABEL[appointment.status as AppointmentStatus]}
+                    </Badge>
+                    <span className="tnum text-sm font-medium">
+                      {appointment.totalCents === 0 ? "Plano" : formatMoney(appointment.totalCents)}
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
