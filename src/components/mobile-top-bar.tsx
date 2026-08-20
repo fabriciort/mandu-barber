@@ -28,6 +28,14 @@ export function MobileTopBar({
       {/* Espacador: a barra flutua, entao o conteudo precisa comecar abaixo. */}
       <div className="h-[4.25rem] md:hidden" aria-hidden />
 
+      {/* Veu, igual ao da barra de baixo. Sem ele o conteudo rolava por tras da
+          pilula e colidia com ela: o texto aparecia inteiro no vao entre a
+          pilula e o circulo, e cortado atras dos dois. */}
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-30 h-24 bg-gradient-to-b from-[var(--surface)] via-[var(--surface)]/70 to-transparent md:hidden"
+        aria-hidden
+      />
+
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-40 flex items-center justify-between gap-2.5 px-4 pt-3 md:hidden",

@@ -834,7 +834,7 @@ function ScheduleStep({
           </button>
         </div>
 
-        <div className="snap-row -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-7 sm:overflow-visible">
+        <div className="snap-row [--snap-pad:0.25rem] -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-7 sm:overflow-visible">
           {days.map((day) => {
             const parsed = parseDateKey(day);
             const count = dayCounts[day];

@@ -576,6 +576,17 @@
    * ------------------------------------------------------------------- */
   .snap-row {
     scroll-snap-type: x mandatory;
+    /* O encaixe precisa saber do recuo lateral do container.
+     *
+     * Sem isto o navegador alinha a borda do PRIMEIRO item com a borda do
+     * container e, para conseguir, rola exatamente o valor do padding — 16px.
+     * O resultado e a primeira pilula colada na margem da tela, fora do
+     * alinhamento de todo o resto da pagina. Verificado no navegador:
+     * forcar scrollLeft = 0 voltava para 16 sozinho; com scroll-snap-type:
+     * none ficava em 0.
+     *
+     * O valor acompanha o padding de quem usa a classe, via --snap-pad. */
+    scroll-padding-inline: var(--snap-pad, 1rem);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -591,19 +602,24 @@
   /* ---------------------------------------------------------------------
    * Desvanecer nas bordas de uma lista rolavel, indicando que ha mais.
    * ------------------------------------------------------------------- */
+  /* O ramp e de 10px, e nao 16, de proposito: quem usa esta classe tem 16px
+     de recuo lateral (px-4), entao com 16 o desvanecimento terminava exatamente
+     onde a primeira pilula comeca e comia a borda dela — a aba ativa aparecia
+     mordida no canto esquerdo. Com 10 o aviso de "tem mais para o lado"
+     continua, mas cai no vazio do recuo, nao no conteudo. */
   .fade-edges {
     -webkit-mask-image: linear-gradient(
       to right,
       transparent,
-      #000 16px,
-      #000 calc(100% - 16px),
+      #000 10px,
+      #000 calc(100% - 10px),
       transparent
     );
     mask-image: linear-gradient(
       to right,
       transparent,
-      #000 16px,
-      #000 calc(100% - 16px),
+      #000 10px,
+      #000 calc(100% - 10px),
       transparent
     );
   }
