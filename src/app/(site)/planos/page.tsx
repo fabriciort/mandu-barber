@@ -12,6 +12,8 @@ import { getCurrentUser } from "@/server/auth/session";
 import { getActiveSubscription } from "@/server/services/subscriptions";
 import { formatMoney, pluralize } from "@/lib/format";
 import { planSavings } from "@/lib/pricing";
+import { AConfirmar, AConfirmarNoEscuro } from "@/components/a-confirmar";
+import { PENDENCIAS } from "@/content/mr-mandu";
 import { formatDuration } from "@/lib/time";
 
 export const metadata: Metadata = {
@@ -45,12 +47,41 @@ export default async function PlansPage() {
           Assinatura
         </p>
         <h1 className="mt-4 text-balance font-display text-[2.75rem] leading-[1.05] sm:text-6xl">
-          Corte sempre em dia, preço travado
+          O clube que começou em Embu-Guaçu
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-pretty text-lg leading-relaxed text-[var(--text-secondary)]">
-          Escolha a franquia que combina com sua rotina. Sem fidelidade — você cancela quando
-          quiser e usa tudo o que já pagou.
+          A Mr. Mandu foi a primeira barbearia por assinatura da cidade: você paga por mês e a
+          cadeira fica guardada. Escolha a franquia que combina com sua rotina.
         </p>
+
+        {/* TODO [A DEFINIR] PENDENCIAS.diasDaAssinatura — a regra ja e
+            divulgada publicamente pela marca ("as assinaturas funcionam somente
+            em dias especificos da semana"), mas NAO esta implementada: hoje o
+            credito e aceito em qualquer dia do agendamento. Quando os dias
+            vierem, mexe em src/server/services/subscription.ts, nao so aqui. */}
+        {PENDENCIAS.planos.pendente || PENDENCIAS.diasDaAssinatura.pendente ? (
+          <div className="mx-auto mt-6 max-w-lg space-y-3 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-strong)] p-4 text-left">
+            {PENDENCIAS.planos.pendente ? (
+              <div>
+                <AConfirmar o={PENDENCIAS.planos}>planos</AConfirmar>
+                <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                  Os planos abaixo são uma <strong className="font-medium">proposta</strong>: nomes,
+                  valores e vantagens ainda serão fechados com a barbearia. Nada aqui vale como
+                  oferta.
+                </p>
+              </div>
+            ) : null}
+            {PENDENCIAS.diasDaAssinatura.pendente ? (
+              <div>
+                <AConfirmar o={PENDENCIAS.diasDaAssinatura}>dias de uso</AConfirmar>
+                <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                  O crédito da assinatura vale em dias específicos da semana. Estamos confirmando
+                  quais para publicar aqui — pergunte na loja antes de assinar.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       {subscription ? (
@@ -124,15 +155,33 @@ export default async function PlansPage() {
               </div>
 
               <div className="mt-7">
-                <p className="flex items-baseline gap-1.5">
-                  <span className="tnum font-display text-5xl leading-none">
-                    {formatMoney(plan.priceCents)}
-                  </span>
-                  <span className={cn("text-sm", featured ? "opacity-60" : "text-[var(--text-muted)]")}>
-                    /{plan.intervalMonths === 1 ? "mês" : `${plan.intervalMonths} meses`}
-                  </span>
-                </p>
-                {savings.savingsCents > 0 ? (
+                {/* TODO [A DEFINIR] PENDENCIAS.planos — NADA neste cartao esta
+                    confirmado: nem a mensalidade, nem o nome do plano, nem as
+                    vantagens. Esconder so o preco seria pior do que nao
+                    esconder nada — deixaria "bebida cortesia em todo
+                    atendimento" passando por promessa da casa. Por isso o
+                    marcador fala do plano inteiro. */}
+                {PENDENCIAS.planos.pendente ? (
+                  featured ? (
+                    <AConfirmarNoEscuro o={PENDENCIAS.planos}>
+                      proposta — plano e valor a confirmar
+                    </AConfirmarNoEscuro>
+                  ) : (
+                    <AConfirmar o={PENDENCIAS.planos}>
+                      proposta — plano e valor a confirmar
+                    </AConfirmar>
+                  )
+                ) : (
+                  <p className="flex items-baseline gap-1.5">
+                    <span className="tnum font-display text-5xl leading-none">
+                      {formatMoney(plan.priceCents)}
+                    </span>
+                    <span className={cn("text-sm", featured ? "opacity-60" : "text-[var(--text-muted)]")}>
+                      /{plan.intervalMonths === 1 ? "mês" : `${plan.intervalMonths} meses`}
+                    </span>
+                  </p>
+                )}
+                {!PENDENCIAS.planos.pendente && !PENDENCIAS.servicos.pendente && savings.savingsCents > 0 ? (
                   // O filete alinha com a PRIMEIRA linha do texto; centralizado
                   // ele escorrega para o meio quando a frase quebra em duas.
                   <p className="mt-3 flex gap-2 text-sm font-medium">
@@ -214,7 +263,11 @@ export default async function PlansPage() {
                 ))}
               </ul>
 
-              {plan._count.subscriptions > 0 ? (
+              {/* TODO [A DEFINIR] Prova social so entra com assinante de
+                  verdade. Enquanto os planos nao existirem de fato, "N
+                  assinantes ativos" e a contagem da carga de demonstracao —
+                  numero inventado no lugar mais persuasivo da pagina. */}
+              {!PENDENCIAS.planos.pendente && plan._count.subscriptions > 0 ? (
                 <p
                   className={cn(
                     "mt-6 flex items-center gap-1.5 text-xs",
@@ -257,6 +310,19 @@ export default async function PlansPage() {
         <h2 className="text-balance text-center font-display text-[2rem] leading-tight sm:text-4xl">
           Perguntas que sempre aparecem
         </h2>
+
+        {/* TODO [A DEFINIR] PENDENCIAS.planos — as respostas descrevem como o
+            SISTEMA funciona (acumulo, desconto, cancelamento, devolucao de
+            credito), o que e verdade sobre o software. O que depende de
+            confirmacao e a configuracao de cada plano — quantos cortes, se
+            acumula, qual desconto. O aviso deixa isso explicito em vez de
+            deixar o leitor supor. */}
+        {PENDENCIAS.planos.pendente ? (
+          <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-[var(--text-muted)]">
+            As respostas explicam como a assinatura funciona no sistema. Os números de cada plano
+            (quantos cortes, se acumula, qual desconto) entram quando a barbearia fechar a tabela.
+          </p>
+        ) : null}
 
         <div className="mt-10 divide-y divide-[var(--border-subtle)] border-y border-[var(--border-subtle)]">
           {FAQ.map((item) => (

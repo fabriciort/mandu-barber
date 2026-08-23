@@ -18,10 +18,14 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { prisma } from "@/server/db";
 import { getShopConfig, formatAddress } from "@/server/services/settings";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, formatPhone } from "@/lib/format";
 import { formatDuration, formatMinutesLabel } from "@/lib/time";
 import { SERVICE_CATEGORY_LABEL, WEEKDAY_SHORT, type ServiceCategory } from "@/lib/enums";
 import { planSavings } from "@/lib/pricing";
+import { GalleryCarousel } from "@/components/gallery-carousel";
+import { AConfirmar } from "@/components/a-confirmar";
+import { GALERIA } from "@/content/galeria";
+import { EMPRESA, EQUIPE, MARCA, PENDENCIAS, anosDeCasa } from "@/content/mr-mandu";
 
 export const dynamic = "force-dynamic";
 
@@ -120,17 +124,20 @@ export default async function HomePage() {
               style={{ "--i": 1 } as React.CSSProperties}
               className="font-display mt-6 text-[clamp(2.5rem,9vw,4.5rem)] leading-[0.98] text-white balance"
             >
-              Seu horário reservado.
+              A primeira barbearia
               <br />
-              <span className="text-white/45">Seu corte, do jeito certo.</span>
+              por assinatura
+              <br />
+              <span className="text-white/45">de Embu-Guaçu.</span>
             </h1>
 
             <p
               style={{ "--i": 2 } as React.CSSProperties}
               className="mt-6 max-w-md text-base leading-relaxed text-white/60 sm:text-lg pretty"
             >
-              Escolha o serviço, o profissional e o horário em menos de um minuto. Sem fila de
-              espera no WhatsApp, sem &quot;me confirma depois&quot;.
+              Corte, barba e barboterapia na Rua São Paulo, no Centro. Reserve seu horário aqui
+              mesmo, em menos de um minuto — ou entre para o clube e tenha a cadeira guardada
+              todo mês.
             </p>
 
             <div
@@ -160,13 +167,18 @@ export default async function HomePage() {
               </Button>
             </div>
 
+            {/* Tres fatos VERIFICAVEIS. A versao anterior anunciava
+                "atendimentos concluidos" e "media de avaliacoes" tirados da
+                carga de demonstracao — numero de barbearia nenhuma. Numero
+                inventado em heroi e o que mais convence e o que menos se
+                confere depois. */}
             <dl
               style={{ "--i": 4 } as React.CSSProperties}
               className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/12 pt-8"
             >
-              <Stat value={`${stats.completed}+`} label="Atendimentos concluídos" />
-              <Stat value={stats.rating} label={`Média de ${stats.reviewCount} avaliações`} />
-              <Stat value={`${barbers.length}`} label="Profissionais na equipe" />
+              <Stat value={`${anosDeCasa()}`} label="Anos na Rua São Paulo, no Centro" />
+              <Stat value={`${barbers.length}`} label="Profissionais na cadeira" />
+              <Stat value="1ª" label="Barbearia por assinatura da cidade" />
             </dl>
           </div>
 
@@ -197,13 +209,92 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ------------------------------------------------------------ sobre */}
+      <section id="sobre" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
+        {/* [&>*]:min-w-0 nao e enfeite: item de grid nasce com min-width:auto e
+            se recusa a ficar menor que o conteudo. A fileira da galeria rola de
+            proposito, entao sua largura "natural" e a soma de TODAS as fotos —
+            sem isto a coluna estica para varias telas de largura e a pagina
+            inteira passa a rolar de lado no celular. */}
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] [&>*]:min-w-0">
+          <div>
+            {/* O numero sai de anosDeCasa(): escrito por extenso, o titulo
+                envelhecia sozinho e ainda passava a brigar com o numero do
+                heroi, que ja era calculado. */}
+            <SectionHeading
+              eyebrow="A casa"
+              title={`${anosDeCasa()} anos no Centro, e um jeito diferente de cobrar`}
+            />
+
+            <div className="mt-6 space-y-4 text-[var(--text-secondary)] pretty">
+              <p>
+                A <strong className="font-medium text-[var(--text-primary)]">Mr. Mandu Barber</strong>{" "}
+                abriu as portas em março de 2020 na Rua São Paulo, 100, no Centro de Embu-Guaçu.
+                Quem fundou continua na cadeira: o João Vitor atende junto com o Patrick, e a
+                Maria recebe quem chega.
+              </p>
+              <p>
+                A diferença começou pelo modelo. Enquanto barbearia se cobra por corte, aqui existe
+                assinatura: você paga por mês e a cadeira fica guardada. Foi a primeira da cidade a
+                trabalhar assim.
+              </p>
+              <p>
+                O resto é ofício — visagismo para achar o corte que combina com o rosto,
+                barboterapia para quem quer a barba tratada e não só aparada, e o compromisso de
+                que o horário marcado é horário cumprido.
+              </p>
+            </div>
+
+            {/* TODO [A DEFINIR] A copy acima usa SO fato confirmado (data de
+                abertura, endereco, modelo de assinatura, vocabulario das redes
+                da marca). A historia pessoal do João Vitor — o "como tudo
+                começou" que ele conta em video no Instagram — daria uma secao
+                muito melhor, mas nao esta escrita em lugar nenhum que eu possa
+                citar. Pedir ao cliente. */}
+            <p className="mt-6 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+              <AConfirmar o={PENDENCIAS.historiaFundador}>história do fundador</AConfirmar>
+              <span>a ser escrita com o João Vitor.</span>
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-2">
+              {MARCA.temas.map((tema) => (
+                <Badge key={tema} tone="outline" size="sm">
+                  {tema}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* --------------------------------------------------------- galeria */}
+          <div>
+            <SectionHeading
+              eyebrow="Galeria"
+              title="O espaço e o trabalho"
+              description="Fotos do salão, da equipe e de trabalhos concluídos."
+            />
+            <div className="mt-6">
+              <GalleryCarousel itens={GALERIA} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ---------------------------------------------------------- servicos */}
       <section id="servicos" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
         <SectionHeading
           eyebrow="Cardápio"
           title="O que fazemos"
-          description="Preços de tabela. Assinantes pagam menos ou nada, conforme o plano."
+          description="Assinantes pagam menos ou nada, conforme o plano."
         />
+
+        {/* TODO [A DEFINIR] PENDENCIAS.servicos — enquanto o cardapio nao for
+            confirmado, a lista mostra o que fazemos mas NAO publica preco. */}
+        {PENDENCIAS.servicos.pendente ? (
+          <p className="mt-4 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+            <AConfirmar o={PENDENCIAS.servicos}>tabela de preços</AConfirmar>
+            <span>em conferência com a barbearia. Consulte pelo telefone ou no Instagram.</span>
+          </p>
+        ) : null}
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service) => (
@@ -226,8 +317,15 @@ export default async function HomePage() {
 
               <div className="mt-4 flex items-end justify-between border-t border-[var(--border-subtle)] pt-3">
                 <div>
-                  <p className="text-lg font-semibold">{formatMoney(service.priceCents)}</p>
-                  <p className="text-xs text-[var(--text-muted)]">
+                  {/* O preco so vai ao ar quando for o preco de verdade. Ate
+                      la sai o marcador tracejado — que ninguem confunde com
+                      valor cadastrado. */}
+                  {PENDENCIAS.servicos.pendente ? (
+                    <AConfirmar o={PENDENCIAS.servicos}>preço a confirmar</AConfirmar>
+                  ) : (
+                    <p className="text-lg font-semibold">{formatMoney(service.priceCents)}</p>
+                  )}
+                  <p className="mt-1 text-xs text-[var(--text-muted)]">
                     {formatDuration(service.durationMinutes)}
                   </p>
                 </div>
@@ -247,55 +345,62 @@ export default async function HomePage() {
       <section id="equipe" className="scroll-mt-20 border-y border-[var(--border-subtle)] bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <SectionHeading
-            eyebrow="Quem corta"
+            eyebrow="Quem atende"
             title="A equipe da casa"
-            description="Cada um com sua mao. Escolha quem já conhece seu cabelo — ou deixe que a gente indica quem está livre."
+            description="Três pessoas, os mesmos rostos toda semana. Escolha quem já conhece seu cabelo."
           />
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {barbers.map((barber) => {
-              const specialties = parseList(barber.specialties);
-              const rating = average(barber.reviews.map((r) => r.rating));
+          {/* A lista vem de EQUIPE (nomes e cargos confirmados), nao do banco:
+              assim a Maria aparece — ela recebe quem chega, mas nao corta, e
+              por isso nao tem agenda no sistema. O perfil do banco entra so
+              para saber com quem da para agendar. */}
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {EQUIPE.map((pessoa) => {
+              // A busca e pelo nome de EXIBICAO: e ele que o seed grava no
+              // usuario. O nome de registro fica em EQUIPE para documento.
+              const perfil = barbers.find((b) => b.user.name === pessoa.nomeExibicao);
 
               return (
-                <Card key={barber.id} interactive className="p-5">
+                <Card key={pessoa.nome} className="flex flex-col p-5">
                   <div className="flex items-center gap-3">
                     <Avatar
-                      name={barber.user.name}
-                      src={barber.user.avatarUrl}
+                      name={pessoa.nome}
+                      src={perfil?.user.avatarUrl}
                       size="lg"
-                      ring={barber.agendaColor}
+                      ring={perfil?.agendaColor}
                     />
                     <div className="min-w-0">
-                      <h3 className="truncate font-medium">{barber.user.name}</h3>
-                      <p className="truncate text-xs text-[var(--text-muted)]">{barber.headline}</p>
-                      {rating ? (
-                        <p className="mt-1 flex items-center gap-1 text-xs font-medium text-[var(--accent)]">
-                          <Star className="size-3 fill-current" />
-                          {rating.toFixed(1)}
-                          <span className="font-normal text-[var(--text-muted)]">
-                            ({barber.reviews.length})
-                          </span>
+                      <h3 className="truncate font-medium">{pessoa.primeiroNome}</h3>
+                      <p className="truncate text-xs text-[var(--text-muted)]">{pessoa.cargo}</p>
+                      {pessoa.desde ? (
+                        <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">
+                          Na casa desde {mesAno(pessoa.desde)}
                         </p>
                       ) : null}
                     </div>
                   </div>
 
-                  {barber.bio ? (
-                    <p className="mt-4 line-clamp-3 text-sm text-[var(--text-muted)]">{barber.bio}</p>
-                  ) : null}
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {specialties.map((item) => (
-                      <Badge key={item} tone="outline" size="sm">
-                        {item}
-                      </Badge>
-                    ))}
+                  {/* TODO [A DEFINIR] Falta a apresentacao de cada um: o que
+                      faz melhor, como gosta de trabalhar. A versao anterior
+                      desta pagina trazia biografias inteiras ("vinte anos de
+                      cadeira, aprendeu com o pai em Recife") que eram da carga
+                      de demonstracao — texto inventado no nome de pessoa real.
+                      Foram removidas. Pedir ao cliente uma linha de cada. */}
+                  <div className="mt-4 flex-1">
+                    <AConfirmar o={PENDENCIAS.apresentacaoEquipe}>apresentação e foto</AConfirmar>
                   </div>
 
-                  <Button asChild variant="secondary" size="sm" block className="mt-5">
-                    <Link href={`/agendar?profissional=${barber.id}`}>Agendar com {barber.user.name.split(" ")[0]}</Link>
-                  </Button>
+                  {perfil ? (
+                    <Button asChild variant="secondary" size="sm" block className="mt-5">
+                      <Link href={`/agendar?profissional=${perfil.id}`}>
+                        Agendar com {pessoa.primeiroNome}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <p className="mt-5 rounded-[var(--radius-md)] border border-[var(--border-subtle)] px-3 py-2 text-center text-xs text-[var(--text-muted)]">
+                      Recepção — atende na loja e pelo telefone
+                    </p>
+                  )}
                 </Card>
               );
             })}
@@ -307,9 +412,24 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <SectionHeading
           eyebrow="Assinatura"
-          title="Quem corta sempre, paga menos"
+          title="O clube que começou em Embu-Guaçu"
           description="Franquia mensal de cortes e barbas, desconto no resto e prioridade na agenda."
         />
+
+        {/* TODO [A DEFINIR] PENDENCIAS.diasDaAssinatura — a marca ja divulga
+            publicamente que o credito do plano vale "somente em dias
+            especificos da semana", mas nao sabemos quais. Isto NAO esta
+            implementado no agendamento: hoje o credito vale em qualquer dia.
+            Quando os dias vierem, e regra de negocio, nao so este aviso. */}
+        {PENDENCIAS.diasDaAssinatura.pendente ? (
+          <p className="mt-4 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+            <AConfirmar o={PENDENCIAS.diasDaAssinatura}>dias de uso do plano</AConfirmar>
+            <span>
+              o crédito da assinatura vale em dias específicos da semana — confirme quais antes de
+              assinar.
+            </span>
+          </p>
+        ) : null}
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {plans.map((plan) => {
@@ -338,15 +458,27 @@ export default async function HomePage() {
                 </h3>
                 <p className="mt-1 text-sm text-[var(--text-muted)]">{plan.tagline}</p>
 
-                <p className="mt-5 flex items-baseline gap-1">
-                  <span className="text-3xl">{formatMoney(plan.priceCents)}</span>
-                  <span className="text-sm text-[var(--text-muted)]">/mês</span>
-                </p>
-                {savings.savingsCents > 0 ? (
-                  <p className="mt-1 text-xs text-[var(--text-primary)]">
-                    Economia de até {formatMoney(savings.savingsCents)} por mês
-                  </p>
-                ) : null}
+                {/* Mensalidade e economia caminham juntas: a economia e
+                    calculada a partir do preco do plano E do preco dos
+                    servicos. Com qualquer um dos dois por confirmar, o numero
+                    nao significa nada — some inteiro em vez de virar promessa. */}
+                {PENDENCIAS.planos.pendente ? (
+                  <div className="mt-5">
+                    <AConfirmar o={PENDENCIAS.planos}>mensalidade a confirmar</AConfirmar>
+                  </div>
+                ) : (
+                  <>
+                    <p className="mt-5 flex items-baseline gap-1">
+                      <span className="text-3xl">{formatMoney(plan.priceCents)}</span>
+                      <span className="text-sm text-[var(--text-muted)]">/mês</span>
+                    </p>
+                    {savings.savingsCents > 0 && !PENDENCIAS.servicos.pendente ? (
+                      <p className="mt-1 text-xs text-[var(--text-primary)]">
+                        Economia de até {formatMoney(savings.savingsCents)} por mês
+                      </p>
+                    ) : null}
+                  </>
+                )}
 
                 <ul className="mt-5 flex-1 space-y-2 text-sm">
                   {parseList(plan.perks)
@@ -374,7 +506,12 @@ export default async function HomePage() {
       </section>
 
       {/* ------------------------------------------------------- depoimentos */}
-      {reviews.length > 0 ? (
+      {/* TODO [A DEFINIR] PENDENCIAS.depoimentos — a secao existe e funciona,
+          mas fica fora do ar ate haver avaliacao de cliente de verdade. As
+          avaliacoes que estao no banco vieram da carga de demonstracao: sao
+          elogios inventados assinados por nomes inventados, sobre pessoas
+          reais. Publicar isso seria fabricar prova social. */}
+      {!PENDENCIAS.depoimentos.pendente && reviews.length > 0 ? (
         <section className="border-y border-[var(--border-subtle)] bg-[var(--surface-muted)]">
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
             <SectionHeading
@@ -417,23 +554,54 @@ export default async function HomePage() {
           <div>
             <SectionHeading eyebrow="Visita" title="Passe na loja" />
             <p className="mt-4 text-[var(--text-secondary)]">
-              {formatAddress(shop) || "São Paulo, SP"}
+              {formatAddress(shop) || "Rua São Paulo, 100 — Centro, Embu-Guaçu/SP"}
             </p>
 
-            <div className="mt-6 space-y-1.5 text-sm">
-              {shop.businessHours.map((blocks, weekday) => (
-                <div key={weekday} className="flex items-center gap-3">
-                  <span className="w-10 text-[var(--text-muted)]">{WEEKDAY_SHORT[weekday]}</span>
-                  <span className={blocks.length ? "font-medium" : "text-[var(--text-muted)]"}>
-                    {blocks.length
-                      ? blocks
-                          .map((b) => `${formatMinutesLabel(b.start)} - ${formatMinutesLabel(b.end)}`)
-                          .join("  •  ")
-                      : "Fechado"}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {/* TODO [A DEFINIR] PENDENCIAS.horarios — a tabela abaixo existe no
+                banco porque o motor de agenda precisa de jornada para calcular
+                horario livre, mas NAO e o horario real da barbearia. Enquanto
+                a pendencia estiver aberta ela nao vai ao ar: no lugar sai o
+                marcador e o convite para confirmar por telefone. */}
+            {PENDENCIAS.horarios.pendente ? (
+              <div className="mt-6 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-strong)] p-4">
+                <AConfirmar o={PENDENCIAS.horarios}>horário de funcionamento</AConfirmar>
+                <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                  Ainda estamos confirmando a tabela de horários para publicar aqui. Até lá, ligue
+                  para{" "}
+                  <a
+                    href={`tel:+55${EMPRESA.telefones[0]}`}
+                    className="font-medium text-[var(--text-primary)] underline-offset-4 hover:underline"
+                  >
+                    {formatPhone(EMPRESA.telefones[0])}
+                  </a>{" "}
+                  ou chame no{" "}
+                  <a
+                    href={`https://instagram.com/${EMPRESA.redes.instagram}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-[var(--text-primary)] underline-offset-4 hover:underline"
+                  >
+                    Instagram
+                  </a>
+                  . A agenda online já mostra os horários que estão livres de fato.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 space-y-1.5 text-sm">
+                {shop.businessHours.map((blocks, weekday) => (
+                  <div key={weekday} className="flex items-center gap-3">
+                    <span className="w-10 text-[var(--text-muted)]">{WEEKDAY_SHORT[weekday]}</span>
+                    <span className={blocks.length ? "font-medium" : "text-[var(--text-muted)]"}>
+                      {blocks.length
+                        ? blocks
+                            .map((b) => `${formatMinutesLabel(b.start)} - ${formatMinutesLabel(b.end)}`)
+                            .join("  •  ")
+                        : "Fechado"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild>
@@ -453,20 +621,39 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="relative min-h-64 overflow-hidden rounded-2xl bg-ink-900">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(circle at 30% 25%, rgba(201,139,58,0.35), transparent 55%), radial-gradient(circle at 75% 80%, rgba(201,111,74,0.28), transparent 50%)",
-              }}
-            />
-            <div className="relative flex h-full flex-col justify-end p-6 text-ink-100">
-              <Scissors className="size-8 text-[var(--accent)]" />
-              <p className="mt-4 font-display text-2xl leading-snug">
-                &quot;Cadeira boa, conversa boa e o corte no ponto.&quot;
-              </p>
-              <p className="mt-2 text-sm text-ink-400">O que a gente quer ouvir toda vez.</p>
+          {/* Bloco invertido com o recado da casa. Antes havia aqui um degrade
+              dourado e acobreado, sobra da paleta anterior — brigava com o
+              monocromatico do resto do site. */}
+          <div className="grain relative min-h-64 overflow-hidden rounded-2xl bg-[var(--canvas-deep)] text-white">
+            <div className="relative flex h-full flex-col justify-between gap-8 p-7">
+              <Scissors className="size-8 opacity-70" aria-hidden />
+
+              <div>
+                <p className="font-display text-2xl leading-snug balance">
+                  {MARCA.slogan}.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-white/55 pretty">
+                  Assinatura mensal, agenda online e a mesma equipe toda semana, no Centro de
+                  Embu-Guaçu desde 2020.
+                </p>
+
+                <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-white/70">
+                  <a
+                    href={`https://instagram.com/${EMPRESA.redes.instagram}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-on-dark rounded-full px-3.5 py-1.5 transition-opacity hover:opacity-80"
+                  >
+                    @{EMPRESA.redes.instagram}
+                  </a>
+                  <a
+                    href={`tel:+55${EMPRESA.telefones[0]}`}
+                    className="glass-on-dark rounded-full px-3.5 py-1.5 transition-opacity hover:opacity-80"
+                  >
+                    {formatPhone(EMPRESA.telefones[0])}
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -476,6 +663,16 @@ export default async function HomePage() {
 }
 
 // ---------------------------------------------------------------- auxiliares
+
+/** "2022-05" -> "maio de 2022". Recebe ano-mes, nao data completa. */
+function mesAno(anoMes: string): string {
+  const [ano, mes] = anoMes.split("-").map(Number);
+  const MESES = [
+    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+  ];
+  return `${MESES[mes - 1]} de ${ano}`;
+}
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (

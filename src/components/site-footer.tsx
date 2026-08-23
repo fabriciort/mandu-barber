@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { Instagram, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 
 import { BrandMark } from "@/components/brand";
+import { AConfirmar } from "@/components/a-confirmar";
 import { getShopConfig, formatAddress } from "@/server/services/settings";
 import { formatMinutesLabel } from "@/lib/time";
 import { formatPhone } from "@/lib/format";
 import { WEEKDAY_LABEL } from "@/lib/enums";
+import { EMPRESA, PENDENCIAS } from "@/content/mr-mandu";
 
 export async function SiteFooter() {
   const shop = await getShopConfig();
@@ -28,54 +30,122 @@ export async function SiteFooter() {
             {shop.addressLine ? (
               <p className="flex items-start gap-2 text-[var(--text-secondary)]">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--text-muted)]" />
-                {formatAddress(shop)}
+                <span>
+                  {formatAddress(shop)}
+                  {shop.mapsUrl ? (
+                    <>
+                      {" · "}
+                      <a
+                        href={shop.mapsUrl}
+                        className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        ver no mapa
+                      </a>
+                    </>
+                  ) : null}
+                </span>
               </p>
             ) : null}
-            {shop.whatsapp ? (
-              <p className="flex items-center gap-2 text-[var(--text-secondary)]">
-                <Phone className="size-4 shrink-0 text-[var(--text-muted)]" />
+
+            {/* Os dois fixos confirmados. Nao ha botao de WhatsApp aqui:
+                TODO [A DEFINIR] PENDENCIAS.whatsapp — nao sabemos qual numero
+                atende no aplicativo, e link de WhatsApp errado e pior do que
+                nenhum: o cliente escreve, ninguem responde, e ele acha que a
+                barbearia o ignorou. */}
+            <p className="flex items-start gap-2 text-[var(--text-secondary)]">
+              <Phone className="mt-0.5 size-4 shrink-0 text-[var(--text-muted)]" />
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                {EMPRESA.telefones.map((numero) => (
+                  <a
+                    key={numero}
+                    href={`tel:+55${numero}`}
+                    className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+                  >
+                    {formatPhone(numero)}
+                  </a>
+                ))}
+                {PENDENCIAS.whatsapp.pendente ? (
+                  <AConfirmar o={PENDENCIAS.whatsapp} className="text-2xs">
+                    WhatsApp
+                  </AConfirmar>
+                ) : null}
+              </span>
+            </p>
+
+            <p className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <Mail className="size-4 shrink-0 text-[var(--text-muted)]" />
+              <a
+                href={`mailto:${EMPRESA.email}`}
+                className="break-all underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+              >
+                {EMPRESA.email}
+              </a>
+            </p>
+
+            <p className="flex items-start gap-2 text-[var(--text-secondary)]">
+              <Instagram className="mt-0.5 size-4 shrink-0 text-[var(--text-muted)]" />
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <a
-                  href={`https://wa.me/55${shop.whatsapp}`}
+                  href={`https://instagram.com/${EMPRESA.redes.instagram}`}
                   className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {formatPhone(shop.whatsapp)}
+                  @{EMPRESA.redes.instagram}
                 </a>
-              </p>
-            ) : null}
-            {shop.instagram ? (
-              <p className="flex items-center gap-2 text-[var(--text-secondary)]">
-                <Instagram className="size-4 shrink-0 text-[var(--text-muted)]" />
+                <span className="text-[var(--text-muted)]">·</span>
                 <a
-                  href={`https://instagram.com/${shop.instagram}`}
+                  href={`https://instagram.com/${EMPRESA.redes.instagramFundador}`}
                   className="underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  @{shop.instagram}
+                  @{EMPRESA.redes.instagramFundador}
                 </a>
-              </p>
-            ) : null}
+              </span>
+            </p>
+
+            <p className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <Facebook className="size-4 shrink-0 text-[var(--text-muted)]" />
+              {EMPRESA.redes.facebook}
+            </p>
           </div>
         </div>
 
         <div>
           <h3 className="text-2xs font-semibold uppercase tracking-[0.16em] text-[var(--text-primary)]">Horários</h3>
-          <ul className="mt-3 space-y-1.5 text-sm text-[var(--text-muted)]">
-            {shop.businessHours.map((blocks, weekday) => (
-              <li key={weekday} className="flex justify-between gap-4 tabular-nums">
-                <span>{WEEKDAY_LABEL[weekday]}</span>
-                <span className={blocks.length === 0 ? "text-[var(--text-muted)]" : "font-medium text-[var(--text-secondary)]"}>
-                  {blocks.length === 0
-                    ? "Fechado"
-                    : blocks
-                        .map((b) => `${formatMinutesLabel(b.start)}-${formatMinutesLabel(b.end)}`)
-                        .join(", ")}
-                </span>
-              </li>
-            ))}
-          </ul>
+
+          {/* TODO [A DEFINIR] PENDENCIAS.horarios — mesma regra da home: a
+              tabela do banco existe para o motor de agenda calcular horario
+              livre, e nao e a jornada real da loja. Rodape e o lugar onde as
+              pessoas VAO conferir se esta aberto; publicar horario errado aqui
+              faz alguem atravessar a cidade a toa. */}
+          {PENDENCIAS.horarios.pendente ? (
+            <div className="mt-3">
+              <AConfirmar o={PENDENCIAS.horarios}>horários</AConfirmar>
+              <p className="mt-2.5 text-sm leading-snug text-[var(--text-muted)]">
+                Em conferência. Confirme por telefone antes de vir — a agenda online já mostra os
+                horários livres de verdade.
+              </p>
+            </div>
+          ) : (
+            <ul className="mt-3 space-y-1.5 text-sm text-[var(--text-muted)]">
+              {shop.businessHours.map((blocks, weekday) => (
+                <li key={weekday} className="flex justify-between gap-4 tabular-nums">
+                  <span>{WEEKDAY_LABEL[weekday]}</span>
+                  <span className={blocks.length === 0 ? "text-[var(--text-muted)]" : "font-medium text-[var(--text-secondary)]"}>
+                    {blocks.length === 0
+                      ? "Fechado"
+                      : blocks
+                          .map((b) => `${formatMinutesLabel(b.start)}-${formatMinutesLabel(b.end)}`)
+                          .join(", ")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div>
@@ -106,11 +176,18 @@ export async function SiteFooter() {
       </div>
 
       <div className="border-t border-[var(--border-subtle)]">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-[var(--text-muted)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p>
-            © {new Date().getFullYear()} {shop.name}. Todos os direitos reservados.
+        {/* Identificacao da empresa: razao social e CNPJ. Nao e enfeite — e o
+            que permite a quem contrata uma assinatura mensal saber com quem
+            esta contratando. */}
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-[var(--text-muted)] sm:flex-row sm:items-start sm:justify-between sm:px-6">
+          <p className="leading-relaxed">
+            © {new Date().getFullYear()} {EMPRESA.nomeFantasia}. Todos os direitos reservados.
+            <br />
+            <span className="text-[var(--text-muted)]">
+              {EMPRESA.razaoSocial} · CNPJ {EMPRESA.cnpj}
+            </span>
           </p>
-          <p>Feito para durar: agenda, equipe e assinaturas em um lugar só.</p>
+          <p className="sm:text-right">Agenda, equipe e assinaturas em um lugar só.</p>
         </div>
       </div>
     </footer>

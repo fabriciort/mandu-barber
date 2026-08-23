@@ -4,6 +4,7 @@ import { cache } from "react";
 
 import { prisma } from "@/server/db";
 import { DEFAULT_TIMEZONE } from "@/lib/time";
+import { EMPRESA, MARCA, urlMaps } from "@/content/mr-mandu";
 import type { Interval } from "@/lib/intervals";
 
 export type ShopConfig = {
@@ -30,6 +31,8 @@ export type ShopConfig = {
   businessHours: Interval[][];
 };
 
+// TODO [A DEFINIR] PENDENCIAS.horarios — jornada de trabalho, nao a jornada
+// real da barbearia. Ver o mesmo aviso em prisma/seed.ts.
 const FALLBACK_HOURS: Interval[][] = [
   [], // domingo
   [{ start: 9 * 60, end: 20 * 60 }],
@@ -46,18 +49,22 @@ const FALLBACK_HOURS: Interval[][] = [
  */
 const FALLBACK_SHOP: ShopConfig = {
   id: "shop",
-  name: "mr. mandu",
-  tagline: "Barbearia de bairro com padrão de alta costura.",
-  phone: null,
+  // Identidade real: se o banco cair, a pagina ainda abre com o nome, o
+  // endereco e o contato certos da empresa — sao dados confirmados e estaveis,
+  // nao ha motivo para o rodape ficar mudo.
+  name: EMPRESA.assinaturaVisual,
+  tagline: MARCA.slogan,
+  phone: EMPRESA.telefones[0],
+  // TODO [A DEFINIR] PENDENCIAS.whatsapp — ver src/content/mr-mandu.ts.
   whatsapp: null,
-  email: null,
-  addressLine: null,
-  district: null,
-  city: null,
-  state: null,
-  zipCode: null,
-  instagram: null,
-  mapsUrl: null,
+  email: EMPRESA.email,
+  addressLine: EMPRESA.endereco.logradouro,
+  district: EMPRESA.endereco.bairro,
+  city: EMPRESA.endereco.cidade,
+  state: EMPRESA.endereco.uf,
+  zipCode: EMPRESA.endereco.cep,
+  instagram: EMPRESA.redes.instagram,
+  mapsUrl: urlMaps(),
   timezone: DEFAULT_TIMEZONE,
   slotStepMinutes: 15,
   minLeadMinutes: 60,

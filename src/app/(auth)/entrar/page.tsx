@@ -37,25 +37,34 @@ export default async function SignInPage({
         </Link>
       </p>
 
-      <div className="mt-8 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-          Acessos de demonstração
-        </p>
-        <ul className="mt-2 space-y-1 text-xs text-[var(--text-secondary)]">
-          <li>
-            <span className="text-[var(--text-muted)]">Cliente:</span> cliente@mandubarber.com.br
-          </li>
-          <li>
-            <span className="text-[var(--text-muted)]">Profissional:</span> bruno@mandubarber.com.br
-          </li>
-          <li>
-            <span className="text-[var(--text-muted)]">Gestor:</span> ricardo@mandubarber.com.br
-          </li>
-          <li className="pt-1">
-            <span className="text-[var(--text-muted)]">Senha:</span> mandu123
-          </li>
-        </ul>
-      </div>
+      {/* Acessos de demonstracao — SO em ambiente de demonstracao.
+       *
+       * Este bloco ja publicou e-mail do gestor com a senha ao lado. Com a
+       * carga real, a conta de gestor passou a usar o e-mail verdadeiro da
+       * empresa: publicar aquilo seria entregar a administracao de uma
+       * barbearia de verdade para quem abrisse a pagina.
+       *
+       * Agora depende de NEXT_PUBLIC_MOSTRAR_DEMO=1, que so existe no ambiente
+       * de demonstracao, e mostra apenas a conta de CLIENTE — a de gestor nao
+       * aparece em lugar nenhum. */}
+      {process.env.NEXT_PUBLIC_MOSTRAR_DEMO === "1" ? (
+        <div className="mt-8 rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-muted)] p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+            Ambiente de demonstração
+          </p>
+          <ul className="mt-2 space-y-1 text-xs text-[var(--text-secondary)]">
+            <li>
+              <span className="text-[var(--text-muted)]">Cliente:</span> cliente@mandubarber.com.br
+            </li>
+            <li>
+              <span className="text-[var(--text-muted)]">Senha:</span> mandu123
+            </li>
+          </ul>
+          <p className="mt-2 text-2xs leading-snug text-[var(--text-muted)]">
+            Os acessos da equipe não são divulgados aqui.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }

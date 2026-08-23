@@ -1,0 +1,47 @@
+{
+  "$comentario": "Metadados da galeria. Os arquivos ficam em public/gallery/. Para trocar uma foto: substitua o arquivo mantendo o nome, ou mude 'arquivo' aqui. O 'alt' e obrigatorio e nao pode repetir o titulo — ele descreve a imagem para quem nao a ve. Categorias validas: espaco, equipe, trabalhos.",
+  "itens": [
+    {
+      "arquivo": "espaco-01.jpg",
+      "categoria": "espaco",
+      "titulo": "Fachada na Rua São Paulo",
+      "alt": "PLACEHOLDER — substituir pela foto da fachada da barbearia na Rua São Paulo, 100, no Centro de Embu-Guaçu.",
+      "placeholder": true
+    },
+    {
+      "arquivo": "espaco-02.jpg",
+      "categoria": "espaco",
+      "titulo": "O salão",
+      "alt": "PLACEHOLDER — substituir pela foto do salão com as cadeiras de atendimento.",
+      "placeholder": true
+    },
+    {
+      "arquivo": "equipe-01.jpg",
+      "categoria": "equipe",
+      "titulo": "João Vitor",
+      "alt": "PLACEHOLDER — substituir por retrato de João Vitor Schmidt Krebs Mandu, fundador e proprietário, atendendo na cadeira.",
+      "placeholder": true
+    },
+    {
+      "arquivo": "equipe-02.jpg",
+      "categoria": "equipe",
+      "titulo": "Patrick",
+      "alt": "PLACEHOLDER — substituir por retrato de Patrick Gonçalves de Oliveira, barbeiro, atendendo na cadeira.",
+      "placeholder": true
+    },
+    {
+      "arquivo": "trabalhos-01.jpg",
+      "categoria": "trabalhos",
+      "titulo": "Corte finalizado",
+      "alt": "PLACEHOLDER — substituir por foto de um corte finalizado, de preferência com o cliente de perfil.",
+      "placeholder": true
+    },
+    {
+      "arquivo": "trabalhos-02.jpg",
+      "categoria": "trabalhos",
+      "titulo": "Barba finalizada",
+      "alt": "PLACEHOLDER — substituir por foto de barba finalizada após barboterapia.",
+      "placeholder": true
+    }
+  ]
+}

@@ -1,14 +1,28 @@
 /**
- * Semente da mr. mandu.
+ * Semente da Mr. Mandu Barber.
  *
- * Cria uma barbearia crivel: equipe, catalogo, planos, clientes com historico e
- * agenda povoada nas proximas semanas. O objetivo e que qualquer pessoa que
- * rode o projeto veja um painel com numeros de verdade, nao telas vazias.
+ * DUAS NATUREZAS DE DADO CONVIVEM AQUI, e a diferenca importa:
+ *
+ *   REAL     — identidade da empresa e nomes da equipe. Sai de
+ *              src/content/mr-mandu.ts, que so guarda o que foi confirmado.
+ *
+ *   DE APOIO — catalogo, precos, jornada, clientes, agenda e avaliacoes.
+ *              Existe para o painel abrir com movimento em vez de telas vazias,
+ *              e para o motor de agenda ter o que calcular. NAO e o negocio
+ *              real da barbearia.
+ *
+ * Todo dado de apoio que apareceria no site publico como se fosse verdade esta
+ * marcado com TODO [A DEFINIR] e tem uma pendencia correspondente em
+ * PENDENCIAS. Enquanto a pendencia estiver aberta, a pagina publica mostra o
+ * marcador <AConfirmar /> no lugar do valor — de proposito, para ninguem
+ * publicar preco de mentira achando que ja era o preco certo.
  *
  *   npm run db:seed
  */
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+
+import { EMPRESA, EQUIPE, MARCA, urlMaps } from "../src/content/mr-mandu";
 
 const prisma = new PrismaClient();
 
@@ -70,24 +84,39 @@ export async function seed() {
   await prisma.shopSettings.create({
     data: {
       id: "shop",
-      name: "mr. mandu",
-      tagline: "Barbearia de bairro com padrão de alta costura.",
-      phone: "1133334444",
-      whatsapp: "11987654321",
-      email: "contato@mandubarber.com.br",
-      addressLine: "Rua Aurora, 148",
-      district: "Vila Buarque",
-      city: "São Paulo",
-      state: "SP",
-      zipCode: "01209-000",
-      instagram: "mandubarber",
-      mapsUrl: "https://maps.google.com/?q=Rua+Aurora+148+Sao+Paulo",
+      // Identidade real da empresa. Fonte: src/content/mr-mandu.ts, que por sua
+      // vez sai do cadastro na Receita e das redes oficiais.
+      name: EMPRESA.assinaturaVisual,
+      tagline: MARCA.slogan,
+      phone: EMPRESA.telefones[0],
+      // TODO [A DEFINIR] PENDENCIAS.whatsapp — nao sabemos qual dos dois fixos
+      // atende WhatsApp, nem se existe um celular so para isso. Fica null de
+      // proposito: com numero errado aqui, o site publica um botao que leva a
+      // lugar nenhum.
+      whatsapp: null,
+      email: EMPRESA.email,
+      addressLine: EMPRESA.endereco.logradouro,
+      district: EMPRESA.endereco.bairro,
+      city: EMPRESA.endereco.cidade,
+      state: EMPRESA.endereco.uf,
+      zipCode: EMPRESA.endereco.cep,
+      instagram: EMPRESA.redes.instagram,
+      mapsUrl: urlMaps(),
       timezone: "America/Sao_Paulo",
       slotStepMinutes: 15,
       minLeadMinutes: 45,
       maxAdvanceDays: 60,
       cancellationWindowHours: 3,
       allowOnlineBooking: true,
+
+      // TODO [A DEFINIR] PENDENCIAS.horarios — estes horarios NAO sao os da
+      // barbearia; sao um valor de trabalho para o motor de agenda funcionar
+      // (sem jornada cadastrada nao existe horario livre para oferecer).
+      //
+      // Por isso o site NAO publica esta tabela como se fosse verdade: onde ela
+      // apareceria, sai o marcador <AConfirmar />. Quando o cliente confirmar,
+      // troque aqui, cadastre pelo painel em /painel/configuracoes e vire
+      // PENDENCIAS.horarios.pendente para false.
       businessHours: {
         create: [
           { weekday: 0, openMinute: 0, closeMinute: 0, closed: true },
@@ -103,6 +132,12 @@ export async function seed() {
   });
 
   // ------------------------------------------------------------ servicos
+  //
+  // TODO [A DEFINIR] PENDENCIAS.servicos — cardapio e precos NAO confirmados.
+  // Os nomes seguem o vocabulario da marca (barboterapia, visagismo, cortes);
+  // os valores e duracoes sao de trabalho, para o agendamento ter o que somar
+  // e o que reservar na agenda. Enquanto a pendencia estiver aberta, o site
+  // publico mostra <AConfirmar /> no lugar do preco.
   console.log("Criando catalogo de serviços...");
   const serviceSeed = [
     {
@@ -217,71 +252,77 @@ export async function seed() {
   };
 
   // ---------------------------------------------------------------- equipe
+  //
+  // Nomes e cargos REAIS (confirmados). O que NAO e real e nao foi inventado:
+  // headline, bio e especialidades ficam como [A DEFINIR] visivel, porque
+  // biografia inventada de pessoa real e o tipo de texto que passa despercebido
+  // numa revisao e vai ao ar como se a pessoa tivesse dito aquilo.
   console.log("Criando equipe...");
+
+  const fundador = EQUIPE[0];
+  const barbeiro = EQUIPE[1];
+  const recepcao = EQUIPE[2];
+
   const owner = await prisma.user.create({
     data: {
-      name: "Ricardo Mandu",
-      email: "ricardo@mandubarber.com.br",
-      phone: "11991110001",
+      // Nome de exibicao: o nome completo nao cabe num cartao de escolha de
+      // profissional. O nome de registro fica em EQUIPE, se precisar.
+      name: fundador.nomeExibicao,
+      // TODO [A DEFINIR] e-mail individual de acesso do proprietario. Ate la,
+      // o acesso usa o e-mail institucional confirmado da empresa.
+      email: EMPRESA.email,
+      // TODO [A DEFINIR] telefone direto do proprietario. O fixo da loja serve
+      // para o cadastro nao ficar vazio.
+      phone: EMPRESA.telefones[0],
       passwordHash: password,
       role: "OWNER",
     },
   });
 
+  // TODO [A DEFINIR] PENDENCIAS.cargoRecepcao — a Maria Mandu (recepcao, desde
+  // 10/2024) NAO entra como BarberProfile de proposito: isso a colocaria no
+  // fluxo de agendamento como se cortasse cabelo. O sistema so tem CLIENT,
+  // BARBER e OWNER; para ela operar a agenda sem virar profissional, e preciso
+  // criar o cargo Recepcao (mudanca de banco e de permissao, nao de texto).
+  // Ela aparece no site, na secao de equipe, a partir de EQUIPE.
+  void recepcao;
+
   const barberSeed = [
     {
-      name: "Ricardo Mandu",
+      name: fundador.nomeExibicao,
       email: owner.email,
-      headline: "Fundador — clássico e navalha",
-      bio: "Vinte anos de cadeira. Aprendeu com o pai, em Recife, e trouxe a navalha para a Vila Buarque.",
-      specialties: ["Navalha", "Clássico", "Barba"],
+      // TODO [A DEFINIR] PENDENCIAS.apresentacaoEquipe — como o João Vitor
+      // quer ser apresentado. Fica NULL, e nao com um texto "[A DEFINIR]":
+      // este campo aparece dentro do fluxo de agendamento, onde marcador de
+      // obra vira ruido para o cliente. A pendencia e sinalizada no site, na
+      // secao de equipe.
+      headline: null,
+      bio: null,
+      specialties: [] as string[],
+      phone: null,
       commissionPercent: 100,
       color: "#3f3f45",
       existingUserId: owner.id,
+      desde: new Date(EMPRESA.ativaDesde),
+      // TODO [A DEFINIR] PENDENCIAS.servicos — quais servicos cada profissional
+      // atende. Por ora todos atendem tudo, senao nao ha o que agendar.
       services: ["corte-mandu", "corte-social", "barba-terapia", "barba-express", "combo-mandu", "pezinho", "sobrancelha"],
       hours: { weekdays: [{ start: 9 * 60, end: 19 * 60 }], saturday: [{ start: 8 * 60, end: 16 * 60 }] },
     },
     {
-      name: "Bruno Tavares",
-      email: "bruno@mandubarber.com.br",
-      phone: "11991110002",
-      headline: "Degradê e freestyle",
-      bio: "Especialista em degradê navalhado e desenhos. Fila de espera própria no Instagram.",
-      specialties: ["Degradê", "Freestyle", "Platinado"],
-      commissionPercent: 55,
+      name: barbeiro.nomeExibicao,
+      // TODO [A DEFINIR] e-mail de acesso do Patrick.
+      email: "patrick@mrmandubarber.com.br",
+      // TODO [A DEFINIR] telefone do Patrick.
+      phone: null,
+      headline: null,
+      bio: null,
+      specialties: [] as string[],
+      commissionPercent: 50,
       color: "#7c7c83",
-      services: ["corte-mandu", "corte-social", "combo-mandu", "pezinho", "platinado", "sobrancelha", "barba-express"],
+      desde: new Date("2022-05-01"),
+      services: ["corte-mandu", "corte-social", "barba-terapia", "barba-express", "combo-mandu", "pezinho", "platinado", "sobrancelha", "pigmentacao-barba", "corte-kids"],
       hours: { weekdays: [{ start: 10 * 60, end: 20 * 60 }], saturday: [{ start: 9 * 60, end: 18 * 60 }] },
-    },
-    {
-      name: "Caio Nakamura",
-      email: "caio@mandubarber.com.br",
-      phone: "11991110003",
-      headline: "Barboterapia e pigmentação",
-      bio: "Fez barbearia virar ritual. Toalha quente, óleo quente e conversa boa.",
-      specialties: ["Barba", "Pigmentação", "Toalha quente"],
-      commissionPercent: 50,
-      color: "#a1a1a6",
-      services: ["barba-terapia", "barba-express", "pigmentacao-barba", "combo-mandu", "corte-social", "sobrancelha"],
-      hours: {
-        weekdays: [
-          { start: 12 * 60, end: 15 * 60 },
-          { start: 16 * 60, end: 21 * 60 },
-        ],
-        saturday: [{ start: 10 * 60, end: 18 * 60 }],
-      },
-    },
-    {
-      name: "Diego Alencar",
-      email: "diego@mandubarber.com.br",
-      phone: "11991110004",
-      headline: "Corte infantil e social",
-      bio: "Tem o dom de cortar cabelo de criança sem choro. Pai de dois.",
-      specialties: ["Infantil", "Social", "Rapidez"],
-      commissionPercent: 50,
-      color: "#5c5c63",
-      services: ["corte-kids", "corte-social", "corte-mandu", "pezinho", "barba-express"],
-      hours: { weekdays: [{ start: 9 * 60, end: 18 * 60 }], saturday: [{ start: 8 * 60, end: 17 * 60 }] },
     },
   ];
 
@@ -311,21 +352,15 @@ export async function seed() {
         commissionPercent: seed.commissionPercent,
         agendaColor: seed.color,
         displayOrder: index,
-        startedAt: localDateTime(-365 * (index + 1), 9),
+        // Datas reais: o fundador desde a abertura da empresa, o Patrick desde
+        // maio/2022 (ambos confirmados).
+        startedAt: seed.desde,
       },
     });
 
     for (const slug of seed.services) {
       await prisma.barberService.create({
         data: { barberId: profile.id, serviceId: byslug(slug).id },
-      });
-    }
-
-    // Bruno cobra mais caro no corte principal — o modelo suporta sobrescrita.
-    if (seed.name === "Bruno Tavares") {
-      await prisma.barberService.update({
-        where: { barberId_serviceId: { barberId: profile.id, serviceId: byslug("corte-mandu").id } },
-        data: { priceCents: 8500 },
       });
     }
 
@@ -345,10 +380,17 @@ export async function seed() {
     barbers.push({ id: profile.id, userId, name: seed.name });
   }
 
+  /**
+   * A agenda de demonstracao referencia profissionais por posicao. A equipe
+   * real tem duas pessoas na cadeira hoje e pode crescer; o resto por tamanho
+   * evita que um seed quebre so porque alguem entrou ou saiu do time.
+   */
+  const prof = (i: number) => barbers[i % barbers.length];
+
   // Ferias reais na agenda, para o painel mostrar bloqueio de verdade.
   await prisma.timeOff.create({
     data: {
-      barberId: barbers[1].id,
+      barberId: prof(1).id,
       title: "Férias",
       type: "VACATION",
       startsAt: localDateTime(21, 0),
@@ -366,6 +408,15 @@ export async function seed() {
   });
 
   // ----------------------------------------------------------------- planos
+  //
+  // TODO [A DEFINIR] PENDENCIAS.planos — a assinatura e o diferencial da casa
+  // ("a primeira barbearia por assinatura de Embu-Guaçu"), mas nem os valores
+  // nem o que entra em cada plano foram confirmados.
+  //
+  // TODO [A DEFINIR] PENDENCIAS.diasDaAssinatura — a marca ja divulga que os
+  // creditos valem "somente em dias especificos da semana". Isso NAO esta
+  // implementado: hoje o credito vale em qualquer dia. Quando os dias vierem,
+  // e regra de negocio no agendamento, nao so texto na pagina.
   console.log("Criando planos...");
   const planEssencial = await prisma.plan.create({
     data: {
@@ -712,7 +763,7 @@ export async function seed() {
   // Agendamentos garantidos para a conta de demonstracao.
   await createAppointment({
     clientId: demo.id,
-    barberId: barbers[0].id,
+    barberId: prof(0).id,
     slugs: ["combo-mandu"],
     daysFromToday: 2,
     hour: 15,
@@ -721,13 +772,15 @@ export async function seed() {
   });
   await createAppointment({
     clientId: demo.id,
-    barberId: barbers[2].id,
+    barberId: prof(2).id,
     slugs: ["barba-terapia"],
     daysFromToday: -9,
     hour: 17,
     minute: 30,
     status: "COMPLETED",
     paid: true,
+    // Avaliacao de apoio, para o painel de avaliacoes nao abrir vazio. NAO vai
+    // ao ar: a home so publica depoimento quando PENDENCIAS.depoimentos fechar.
     withReview: { rating: 5, comment: "Ritual completo. Saí renovado." },
   });
 
@@ -743,9 +796,13 @@ export async function seed() {
 
   console.log(`\nPronto. ${created + 2} agendamentos, ${clients.length} clientes, ${barbers.length} profissionais.`);
   console.log("\nAcessos de demonstracao (senha: mandu123)");
-  console.log("  Gestor:        ricardo@mandubarber.com.br");
-  console.log("  Profissional:  bruno@mandubarber.com.br");
+  console.log(`  Gestor:        ${owner.email}`);
   console.log("  Cliente:       cliente@mandubarber.com.br");
+  console.log(
+    "\n  ATENCAO: a conta de gestor usa o e-mail real da empresa com a senha\n" +
+      "  de demonstracao. TROQUE esta senha antes de qualquer ambiente publico —\n" +
+      "  ela da acesso total ao painel da barbearia.",
+  );
 }
 
 // Executado direto pela linha de comando (npm run db:seed). Quando importado

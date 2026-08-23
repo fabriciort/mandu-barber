@@ -67,7 +67,10 @@ for (const w of [320, 390]) {
   if (r.maus.length) { falhas++; console.log(`FALHA ${w}px /agendar[horario]:`, r.maus.join(" | ")); }
 
   await p.goto(`${B}/entrar`, { waitUntil: "networkidle" });
-  await p.fill("#email", "ricardo@mandubarber.com.br");
+  // Gestor da carga de demonstracao. O e-mail acompanha EMPRESA.email em
+  // src/content/mr-mandu.ts — o seed usa o e-mail institucional da empresa
+  // como acesso do proprietario ate haver um individual.
+  await p.fill("#email", "contato@focco10.com.br");
   await p.fill("#password", "mandu123");
   await p.click('button[type="submit"]');
   await p.waitForURL("**/painel", { timeout: 20000 });
