@@ -72,22 +72,38 @@ export default async function HomePage() {
           em vez de flutuarem numa faixa vazia acima. O padding de volta entra
           no conteudo, para o titulo nao nascer atras da barra. */}
       <section className="grain relative isolate z-30 -mt-[4.25rem] overflow-hidden bg-[var(--canvas-deep)] text-white md:-mt-16">
-        {/* Foto do salao.
+        {/* Foto da casa: um corte sendo feito.
          *
-         * A imagem e vertical (768x1376). Esticada como fundo de um heroi
-         * largo, os 768px de largura virariam 1440 e a foto ficaria borrada.
-         * Entao ela ocupa a FAIXA DA DIREITA — no desktop com ~55% da largura,
-         * que a devolve perto do tamanho nativo — e se funde no preto pela
-         * esquerda, onde o texto mora. No celular a tela ja e vertical: a foto
-         * preenche tudo, no mesmo formato em que foi tirada. */}
+         * A imagem e vertical (1122x1402). Esticada como fundo de um heroi
+         * largo, ela viraria 1440 e ficaria borrada — o otimizador do Next
+         * reduz, nunca aumenta. Entao ela ocupa a FAIXA DA DIREITA (58% no
+         * desktop, o que a devolve perto do tamanho nativo) e se funde no preto
+         * pela esquerda, onde o texto mora. No celular a tela ja e vertical: a
+         * foto preenche tudo, no mesmo formato em que foi tirada.
+         *
+         * A foto e preto e branco de tom quente — nao foi dessaturada para
+         * caber na paleta, ja chegou assim. Por isso o JPEG e mantido em sRGB
+         * em vez de cinza puro: converter mataria a tonalidade e ainda geraria
+         * arquivo maior (90 KB contra 85 KB, medido). */}
         <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full lg:w-[58%]" aria-hidden>
           <Image
-            src="/salao.jpg"
+            src="/hero.jpg"
+            // Decorativa: o heroi ja diz em texto o que a foto ilustra, e o
+            // container inteiro e aria-hidden.
             alt=""
             fill
             priority
             sizes="(max-width: 1023px) 100vw, 58vw"
-            className="object-cover object-[50%_38%]"
+            // Recorte por breakpoint, porque a moldura vira de lado:
+            //
+            // Celular — a faixa e alta e estreita, entao a foto escala pela
+            // ALTURA e sobra largura para cortar. 55% enquadra o barbeiro e o
+            // cliente juntos, sem cortar a tesoura.
+            //
+            // Desktop — a faixa e quase quadrada e a foto escala pela largura;
+            // ai quem manda e o eixo vertical. 34% mantem o rosto na altura
+            // dos olhos de quem le.
+            className="object-cover object-[55%_38%] lg:object-[50%_34%]"
           />
 
           {/* Escurecimento base. Leve: a foto precisa ser vista. O trabalho
@@ -98,20 +114,32 @@ export default async function HomePage() {
           {/* Celular: o texto ocupa a tela inteira de cima para baixo, entao o
               degrade tambem e vertical. Libera a parte de baixo da foto, que e
               onde estao a cadeira e os espelhos. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--canvas-deep)]/92 from-[6%] via-[var(--canvas-deep)]/72 via-[44%] to-transparent to-[82%] lg:hidden" />
+          {/* O texto cobre a metade de cima, e e exatamente ali que fica o
+              rosto do barbeiro — na vertical nao ha corte no celular, entao
+              nao adianta reposicionar. A saida e assumir a divisao: escurece de
+              verdade ate a metade, onde mora a leitura, e abre da metade para
+              baixo, onde estao as maos, a tesoura e o cliente. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--canvas-deep)]/95 from-[8%] via-[var(--canvas-deep)]/86 via-[50%] to-transparent to-[88%] lg:hidden" />
 
           {/* Desktop: o texto fica numa coluna a esquerda, entao o degrade e
-              lateral. Ele abre cedo (55%) de proposito: mais fechado, enterrava
-              a silhueta do barbeiro, que e a melhor parte da foto. */}
-          <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--canvas-deep)] from-[10%] via-[var(--canvas-deep)]/45 via-[35%] to-transparent to-[55%] lg:block" />
+              lateral.
+              A rampa comeca no proprio canto da faixa (0%) e nao num ponto mais
+              adiante. Com um ponto de partida, a parede clara do fundo criava
+              uma emenda vertical visivel bem ali — o degrade so comecava a
+              trabalhar depois dela. */}
+          <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--canvas-deep)] from-[0%] via-[var(--canvas-deep)]/50 via-[30%] to-transparent to-[62%] lg:block" />
 
           {/* Pontas: a foto nao pode terminar num corte reto contra o preto. */}
           <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[var(--canvas-deep)] to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[var(--canvas-deep)] to-transparent" />
         </div>
 
-        <div className="relative mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-[8.25rem] sm:px-6 md:pt-[8rem] lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:pb-28 lg:pt-[10rem]">
-          <div className="stagger">
+        {/* O container mantem a largura e o alinhamento do resto do site; quem
+            estreita e o bloco de dentro. Assim o texto encosta na margem
+            esquerda da pagina e deixa a metade direita livre para a foto, que e
+            onde o barbeiro esta. */}
+        <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-[8.25rem] sm:px-6 md:pt-[8rem] lg:pb-40 lg:pt-[11rem]">
+          <div className="stagger lg:max-w-[32rem] xl:max-w-[36rem]">
             <p
               style={{ "--i": 0 } as React.CSSProperties}
               className="glass-on-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/85"
@@ -176,16 +204,26 @@ export default async function HomePage() {
               style={{ "--i": 4 } as React.CSSProperties}
               className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/12 pt-8"
             >
-              <Stat value={`${anosDeCasa()}`} label="Anos na Rua São Paulo, no Centro" />
+              {/* Rotulos curtos de proposito: em tres linhas, o terceiro ficava
+                  cortado pela barra flutuante logo na primeira tela do celular.
+                  A rua ja esta no paragrafo acima. */}
+              <Stat value={`${anosDeCasa()}`} label="Anos no Centro" />
               <Stat value={`${barbers.length}`} label="Profissionais na cadeira" />
-              <Stat value="1ª" label="Barbearia por assinatura da cidade" />
+              <Stat value="1ª" label="Por assinatura na cidade" />
             </dl>
           </div>
-
-          <div className="relative">
-            <NextSlotsPreview />
-          </div>
         </div>
+      </section>
+
+      {/* --------------------------------------------------- proximos horarios */}
+      {/* O cartao de vagas morava DENTRO do heroi, na coluna da direita — e era
+          exatamente ali que ficava o barbeiro da foto. Numa moldura deitada uma
+          foto em pe sempre escala pela largura, ou seja, nao ha recorte
+          horizontal que salve: o assunto ia continuar atras do cartao em
+          qualquer posicao. Descer o cartao uma secao devolve a foto inteira ao
+          heroi e ainda da respiro para a informacao mais util da home. */}
+      <section className="relative z-30 mx-auto -mt-10 max-w-2xl px-4 sm:px-6 lg:-mt-16">
+        <NextSlotsPreview />
       </section>
 
       {/* -------------------------------------------------------- diferencial */}
