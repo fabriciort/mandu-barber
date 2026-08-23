@@ -90,7 +90,7 @@ export function MobileNav({
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
-            className="absolute inset-x-0 top-0 animate-[var(--animate-rise)] rounded-b-[var(--radius-2xl)] border-b border-[var(--border-default)] bg-[var(--surface)] shadow-[var(--shadow-xl)] focus:outline-none"
+            className="glass absolute inset-x-0 top-0 animate-[var(--animate-rise)] rounded-b-[var(--radius-2xl)] border-b border-[var(--border-default)] shadow-[var(--shadow-xl)] focus:outline-none"
           >
             <div className="flex h-16 items-center justify-between px-5">
               {authenticated && userName ? (

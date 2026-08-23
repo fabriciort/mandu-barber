@@ -55,7 +55,7 @@ export function NotificationBell({ unread, notifications }: { unread: number; no
           align="end"
           sideOffset={8}
           collisionPadding={12}
-          className="z-50 w-[min(20rem,calc(100vw-1.5rem))] animate-[var(--animate-pop)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-raised)] shadow-[var(--shadow-xl)]"
+          className="glass z-50 w-[min(20rem,calc(100vw-1.5rem))] animate-[var(--animate-pop)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] shadow-[var(--shadow-xl)]"
         >
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
             <p className="text-sm font-semibold">Avisos</p>

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { BrandMark } from "@/components/brand";
 import { cn } from "@/lib/cn";
+import { Veu } from "@/components/veu";
 
 /**
  * Barra superior do celular — o espelho da barra de baixo.
@@ -28,18 +29,21 @@ export function MobileTopBar({
       {/* Espacador: a barra flutua, entao o conteudo precisa comecar abaixo. */}
       <div className="h-[4.25rem] md:hidden" aria-hidden />
 
-      {/* Veu, igual ao da barra de baixo. Sem ele o conteudo rolava por tras da
-          pilula e colidia com ela: o texto aparecia inteiro no vao entre a
-          pilula e o circulo, e cortado atras dos dois.
+      {/* Veu. Sem ele o conteudo rola por tras da pilula e colide com ela: o
+          texto aparece inteiro no vao entre a pilula e o circulo, e cortado
+          atras dos dois.
           
-          Ele e pintado com a cor da PAGINA, entao serve para conteudo comum.
-          Sobre uma faixa escura de tela cheia — o heroi da home — ele viraria
-          uma nevoa branca no tema claro; por isso fica em z-20, e quem tem
-          fundo proprio se declara acima dele (ver o heroi em page.tsx). */}
-      <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-20 h-24 bg-gradient-to-b from-[var(--surface)] via-[var(--surface)]/70 to-transparent md:hidden"
-        aria-hidden
-      />
+          Era um degrade da cor da pagina, e isso APAGAVA o que passava por
+          baixo — a foto da galeria, na home, virava um borrao esbranquicado.
+          Agora e desfoque progressivo: o que passa continua visivel, so que
+          fora de foco. A tinta e fraca, so o suficiente para o texto da barra
+          nao competir com o que esta atras.
+          
+          Fica em z-20 e quem tem fundo proprio de tela cheia se declara acima
+          dele (ver o heroi em page.tsx). */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 h-28 md:hidden" aria-hidden>
+        <Veu para="baixo" tinta="var(--veu-tinta)" />
+      </div>
 
       <div
         className={cn(

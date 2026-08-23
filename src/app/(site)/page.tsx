@@ -23,6 +23,7 @@ import { formatDuration, formatMinutesLabel } from "@/lib/time";
 import { SERVICE_CATEGORY_LABEL, WEEKDAY_SHORT, type ServiceCategory } from "@/lib/enums";
 import { planSavings } from "@/lib/pricing";
 import { GalleryCarousel } from "@/components/gallery-carousel";
+import { Veu } from "@/components/veu";
 import { AConfirmar } from "@/components/a-confirmar";
 import { GALERIA } from "@/content/galeria";
 import { EMPRESA, EQUIPE, MARCA, PENDENCIAS, anosDeCasa } from "@/content/mr-mandu";
@@ -71,21 +72,35 @@ export default async function HomePage() {
           topo da tela e a pilula do logo e o circulo do menu ficam SOBRE ela,
           em vez de flutuarem numa faixa vazia acima. O padding de volta entra
           no conteudo, para o titulo nao nascer atras da barra. */}
-      <section className="grain relative isolate z-30 -mt-[4.25rem] overflow-hidden bg-[var(--canvas-deep)] text-white md:-mt-16">
-        {/* Foto da casa: um corte sendo feito.
+      <section
+        className="grain relative isolate z-30 -mt-[4.25rem] overflow-hidden bg-[var(--canvas-deep)] text-white md:-mt-16"
+        // Altura da foto no celular, em um lugar so. O recuo do texto sai
+        // daqui tambem — sem a variavel, mexer na foto exigia lembrar de
+        // corrigir o padding do conteudo, e um dos dois sempre ficava para tras.
+        style={{ "--foto-h": "clamp(16rem, 40vh, 24rem)" } as React.CSSProperties}
+      >
+        {/* Foto da casa: um corte acontecendo.
          *
-         * A imagem e vertical (1122x1402). Esticada como fundo de um heroi
-         * largo, ela viraria 1440 e ficaria borrada — o otimizador do Next
-         * reduz, nunca aumenta. Entao ela ocupa a FAIXA DA DIREITA (58% no
-         * desktop, o que a devolve perto do tamanho nativo) e se funde no preto
-         * pela esquerda, onde o texto mora. No celular a tela ja e vertical: a
-         * foto preenche tudo, no mesmo formato em que foi tirada.
+         * CELULAR — a foto e um BLOCO no topo, nao um fundo atras do texto.
+         * Antes ela ficava atras de tudo e precisava de um veu pesado para o
+         * texto ser legivel; o resultado era uma foto escondida e um texto
+         * chapado. Separando os dois, cada um fica inteiro: a foto aparece sem
+         * nada por cima (so o logo e o menu, sobre uma faixa desfocada), e o
+         * texto ganha fundo proprio logo abaixo. Ela ainda comeca na borda de
+         * cima da tela, com o cromo sobreposto.
+         *
+         * DESKTOP — ai a tela e larga e sobra lado: a foto ocupa a faixa da
+         * direita (58%, o que a devolve perto do tamanho nativo) e se funde no
+         * preto pela esquerda, onde o texto mora.
          *
          * A foto e preto e branco de tom quente — nao foi dessaturada para
          * caber na paleta, ja chegou assim. Por isso o JPEG e mantido em sRGB
          * em vez de cinza puro: converter mataria a tonalidade e ainda geraria
          * arquivo maior (90 KB contra 85 KB, medido). */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full lg:w-[58%]" aria-hidden>
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[var(--foto-h)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:w-[58%]"
+          aria-hidden
+        >
           <Image
             src="/hero.jpg"
             // Decorativa: o heroi ja diz em texto o que a foto ilustra, e o
@@ -94,51 +109,43 @@ export default async function HomePage() {
             fill
             priority
             sizes="(max-width: 1023px) 100vw, 58vw"
-            // Recorte por breakpoint, porque a moldura vira de lado:
-            //
-            // Celular — a faixa e alta e estreita, entao a foto escala pela
-            // ALTURA e sobra largura para cortar. 55% enquadra o barbeiro e o
-            // cliente juntos, sem cortar a tesoura.
-            //
-            // Desktop — a faixa e quase quadrada e a foto escala pela largura;
-            // ai quem manda e o eixo vertical. 34% mantem o rosto na altura
-            // dos olhos de quem le.
-            className="object-cover object-[55%_38%] lg:object-[50%_34%]"
+            // O recorte muda porque a moldura muda de formato entre os dois.
+            className="object-cover object-[55%_70%] lg:object-[50%_34%]"
           />
 
-          {/* Escurecimento base. Leve: a foto precisa ser vista. O trabalho
-              pesado fica para os degrades abaixo, que escurecem SO onde ha
-              texto — escurecer tudo por igual apaga a foto inteira. */}
-          <div className="absolute inset-0 bg-[var(--canvas-deep)]/45 lg:bg-[var(--canvas-deep)]/20" />
+          {/* CELULAR — faixa desfocada no topo, so onde o logo e o menu pousam.
+              E o mesmo material do resto da interface: em vez de tapar a foto
+              com cor, tira ela de foco por 6rem e devolve contraste ao cromo. */}
+          <div className="absolute inset-x-0 top-0 h-[6.5rem] lg:hidden">
+            <Veu para="baixo" tinta="rgb(8 8 10 / 0.45)" camadas={4} base={1.5} />
+          </div>
 
-          {/* Celular: o texto ocupa a tela inteira de cima para baixo, entao o
-              degrade tambem e vertical. Libera a parte de baixo da foto, que e
-              onde estao a cadeira e os espelhos. */}
-          {/* O texto cobre a metade de cima, e e exatamente ali que fica o
-              rosto do barbeiro — na vertical nao ha corte no celular, entao
-              nao adianta reposicionar. A saida e assumir a divisao: escurece de
-              verdade ate a metade, onde mora a leitura, e abre da metade para
-              baixo, onde estao as maos, a tesoura e o cliente. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--canvas-deep)]/95 from-[8%] via-[var(--canvas-deep)]/86 via-[50%] to-transparent to-[88%] lg:hidden" />
+          {/* CELULAR — a foto termina derretendo no fundo da secao, em vez de
+              cortar reto. Desfoque + tinta na cor da propria secao. */}
+          <div className="absolute inset-x-0 bottom-0 h-28 lg:hidden">
+            <Veu para="cima" tinta="var(--canvas-deep)" camadas={4} base={1} />
+          </div>
 
-          {/* Desktop: o texto fica numa coluna a esquerda, entao o degrade e
-              lateral.
-              A rampa comeca no proprio canto da faixa (0%) e nao num ponto mais
-              adiante. Com um ponto de partida, a parede clara do fundo criava
-              uma emenda vertical visivel bem ali — o degrade so comecava a
-              trabalhar depois dela. */}
+          {/* DESKTOP — escurecimento base leve: a foto precisa ser vista. O
+              trabalho pesado fica para o degrade lateral. */}
+          <div className="absolute inset-0 hidden bg-[var(--canvas-deep)]/20 lg:block" />
+
+          {/* DESKTOP — o texto fica numa coluna a esquerda, entao o degrade e
+              lateral. A rampa comeca no proprio canto da faixa (0%) e nao num
+              ponto mais adiante: com um ponto de partida, a parede clara do
+              fundo criava uma emenda vertical visivel bem ali. */}
           <div className="absolute inset-0 hidden bg-gradient-to-r from-[var(--canvas-deep)] from-[0%] via-[var(--canvas-deep)]/50 via-[30%] to-transparent to-[62%] lg:block" />
 
-          {/* Pontas: a foto nao pode terminar num corte reto contra o preto. */}
-          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[var(--canvas-deep)] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[var(--canvas-deep)] to-transparent" />
+          {/* DESKTOP — pontas: a foto nao pode terminar num corte reto. */}
+          <div className="absolute inset-x-0 top-0 hidden h-20 bg-gradient-to-b from-[var(--canvas-deep)] to-transparent lg:block" />
+          <div className="absolute inset-x-0 bottom-0 hidden h-28 bg-gradient-to-t from-[var(--canvas-deep)] to-transparent lg:block" />
         </div>
 
         {/* O container mantem a largura e o alinhamento do resto do site; quem
             estreita e o bloco de dentro. Assim o texto encosta na margem
             esquerda da pagina e deixa a metade direita livre para a foto, que e
             onde o barbeiro esta. */}
-        <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-[8.25rem] sm:px-6 md:pt-[8rem] lg:pb-40 lg:pt-[11rem]">
+        <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-[calc(var(--foto-h)+1.25rem)] sm:px-6 lg:pb-40 lg:pt-[11rem]">
           <div className="stagger lg:max-w-[32rem] xl:max-w-[36rem]">
             <p
               style={{ "--i": 0 } as React.CSSProperties}
@@ -150,7 +157,10 @@ export default async function HomePage() {
 
             <h1
               style={{ "--i": 1 } as React.CSSProperties}
-              className="font-display mt-6 text-[clamp(2.5rem,9vw,4.5rem)] leading-[0.98] text-white balance"
+              // O minimo caiu de 2.5rem para 2.25rem: a 360px "A primeira
+              // barbearia" nao cabia numa linha e o titulo virava quatro
+              // linhas, empurrando o botao para fora da primeira tela.
+              className="font-display mt-6 text-[clamp(2.25rem,9vw,4.5rem)] leading-[0.98] text-white balance"
             >
               A primeira barbearia
               <br />
@@ -163,14 +173,13 @@ export default async function HomePage() {
               style={{ "--i": 2 } as React.CSSProperties}
               className="mt-6 max-w-md text-base leading-relaxed text-white/60 sm:text-lg pretty"
             >
-              Corte, barba e barboterapia na Rua São Paulo, no Centro. Reserve seu horário aqui
-              mesmo, em menos de um minuto — ou entre para o clube e tenha a cadeira guardada
-              todo mês.
+              Corte, barba e barboterapia. Reserve seu horário em menos de um minuto — ou entre
+              para o clube e tenha a cadeira guardada todo mês.
             </p>
 
             <div
               style={{ "--i": 3 } as React.CSSProperties}
-              className="mt-9 flex flex-col gap-3 sm:flex-row"
+              className="mt-7 flex flex-col gap-3 sm:flex-row"
             >
               {/* Mesma dupla da barra de baixo: acao principal em bloco solido,
                   a secundaria em vidro. Pilula nas duas, para o heroi falar a

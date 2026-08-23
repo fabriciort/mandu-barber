@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { CalendarPlus, Home, Sparkles, UserRound } from "lucide-react";
 
 import { cn } from "@/lib/cn";
+import { Veu } from "@/components/veu";
 
 type Tab = {
   href: string;
@@ -56,12 +57,13 @@ export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
       <div className="h-[5.5rem] md:hidden" aria-hidden />
 
       {/* Veu: o conteudo que passa AO LADO das pilulas continua nitido e deixa
-          a faixa poluida. Um degrade fraco acalma essa area sem tapar nada —
-          se fosse opaco, a camada deixaria de flutuar. */}
-      <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-28 bg-gradient-to-t from-[var(--surface)] via-[var(--surface)]/55 to-transparent md:hidden"
-        aria-hidden
-      />
+          a faixa poluida. Antes era um degrade da cor da pagina, que apagava o
+          que passava por baixo; agora e desfoque progressivo — a pagina segue
+          visivel ali, so que fora de foco, e a camada continua parecendo que
+          flutua sobre ela em vez de esconde-la. */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-32 md:hidden" aria-hidden>
+        <Veu para="cima" tinta="var(--veu-tinta)" />
+      </div>
 
       {/* justify-between + capsula flexivel: assim a capsula comeca na margem
           esquerda e o botao termina na direita, exatamente onde a pilula do logo

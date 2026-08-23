@@ -25,10 +25,14 @@ const buttonVariants = cva(
       variant: {
         primary:
           "bg-[var(--accent)] text-[var(--accent-contrast)] shadow-[var(--shadow-sm)] hover:bg-[var(--accent-hover)]",
+        // Os botoes que NAO sao a acao principal ganham vidro: eles convivem
+        // com o conteudo, e o translucido os mantem presentes sem competir. O
+        // primario segue solido de proposito — no monocromatico, quem carrega
+        // a enfase e a inversao, e vidro no primario a apagaria.
         secondary:
-          "border border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-muted)]",
+          "glass-soft border border-[var(--border-default)] text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-muted)]",
         outline:
-          "border border-[var(--border-strong)] bg-transparent text-[var(--text-primary)] hover:bg-[var(--surface-muted)]",
+          "glass-soft border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-muted)]",
         ghost:
           "text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]",
         subtle:

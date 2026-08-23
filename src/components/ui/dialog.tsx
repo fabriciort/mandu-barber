@@ -38,7 +38,9 @@ export function DialogContent({
       />
       <DialogPrimitive.Content
         className={cn(
-          "fixed z-50 flex flex-col overflow-hidden bg-[var(--surface-raised)]",
+          // Vidro forte: e camada sobreposta, como a navegacao. Sobre o veu
+          // escuro do fundo, o desfoque mostra que a pagina continua ali atras.
+          "glass fixed z-50 flex flex-col overflow-hidden",
           "shadow-[var(--shadow-xl)] focus:outline-none",
           // Celular: folha colada embaixo, cantos arredondados so em cima.
           "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[var(--radius-2xl)]",

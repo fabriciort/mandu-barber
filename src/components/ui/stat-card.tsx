@@ -35,7 +35,7 @@ export function StatCard({
         "group rounded-[var(--radius-lg)] border p-4 transition-colors sm:p-5",
         emphasis
           ? "border-transparent bg-[var(--surface-inverse)] text-[var(--text-inverse)]"
-          : "border-[var(--border-subtle)] bg-[var(--surface-raised)] hover:border-[var(--border-default)]",
+          : "glass-soft border-[var(--border-subtle)] hover:border-[var(--border-default)]",
         className,
       )}
     >

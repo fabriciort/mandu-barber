@@ -10,7 +10,11 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-xl)] border border-[var(--border-subtle)] bg-[var(--surface-raised)]",
+        // Vidro fraco em vez de superficie opaca: o cartao deixa passar o que
+        // esta atras sem virar janela. Usa .glass-soft, e nao .glass — o vidro
+        // forte e da camada de NAVEGACAO, que flutua sobre a pagina; um cartao
+        // esta dentro dela e so precisa parecer levantado.
+        "glass-soft rounded-[var(--radius-xl)] border border-[var(--border-subtle)]",
         // O cartao clicavel sobe de leve no hover e afunda no toque: a mesma
         // gramatica de movimento dos botoes, para a interface parecer uma peca so.
         interactive && [

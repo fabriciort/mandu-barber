@@ -216,6 +216,13 @@
    * um brilho no topo, onde a luz bateria.
    * ------------------------------------------------------------------- */
   --glass-fill: rgb(255 255 255 / 0.86);
+  --glass-soft-fill: rgb(255 255 255 / 0.62);
+  --glass-soft-blur: 18px;
+  /* Pelicula de apoio do veu. Bem mais fraca que o degrade solido que ela
+     substituiu: aqui quem trabalha e o desfoque, a cor so garante contraste.
+     A 42% ela virava uma faixa leitosa por cima do heroi escuro — o mesmo
+     defeito que o veu deveria ter resolvido. */
+  --veu-tinta: rgb(255 255 255 / 0.16);
   --glass-edge: rgb(8 8 10 / 0.1);
   --glass-highlight: rgb(255 255 255 / 0.9);
   --glass-blur: 36px;
@@ -267,6 +274,9 @@
   /* No escuro o vidro e uma pelicula clara sobre o preto: escuro demais
      ele some no fundo e deixa de parecer uma camada acima. */
   --glass-fill: rgb(26 26 30 / 0.88);
+  --glass-soft-fill: rgb(26 26 30 / 0.6);
+  --glass-soft-blur: 18px;
+  --veu-tinta: rgb(10 10 12 / 0.3);
   --glass-edge: rgb(255 255 255 / 0.14);
   --glass-highlight: rgb(255 255 255 / 0.18);
   --glass-blur: 36px;
@@ -557,6 +567,53 @@
 
   .glass-on-dark:hover {
     background-color: rgb(255 255 255 / 0.16);
+  }
+
+  /* Vidro FRACO — para superficies de conteudo (cartoes, fichas).
+   *
+   * Mesma familia do .glass, com metade da intensidade. A diferenca importa:
+   * a camada de NAVEGACAO flutua sobre a pagina e precisa se destacar dela;
+   * um cartao esta DENTRO da pagina e so precisa parecer levantado. Com o
+   * vidro forte, cada cartao virava uma janela e a tela inteira embaralhava.
+   */
+  .glass-soft {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--glass-soft-fill);
+    -webkit-backdrop-filter: blur(var(--glass-soft-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-soft-blur)) saturate(140%);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-soft {
+      background-color: var(--surface-raised);
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+   * Veu de desfoque progressivo.
+   *
+   * Substitui o veu de cor solida que ficava atras das barras flutuantes.
+   * Um degrade de branco (ou preto) sobre a pagina APAGA o que esta embaixo:
+   * na home, a foto da galeria virava um borrao esbranquicado. O desfoque faz
+   * o mesmo trabalho de acalmar a area sem tirar a imagem da composicao — o
+   * que passa por tras continua la, so que fora de foco.
+   *
+   * Por que varias camadas: uma unica camada com mascara desfoca por igual e
+   * corta no fim da mascara, deixando uma linha visivel entre "desfocado" e
+   * "nitido". Empilhando desfoques que dobram de intensidade, cada um com sua
+   * faixa, a transicao vira rampa — e o olho nao acha onde comeca.
+   * ------------------------------------------------------------------- */
+  .veu {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .veu > span {
+    position: absolute;
+    inset: 0;
+    display: block;
   }
 
   /* Item selecionado dentro do vidro: pilula solida, como o botao fisico
