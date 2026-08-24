@@ -18,10 +18,15 @@ import { cn } from "@/lib/cn";
 export function Veu({
   /** De onde o desfoque e mais forte para onde ele some. */
   para = "cima",
-  /** Quantas camadas. Mais camadas = rampa mais macia e mais custo de pintura. */
-  camadas = 5,
+  /**
+   * Quantas camadas. Cada uma e uma superficie que a GPU rele e borra, entao
+   * o numero e custo direto. Tres ja da rampa macia; cinco so acrescentava
+   * conta. Como o raio DOBRA a cada camada, cortar duas tambem derruba o raio
+   * maximo de 16px para 4px — e o custo do desfoque cresce com o raio.
+   */
+  camadas = 3,
   /** Desfoque da camada mais fraca, em px. Dobra a cada camada. */
-  base = 1,
+  base = 1.5,
   /**
    * Tinta de apoio sobre o desfoque. Desfocar sozinho nao aumenta contraste:
    * texto claro sobre foto clara continua ilegivel depois de borrado. Uma

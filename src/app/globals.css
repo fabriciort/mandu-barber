@@ -217,7 +217,6 @@
    * ------------------------------------------------------------------- */
   --glass-fill: rgb(255 255 255 / 0.86);
   --glass-soft-fill: rgb(255 255 255 / 0.62);
-  --glass-soft-blur: 18px;
   /* Pelicula de apoio do veu. Bem mais fraca que o degrade solido que ela
      substituiu: aqui quem trabalha e o desfoque, a cor so garante contraste.
      A 42% ela virava uma faixa leitosa por cima do heroi escuro — o mesmo
@@ -225,7 +224,7 @@
   --veu-tinta: rgb(255 255 255 / 0.16);
   --glass-edge: rgb(8 8 10 / 0.1);
   --glass-highlight: rgb(255 255 255 / 0.9);
-  --glass-blur: 36px;
+  --glass-blur: 24px;
   --shadow-glass:
     0 1px 1px rgb(8 8 10 / 0.04),
     0 8px 20px -6px rgb(8 8 10 / 0.16),
@@ -275,11 +274,10 @@
      ele some no fundo e deixa de parecer uma camada acima. */
   --glass-fill: rgb(26 26 30 / 0.88);
   --glass-soft-fill: rgb(26 26 30 / 0.6);
-  --glass-soft-blur: 18px;
   --veu-tinta: rgb(10 10 12 / 0.3);
   --glass-edge: rgb(255 255 255 / 0.14);
   --glass-highlight: rgb(255 255 255 / 0.18);
-  --glass-blur: 36px;
+  --glass-blur: 24px;
   --shadow-glass:
     0 8px 28px -8px rgb(0 0 0 / 0.8),
     0 24px 56px -16px rgb(0 0 0 / 0.7);
@@ -460,14 +458,23 @@
    * Grao sutil sobre superficies escuras grandes — tira o "plano digital"
    * do preto chapado sem introduzir cor.
    * ------------------------------------------------------------------- */
+  /* Era um SVG com feTurbulence de 4 oitavas esticado sobre o elemento
+     inteiro, mais mix-blend-mode. Turbulencia e dos filtros mais caros que
+     existem em CSS — o navegador tinha de sintetizar o ruido a cada
+     rasterizacao, na area cheia — e o blend ainda forcava uma camada de
+     composicao so para isso.
+     
+     Agora e um ladrilho de 64x64 com o alfa ja embutido: o navegador decodifica
+     uma vez e repete. Ruido de alta frequencia nao mostra emenda no encontro
+     dos ladrilhos, entao o resultado na tela e o mesmo. */
   .grain::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("/grao.png");
+    background-repeat: repeat;
+    background-size: 64px 64px;
   }
 
   /* ---------------------------------------------------------------------
@@ -513,8 +520,15 @@
     isolation: isolate;
     background-color: var(--glass-fill);
     box-shadow: var(--shadow-glass);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    /* Sem saturate(): a paleta e monocromatica, entao aumentar saturacao de
+       cinza devolve o mesmo cinza. Era uma matriz de cor a mais por quadro,
+       em cada peca de vidro, para nao mudar pixel nenhum.
+       
+       O raio caiu de 36px para 24px. Com o preenchimento a 86% de opacidade,
+       o que se ve atras ja e vulto; 36 e 24 dao a mesma leitura, e o custo do
+       desfoque cresce com o raio. */
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
   }
 
   /* Fio de contorno + brilho no topo, desenhados como borda de gradiente:
@@ -557,12 +571,15 @@
    * Nao da para usar .glass ali: --glass-fill e branco a 86%, entao sobre o
    * preto do heroi a peca viraria quase branca e competiria com o botao
    * principal. Aqui o vidro e uma pelicula de luz sobre o escuro. */
+  /* Sem backdrop-filter, pelo mesmo motivo do .glass-soft: medindo onde estas
+     pecas caem — o selo do heroi, o botao "Ver planos", as pilulas de contato —
+     todas pousam sobre bloco de cor chapada, nunca sobre a foto. Desfocar cor
+     chapada devolve a mesma cor. O que da o efeito aqui e a pelicula de luz e
+     o fio de contorno, e esses ficaram. */
   .glass-on-dark {
     position: relative;
     background-color: rgb(255 255 255 / 0.1);
     border: 1px solid rgb(255 255 255 / 0.22);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    backdrop-filter: blur(20px) saturate(160%);
   }
 
   .glass-on-dark:hover {
@@ -578,17 +595,20 @@
    */
   .glass-soft {
     position: relative;
-    isolation: isolate;
     background-color: var(--glass-soft-fill);
-    -webkit-backdrop-filter: blur(var(--glass-soft-blur)) saturate(140%);
-    backdrop-filter: blur(var(--glass-soft-blur)) saturate(140%);
   }
 
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .glass-soft {
-      background-color: var(--surface-raised);
-    }
-  }
+  /* Por que NAO tem backdrop-filter aqui.
+   *
+   * Desfocar uma cor chapada devolve a mesma cor chapada. Atras de um cartao,
+   * de uma ficha ou de um botao secundario ha justamente isso: o fundo liso da
+   * secao. O desfoque era invisivel — e mesmo assim cada peca virava uma camada
+   * de composicao que a GPU tinha de reler e borrar. Eram 51 dessas camadas so
+   * na home.
+   *
+   * O translucido ficou: e ele que faz o cartao parecer material, deixando a
+   * cor da secao atravessar. Se algum dia um cartao pousar sobre FOTO, ai sim
+   * vale .glass junto — mas por escolha, num lugar so, nao por padrao em todos. */
 
   /* ---------------------------------------------------------------------
    * Veu de desfoque progressivo.

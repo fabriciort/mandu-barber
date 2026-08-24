@@ -33,7 +33,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const shop = await getShopConfig();
 
-  const [services, barbers, plans, reviews, stats] = await Promise.all([
+  const [services, barbers, plans, reviews] = await Promise.all([
     prisma.service.findMany({
       where: { active: true },
       orderBy: [{ featured: "desc" }, { displayOrder: "asc" }],
@@ -41,10 +41,10 @@ export default async function HomePage() {
     }),
     prisma.barberProfile.findMany({
       where: { active: true },
-      include: {
-        user: { select: { name: true, avatarUrl: true } },
-        reviews: { select: { rating: true } },
-      },
+      // Sem as avaliacoes: a nota por profissional saiu da pagina quando as
+      // avaliacoes deixaram de ser publicadas. O include continuava trazendo
+      // uma linha por avaliacao de cada barbeiro, a cada requisicao, para nada.
+      include: { user: { select: { name: true, avatarUrl: true } } },
       orderBy: { displayOrder: "asc" },
     }),
     prisma.plan.findMany({
@@ -53,16 +53,22 @@ export default async function HomePage() {
       orderBy: { displayOrder: "asc" },
       take: 3,
     }),
-    prisma.review.findMany({
-      where: { comment: { not: null }, rating: { gte: 4 } },
-      include: {
-        client: { select: { name: true } },
-        barber: { select: { user: { select: { name: true } } } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 6,
-    }),
-    getStats(),
+    // A secao de depoimentos esta fora do ar ate haver avaliacao de verdade
+    // (PENDENCIAS.depoimentos). Enquanto estiver, nem consulta: a pagina e
+    // dinamica, entao a consulta acontecia em toda visita para um resultado
+    // que ninguem via. Fica condicional, e nao apagada, para o dia em que a
+    // pendencia fechar nao faltar nada.
+    PENDENCIAS.depoimentos.pendente
+      ? Promise.resolve([])
+      : prisma.review.findMany({
+          where: { comment: { not: null }, rating: { gte: 4 } },
+          include: {
+            client: { select: { name: true } },
+            barber: { select: { user: { select: { name: true } } } },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 6,
+        }),
   ]);
 
   return (
@@ -117,14 +123,19 @@ export default async function HomePage() {
               E o mesmo material do resto da interface: em vez de tapar a foto
               com cor, tira ela de foco por 6rem e devolve contraste ao cromo. */}
           <div className="absolute inset-x-0 top-0 h-[6.5rem] lg:hidden">
-            <Veu para="baixo" tinta="rgb(8 8 10 / 0.45)" camadas={4} base={1.5} />
+            <Veu para="baixo" tinta="rgb(8 8 10 / 0.45)" />
           </div>
 
           {/* CELULAR — a foto termina derretendo no fundo da secao, em vez de
-              cortar reto. Desfoque + tinta na cor da propria secao. */}
-          <div className="absolute inset-x-0 bottom-0 h-28 lg:hidden">
-            <Veu para="cima" tinta="var(--canvas-deep)" camadas={4} base={1} />
-          </div>
+              cortar reto.
+              
+              Aqui e degrade, e nao desfoque, de proposito: a tinta chega
+              praticamente opaca na cor da secao, entao o que estaria sendo
+              borrado ja esta coberto. Sao quatro camadas de composicao que a
+              GPU releria a cada quadro para produzir um resultado que o olho
+              nao distingue de um degrade. O desfoque fica onde ele aparece: na
+              faixa do topo, onde a foto continua visivel atras do logo. */}
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[var(--canvas-deep)] from-[18%] via-[var(--canvas-deep)]/80 via-[55%] to-transparent lg:hidden" />
 
           {/* DESKTOP — escurecimento base leve: a foto precisa ser vista. O
               trabalho pesado fica para o degrade lateral. */}
@@ -857,24 +868,6 @@ async function NextSlotsPreview() {
       </Button>
     </div>
   );
-}
-
-async function getStats() {
-  const [completed, aggregate] = await Promise.all([
-    prisma.appointment.count({ where: { status: "COMPLETED" } }),
-    prisma.review.aggregate({ _avg: { rating: true }, _count: true }),
-  ]);
-
-  return {
-    completed: Math.floor(completed / 10) * 10,
-    rating: aggregate._avg.rating ? aggregate._avg.rating.toFixed(1) : "5,0",
-    reviewCount: aggregate._count,
-  };
-}
-
-function average(values: number[]): number | null {
-  if (values.length === 0) return null;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
 function parseList(json: string): string[] {

@@ -164,7 +164,7 @@ export function GalleryCarousel({ itens }: { itens: ItemGaleria[] }) {
               {/* Enquanto a foto for provisoria, ela se declara na propria
                   imagem — quem revisar o site nao precisa adivinhar. */}
               {item.placeholder ? (
-                <span className="pointer-events-none absolute left-3 top-3 rounded-full border border-dashed border-white/70 bg-black/45 px-2.5 py-1 text-[11px] font-medium leading-4 text-white backdrop-blur-sm">
+                <span className="pointer-events-none absolute left-3 top-3 rounded-full border border-dashed border-white/70 bg-black/60 px-2.5 py-1 text-[11px] font-medium leading-4 text-white">
                   foto provisória
                 </span>
               ) : null}
