@@ -222,6 +222,11 @@
      A 42% ela virava uma faixa leitosa por cima do heroi escuro — o mesmo
      defeito que o veu deveria ter resolvido. */
   --veu-tinta: rgb(255 255 255 / 0.16);
+  /* Off-white morno da chamada principal do heroi. Vem da peca de referencia
+     da marca e e a unica nota de cor do site — vive so sobre a foto, que ja e
+     um preto e branco de tom quente. Nao acompanha o tema: o heroi e escuro
+     nos dois. */
+  --cta-claro: #f1efe9;
   --glass-edge: rgb(8 8 10 / 0.1);
   --glass-highlight: rgb(255 255 255 / 0.9);
   --glass-blur: 24px;
@@ -634,6 +639,62 @@
     position: absolute;
     inset: 0;
     display: block;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Cromo flutuante sobre a foto do heroi.
+   *
+   * Enquanto a rolagem esta na foto, a pilula do logo e o circulo do menu
+   * perdem o fundo e viram parte da imagem. Passou a foto, o vidro volta.
+   * Quem liga e desliga e o atributo em <html> (ver CromoSobreFoto).
+   *
+   * A transicao inclui o desfoque porque a troca sem ela e um susto: o fundo
+   * some de um quadro para o outro no meio da rolagem.
+   * ------------------------------------------------------------------- */
+  .cromo-flutuante {
+    /* A cor mora AQUI, e nao numa classe `text-*` no elemento: utilitario do
+       Tailwind ganha desta regra por ordem de camada, e o branco sobre a foto
+       simplesmente nao aplicava. */
+    color: var(--text-primary);
+    transition:
+      background-color 0.3s var(--ease-out-quint),
+      box-shadow 0.3s var(--ease-out-quint),
+      color 0.3s var(--ease-out-quint),
+      -webkit-backdrop-filter 0.3s var(--ease-out-quint),
+      backdrop-filter 0.3s var(--ease-out-quint),
+      /* `scale`, e nao `transform`: em Tailwind v4 o utilitario scale-* vira a
+         propriedade CSS `scale`. Sem ela na lista, o afundar ao tocar perdia a
+         animacao e virava um salto. */
+      scale 0.2s var(--ease-out-quint);
+  }
+
+  .cromo-flutuante::before {
+    transition: opacity 0.3s var(--ease-out-quint);
+  }
+
+  :root[data-cromo="sobre-foto"] .cromo-flutuante {
+    background-color: transparent;
+    box-shadow: none;
+    /* Branco fixo, e nao --text-primary: a foto e escura nos dois temas, entao
+       aqui a cor nao pode acompanhar o tema. */
+    color: #fff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  /* O fio de contorno do vidro. */
+  :root[data-cromo="sobre-foto"] .cromo-flutuante::before {
+    opacity: 0;
+  }
+
+  /* O veu do topo tambem sai: sobre a foto quem da contraste ao cromo e a
+     faixa desfocada da propria foto, no heroi. */
+  :root[data-cromo="sobre-foto"] .cromo-veu {
+    opacity: 0;
+  }
+
+  .cromo-veu {
+    transition: opacity 0.3s var(--ease-out-quint);
   }
 
   /* Item selecionado dentro do vidro: pilula solida, como o botao fisico

@@ -24,6 +24,8 @@ import { SERVICE_CATEGORY_LABEL, WEEKDAY_SHORT, type ServiceCategory } from "@/l
 import { planSavings } from "@/lib/pricing";
 import { GalleryCarousel } from "@/components/gallery-carousel";
 import { Veu } from "@/components/veu";
+import { CromoSobreFoto } from "@/components/cromo-sobre-foto";
+import { cn } from "@/lib/cn";
 import { AConfirmar } from "@/components/a-confirmar";
 import { GALERIA } from "@/content/galeria";
 import { EMPRESA, EQUIPE, MARCA, PENDENCIAS, anosDeCasa } from "@/content/mr-mandu";
@@ -152,6 +154,10 @@ export default async function HomePage() {
           <div className="absolute inset-x-0 bottom-0 hidden h-28 bg-gradient-to-t from-[var(--canvas-deep)] to-transparent lg:block" />
         </div>
 
+        {/* Marca onde a foto acaba: enquanto a rolagem esta acima dela, o logo
+            e o menu ficam sem fundo, integrados a imagem. */}
+        <CromoSobreFoto />
+
         {/* O container mantem a largura e o alinhamento do resto do site; quem
             estreita e o bloco de dentro. Assim o texto encosta na margem
             esquerda da pagina e deixa a metade direita livre para a foto, que e
@@ -190,29 +196,18 @@ export default async function HomePage() {
 
             <div
               style={{ "--i": 3 } as React.CSSProperties}
-              className="mt-7 flex flex-col gap-3 sm:flex-row"
+              className="mt-7 flex max-w-[26rem] flex-col gap-3"
             >
-              {/* Mesma dupla da barra de baixo: acao principal em bloco solido,
-                  a secundaria em vidro. Pilula nas duas, para o heroi falar a
-                  mesma lingua da navegacao. */}
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full bg-white px-7 text-black shadow-[var(--shadow-glass)] hover:bg-white/90"
-              >
-                <Link href="/agendar">
-                  Agendar agora
-                  <ArrowRight className="size-[18px]" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="ghost"
-                className="glass-on-dark rounded-full px-7 text-white"
-              >
-                <Link href="/planos">Ver planos</Link>
-              </Button>
+              {/* Retangulares e empilhados, ao contrario das pilulas do resto
+                  do site. E de proposito: o heroi e a unica peca onde a marca
+                  fala em caixa alta e espacada, e a forma reta pesa mais do que
+                  a pilula — que aqui competiria com a navegacao flutuante. */}
+              <HeroCta href="/agendar" tom="solido">
+                Agendar horário
+              </HeroCta>
+              <HeroCta href="/#sobre" tom="contorno">
+                Conhecer a Mandu
+              </HeroCta>
             </div>
 
             {/* Tres fatos VERIFICAVEIS. A versao anterior anunciava
@@ -721,6 +716,46 @@ export default async function HomePage() {
 }
 
 // ---------------------------------------------------------------- auxiliares
+
+/**
+ * Chamada do heroi.
+ *
+ * O rotulo fica centrado no espaco que sobra e a seta encostada na direita —
+ * nao e `justify-between` com o texto colado a esquerda, nem tudo centralizado
+ * com a seta junto: a seta marca a borda do botao e o rotulo respira no meio.
+ */
+function HeroCta({
+  href,
+  tom,
+  children,
+}: {
+  href: string;
+  tom: "solido" | "contorno";
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group flex h-13 items-center gap-4 rounded-[3px] px-5",
+        "text-[0.8125rem] font-medium uppercase tracking-[0.16em]",
+        "transition-colors duration-300",
+        tom === "solido"
+          ? // Off-white morno, e nao branco puro: e a cor da referencia da
+            // marca, e conversa com o preto e branco quente da foto. E o unico
+            // ponto do site com uma nota de cor, e mora so aqui.
+            "bg-[var(--cta-claro)] text-black hover:bg-white"
+          : "border border-white/40 text-white hover:border-white/80 hover:bg-white/10",
+      )}
+    >
+      <span className="min-w-0 flex-1 text-center">{children}</span>
+      <ArrowRight
+        className="size-[18px] shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+        strokeWidth={1.5}
+      />
+    </Link>
+  );
+}
 
 /** "2022-05" -> "maio de 2022". Recebe ano-mes, nao data completa. */
 function mesAno(anoMes: string): string {

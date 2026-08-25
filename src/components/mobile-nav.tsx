@@ -67,7 +67,7 @@ export function MobileNav({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="glass flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[var(--text-primary)] transition-transform duration-200 active:scale-90 md:hidden"
+        className="glass cromo-flutuante flex size-[3.25rem] shrink-0 items-center justify-center rounded-full active:scale-90 md:hidden"
         aria-label="Abrir menu"
         aria-expanded={open}
       >

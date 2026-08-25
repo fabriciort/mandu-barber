@@ -41,7 +41,7 @@ export function MobileTopBar({
           
           Fica em z-20 e quem tem fundo proprio de tela cheia se declara acima
           dele (ver o heroi em page.tsx). */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 h-28 md:hidden" aria-hidden>
+      <div className="cromo-veu pointer-events-none fixed inset-x-0 top-0 z-20 h-28 md:hidden" aria-hidden>
         <Veu para="baixo" tinta="var(--veu-tinta)" />
       </div>
 
@@ -54,7 +54,7 @@ export function MobileTopBar({
         <Link
           href="/"
           aria-label="mr. mandu — início"
-          className="glass flex h-[3.25rem] items-center gap-2 rounded-full pl-4 pr-3.5 text-[var(--text-primary)] transition-transform duration-200 active:scale-95"
+          className="glass cromo-flutuante flex h-[3.25rem] items-center gap-2 rounded-full pl-4 pr-3.5 active:scale-95"
         >
           <span className="font-display text-[1.05rem] leading-none tracking-[-0.02em]">
             mr. mandu
@@ -78,8 +78,8 @@ export function GlassCircleButton({
     <button
       type="button"
       className={cn(
-        "glass flex size-[3.25rem] shrink-0 items-center justify-center rounded-full",
-        "text-[var(--text-primary)] transition-transform duration-200 active:scale-90",
+        "glass cromo-flutuante flex size-[3.25rem] shrink-0 items-center justify-center rounded-full",
+        "active:scale-90",
         className,
       )}
       {...props}
