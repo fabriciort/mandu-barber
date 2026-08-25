@@ -642,6 +642,50 @@
   }
 
   /* ---------------------------------------------------------------------
+   * Parallaxe do heroi.
+   *
+   * Camadas que andam em velocidades diferentes durante a rolagem dao
+   * profundidade: o fundo fica para tras, o conteudo passa na frente.
+   *
+   * COMO, e por que assim:
+   *
+   * Isto NAO usa ouvinte de scroll. Usa animacao com linha do tempo de
+   * rolagem (`animation-timeline: scroll()`), que o navegador roda no
+   * compositor, fora da thread principal — o mesmo motivo de termos trocado
+   * o veu de cor por desfoque e cortado backdrop-filter na passada de
+   * desempenho. Um `onscroll` que escreve `transform` a cada quadro
+   * devolveria o custo que acabamos de tirar.
+   *
+   * Onde a linha do tempo de rolagem nao existe, nada acontece: a pagina
+   * fica como esta hoje. E com `prefers-reduced-motion`, tambem nao acontece
+   * — parallaxe e das primeiras coisas que incomodam quem tem sensibilidade
+   * a movimento.
+   * ------------------------------------------------------------------- */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .parallaxe {
+        animation: parallaxe-camada linear both;
+        animation-timeline: scroll(root block);
+        /* So enquanto o heroi ainda esta em cena. */
+        animation-range: 0 100vh;
+      }
+
+      /* A distancia percorrida vem de --parallaxe, no proprio elemento:
+         cada camada anda o seu tanto, e o sinal decide se ela fica para tras
+         (positivo, acompanhando a rolagem) ou se adianta (negativo). */
+      @keyframes parallaxe-camada {
+        to {
+          transform: translate3d(0, var(--parallaxe, 6%), 0) scale(var(--parallaxe-escala, 1));
+        }
+      }
+
+      .parallaxe {
+        transform: translate3d(0, 0, 0) scale(var(--parallaxe-escala, 1));
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------------------
    * Cromo flutuante sobre a foto do heroi.
    *
    * Enquanto a rolagem esta na foto, a pilula do logo e o circulo do menu

@@ -109,17 +109,32 @@ export default async function HomePage() {
           className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[var(--foto-h)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:w-[58%]"
           aria-hidden
         >
-          <Image
-            src="/hero.jpg"
-            // Decorativa: o heroi ja diz em texto o que a foto ilustra, e o
-            // container inteiro e aria-hidden.
-            alt=""
-            fill
-            priority
-            sizes="(max-width: 1023px) 100vw, 58vw"
-            // O recorte muda porque a moldura muda de formato entre os dois.
-            className="object-cover object-[55%_70%] lg:object-[50%_34%]"
-          />
+          {/* A folga do parallaxe e de ALTURA, dada pelo layout — nao por
+              `scale`.
+              
+              Escalar a imagem resolvia a faixa vazia, mas alargava a foto 8%
+              alem da tela: clipada pela secao, invisivel, e mesmo assim uma
+              caixa maior que a viewport. O guarda de vazamento horizontal
+              pegou nas quatro larguras, e ele existe justamente porque
+              `overflow-x: hidden` esconde problema de verdade. Aqui a moldura
+              e 20% mais alta e comeca 10% acima: sobra caminho para descer os
+              7% sem descobrir o topo, e a largura continua exata. */}
+          <div
+            className="parallaxe absolute inset-x-0 -top-[10%] h-[120%]"
+            style={{ "--parallaxe": "7%" } as React.CSSProperties}
+          >
+            <Image
+              src="/hero.jpg"
+              // Decorativa: o heroi ja diz em texto o que a foto ilustra, e o
+              // container inteiro e aria-hidden.
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 1023px) 100vw, 58vw"
+              // O recorte muda porque a moldura muda de formato entre os dois.
+              className="object-cover object-[55%_62%] lg:object-[50%_38%]"
+            />
+          </div>
 
           {/* CELULAR — faixa desfocada no topo, so onde o logo e o menu pousam.
               E o mesmo material do resto da interface: em vez de tapar a foto
@@ -163,7 +178,13 @@ export default async function HomePage() {
             esquerda da pagina e deixa a metade direita livre para a foto, que e
             onde o barbeiro esta. */}
         <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-[calc(var(--foto-h)+1.25rem)] sm:px-6 lg:pb-40 lg:pt-[11rem]">
-          <div className="stagger lg:max-w-[32rem] xl:max-w-[36rem]">
+          {/* Sinal negativo: o texto sobe um pouco MAIS rapido que a pagina,
+              enquanto a foto fica para tras. E a diferenca entre os dois que
+              cria a profundidade — nao o movimento de um deles sozinho. */}
+          <div
+            className="stagger parallaxe lg:max-w-[32rem] xl:max-w-[36rem]"
+            style={{ "--parallaxe": "-4%" } as React.CSSProperties}
+          >
             <p
               style={{ "--i": 0 } as React.CSSProperties}
               className="glass-on-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/85"
