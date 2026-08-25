@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link, { useLinkStatus } from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   BarChart3,
   CalendarRange,
@@ -19,6 +19,7 @@ import {
 
 import { cn } from "@/lib/cn";
 import type { Role } from "@/lib/enums";
+import { useArrastarSelecao } from "@/components/use-arrastar-selecao";
 
 type NavItem = {
   href: string;
@@ -135,37 +136,66 @@ export function PanelNav({
  * onde voce foi, e ficaria estranho se so a area do cliente tivesse isso.
  */
 function BottomRow({ items, activeIndex }: { items: NavItem[]; activeIndex: number }) {
+  const router = useRouter();
+  const arrastar = useArrastarSelecao({
+    quantidade: items.length,
+    indiceAtivo: activeIndex,
+    aoSoltar: (indice: number) => router.push(items[indice].href),
+  });
+
   return (
     <div
-      className="relative grid min-w-0 flex-1"
+      ref={arrastar.trilhoRef}
+      className="relative grid min-w-0 flex-1 touch-pan-y"
       // O numero de destinos muda com o cargo (o barbeiro nao ve tudo que o
       // dono ve), entao a grade e a largura da pilula saem da contagem real.
       style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+      {...arrastar.handlers}
     >
       {activeIndex >= 0 ? (
         <span
-          className={cn("glass-pill absolute inset-y-0 left-0 rounded-full transition-transform", DESLIZE)}
-          style={{
-            width: `${100 / items.length}%`,
-            transform: `translateX(${activeIndex * 100}%)`,
-          }}
+          className={cn(
+            "glass-pill absolute inset-y-0 left-0 rounded-full",
+            // Colado no dedo durante o arrasto; com mola so ao encaixar.
+            arrastar.arrastando
+              ? "transition-none"
+              : arrastar.pressionado
+                ? "transition-transform duration-200"
+                : cn("transition-transform", DESLIZE),
+          )}
+          style={arrastar.estiloPilula}
           aria-hidden
         />
       ) : null}
 
       {items.map((item, index) => (
-        <BottomLink key={item.href} item={item} active={index === activeIndex} />
+        <BottomLink
+          key={item.href}
+          item={item}
+          active={index === arrastar.indiceVisual}
+          atual={index === activeIndex}
+        />
       ))}
     </div>
   );
 }
 
-function BottomLink({ item, active }: { item: NavItem; active: boolean }) {
+function BottomLink({
+  item,
+  active,
+  atual,
+}: {
+  item: NavItem;
+  active: boolean;
+  atual: boolean;
+}) {
   return (
     <Link
       href={item.href}
-      aria-current={active ? "page" : undefined}
-      className="relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-full py-2.5 outline-offset-[-3px]"
+      // A previa segue o dedo; o aria-current fica na rota ABERTA.
+      aria-current={atual ? "page" : undefined}
+      draggable={false}
+      className="relative flex min-w-0 select-none flex-col items-center justify-center gap-1 rounded-full py-2.5 outline-offset-[-3px]"
     >
       <BottomContent item={item} active={active} />
     </Link>

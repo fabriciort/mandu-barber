@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import Link, { useLinkStatus } from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CalendarPlus, Home, Sparkles, UserRound } from "lucide-react";
 
 import { cn } from "@/lib/cn";
 import { Veu } from "@/components/veu";
+import { useArrastarSelecao } from "@/components/use-arrastar-selecao";
 
 type Tab = {
   href: string;
@@ -32,6 +33,7 @@ type Tab = {
  */
 export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const tabs: Tab[] = [
     { href: "/", label: "Início", icon: Home, match: (p) => p === "/" },
@@ -46,6 +48,12 @@ export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
   ];
 
   const activeIndex = tabs.findIndex((tab) => tab.match(pathname));
+
+  const arrastar = useArrastarSelecao({
+    quantidade: tabs.length,
+    indiceAtivo: activeIndex,
+    aoSoltar: (indice: number) => router.push(tabs[indice].href),
+  });
 
   // Some onde atrapalha: o assistente de agendamento tem a propria barra com o
   // total, e duas camadas flutuantes empilhadas comem meia tela.
@@ -74,19 +82,46 @@ export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
           className="glass pointer-events-auto min-w-0 flex-1 rounded-full p-1.5"
           aria-label="Navegação principal"
         >
-          <div className="relative grid grid-cols-3">
+          {/* touch-pan-y: o gesto horizontal e nosso (arrastar a selecao), o
+              vertical continua sendo do navegador (rolar a pagina). Sem isso,
+              comecar a rolar com o dedo em cima da barra travava a rolagem. */}
+          <div
+            ref={arrastar.trilhoRef}
+            className="relative grid touch-pan-y grid-cols-3"
+            {...arrastar.handlers}
+          >
             {/* Indicador que desliza de uma aba para a outra, em vez de piscar
-                num lugar novo — o movimento conta de onde para onde voce foi. */}
+                num lugar novo — o movimento conta de onde para onde voce foi.
+                Durante o arrasto ele acompanha o dedo 1:1, entao a transicao
+                sai do caminho: com ela ligada a pilula fica sempre alguns
+                quadros atras do dedo e o gesto perde o "colado na mao". */}
             {activeIndex >= 0 ? (
               <span
-                className="glass-pill absolute inset-y-0 left-0 w-1/3 rounded-full transition-transform duration-[400ms] ease-[var(--ease-out-quint)]"
-                style={{ transform: `translateX(${activeIndex * 100}%)` }}
+                className={cn(
+                  "glass-pill absolute inset-y-0 left-0 rounded-full",
+                  // Sem transicao durante o arrasto: a pilula tem de estar
+                  // exatamente onde o dedo esta, nao alguns quadros atras.
+                  arrastar.arrastando
+                    ? "transition-none"
+                    : arrastar.pressionado
+                      ? "transition-transform duration-200"
+                      : "transition-transform duration-[400ms] ease-[var(--ease-out-quint)]",
+                )}
+                style={arrastar.estiloPilula}
                 aria-hidden
               />
             ) : null}
 
             {tabs.map((tab, index) => (
-              <TabLink key={tab.label} tab={tab} active={index === activeIndex} />
+              <TabLink
+                key={tab.label}
+                tab={tab}
+                // A previa segue o dedo; o aria-current continua na pagina que
+                // esta ABERTA, senao um leitor de tela anuncia uma troca que
+                // ainda nao aconteceu.
+                active={index === arrastar.indiceVisual}
+                atual={index === activeIndex}
+              />
             ))}
           </div>
         </nav>
@@ -111,12 +146,15 @@ export function SiteTabBar({ authenticated }: { authenticated: boolean }) {
   );
 }
 
-function TabLink({ tab, active }: { tab: Tab; active: boolean }) {
+function TabLink({ tab, active, atual }: { tab: Tab; active: boolean; atual: boolean }) {
   return (
     <Link
       href={tab.href}
-      aria-current={active ? "page" : undefined}
-      className="relative flex h-[3.25rem] min-w-0 flex-col items-center justify-center gap-0.5 rounded-full outline-offset-[-3px]"
+      aria-current={atual ? "page" : undefined}
+      // O arrasto acontece no trilho; o link nao pode roubar o gesto para virar
+      // o "arrastar link" nativo do navegador.
+      draggable={false}
+      className="relative flex h-[3.25rem] min-w-0 select-none flex-col items-center justify-center gap-0.5 rounded-full outline-offset-[-3px]"
     >
       <TabContent tab={tab} active={active} />
     </Link>

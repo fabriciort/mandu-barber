@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 
 import { ToastProvider } from "@/components/ui/toast";
+import { EMPRESA, MARCA } from "@/content/mr-mandu";
 import "./globals.css";
 
 const inter = Inter({
@@ -48,20 +49,26 @@ function resolveAppUrl(): URL {
   return new URL("http://localhost:3000");
 }
 
+// Sobra da barbearia ficticia: o titulo dizia "Barbearia em São Paulo", que e
+// o que aparecia na aba do navegador e no compartilhamento de link. A cidade
+// certa e Embu-Guaçu, e o posicionamento da marca cabe melhor aqui do que uma
+// descricao generica de agendamento.
+const TITULO = `${EMPRESA.nomeFantasia} — ${MARCA.slogan}`;
+
 export const metadata: Metadata = {
   metadataBase: resolveAppUrl(),
   title: {
-    default: "mr. mandu — Barbearia em São Paulo",
-    template: "%s · mr. mandu",
+    default: TITULO,
+    template: `%s · ${EMPRESA.assinaturaVisual}`,
   },
   description:
-    "Agende seu corte na mr. mandu, acompanhe seu plano de assinatura e escolha o profissional pelo horário que cabe no seu dia.",
+    "Agende corte, barba e barboterapia na Mr. Mandu Barber, no Centro de Embu-Guaçu, e acompanhe seu plano de assinatura.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    siteName: "mr. mandu",
-    title: "mr. mandu — Barbearia em São Paulo",
-    description: "Agendamento online, planos de assinatura e uma equipe que conhece seu corte.",
+    siteName: EMPRESA.nomeFantasia,
+    title: TITULO,
+    description: "Agendamento online, planos de assinatura e a mesma equipe toda semana.",
   },
   robots: { index: true, follow: true },
 };
