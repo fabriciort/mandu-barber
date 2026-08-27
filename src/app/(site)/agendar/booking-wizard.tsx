@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { AddToCalendar } from "@/components/add-to-calendar";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/field";
@@ -1251,7 +1252,14 @@ function ConfirmationPanel({
         </dl>
       </div>
 
-      <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+      {/* Levar para a agenda vem logo depois do resumo, e antes de "ver meu
+          agendamento": e agora que o cliente tem o horario na cabeca e o
+          telefone na mao. Uma tela adiante ele ja saiu do assunto. */}
+      <div className="mt-6">
+        <AddToCalendar appointmentId={appointmentId} size="md" block />
+      </div>
+
+      <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:justify-center">
         <Button asChild>
           <Link href={`/minha-conta/agendamentos/${appointmentId}`}>Ver meu agendamento</Link>
         </Button>

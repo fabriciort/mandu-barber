@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { DataItem } from "@/components/ui/misc";
 import { CancelAppointmentButton, ReviewButton } from "@/components/appointment-actions";
+import { AddToCalendar } from "@/components/add-to-calendar";
 import { requireUser } from "@/server/auth/guards";
 import { prisma } from "@/server/db";
 import { getShopConfig, formatAddress } from "@/server/services/settings";
@@ -81,7 +82,8 @@ export default async function AppointmentDetailPage({
             </div>
 
             {isUpcoming ? (
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                <AddToCalendar appointmentId={appointment.id} />
                 <Button asChild size="sm" variant="secondary">
                   <Link href={`/agendar?servico=${appointment.services[0]?.serviceId ?? ""}`}>
                     Agendar de novo
