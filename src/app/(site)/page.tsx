@@ -109,8 +109,12 @@ export default async function HomePage() {
           className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[var(--foto-h)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:w-[58%]"
           aria-hidden
         >
-          {/* A folga do parallaxe e de ALTURA, dada pelo layout — nao por
-              `scale`.
+          {/* No celular, a imagem ocupa exatamente a moldura e fica parada:
+              isso evita que a transformacao do parallaxe crie uma emenda no
+              ponto em que a foto encontra o fundo do conteudo.
+
+              No desktop, a folga do parallaxe e de ALTURA, dada pelo layout —
+              nao por `scale`.
               
               Escalar a imagem resolvia a faixa vazia, mas alargava a foto 8%
               alem da tela: clipada pela secao, invisivel, e mesmo assim uma
@@ -120,7 +124,7 @@ export default async function HomePage() {
               e 20% mais alta e comeca 10% acima: sobra caminho para descer os
               7% sem descobrir o topo, e a largura continua exata. */}
           <div
-            className="parallaxe absolute inset-x-0 -top-[10%] h-[120%]"
+            className="absolute inset-0 lg:-top-[10%] lg:h-[120%] lg:parallaxe"
             style={{ "--parallaxe": "7%" } as React.CSSProperties}
           >
             <Image
@@ -185,20 +189,12 @@ export default async function HomePage() {
             className="stagger parallaxe lg:max-w-[32rem] xl:max-w-[36rem]"
             style={{ "--parallaxe": "-4%" } as React.CSSProperties}
           >
-            <p
-              style={{ "--i": 0 } as React.CSSProperties}
-              className="glass-on-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-2xs font-medium uppercase tracking-[0.18em] text-white/85"
-            >
-              <span className="size-1.5 rounded-full bg-white" />
-              {shop.district ? `${shop.district} · ${shop.city}` : "São Paulo"}
-            </p>
-
             <h1
-              style={{ "--i": 1 } as React.CSSProperties}
+              style={{ "--i": 0 } as React.CSSProperties}
               // O minimo caiu de 2.5rem para 2.25rem: a 360px "A primeira
               // barbearia" nao cabia numa linha e o titulo virava quatro
               // linhas, empurrando o botao para fora da primeira tela.
-              className="font-display mt-6 text-[clamp(2.25rem,9vw,4.5rem)] leading-[0.98] text-white balance"
+              className="font-display text-[clamp(2.25rem,9vw,4.5rem)] leading-[0.98] text-white balance"
             >
               A primeira barbearia
               <br />
@@ -207,16 +203,8 @@ export default async function HomePage() {
               <span className="text-white/45">de Embu-Guaçu.</span>
             </h1>
 
-            <p
-              style={{ "--i": 2 } as React.CSSProperties}
-              className="mt-6 max-w-md text-base leading-relaxed text-white/60 sm:text-lg pretty"
-            >
-              Corte, barba e barboterapia. Reserve seu horário em menos de um minuto — ou entre
-              para o clube e tenha a cadeira guardada todo mês.
-            </p>
-
             <div
-              style={{ "--i": 3 } as React.CSSProperties}
+              style={{ "--i": 1 } as React.CSSProperties}
               className="mt-7 flex max-w-[26rem] flex-col gap-3"
             >
               {/* Retangulares e empilhados, ao contrario das pilulas do resto
@@ -231,13 +219,21 @@ export default async function HomePage() {
               </HeroCta>
             </div>
 
+            <p
+              style={{ "--i": 2 } as React.CSSProperties}
+              className="mt-7 max-w-md text-base leading-relaxed text-white/60 sm:text-lg pretty"
+            >
+              Corte, barba e barboterapia. Reserve seu horário em menos de um minuto — ou entre
+              para o clube e tenha a cadeira guardada todo mês.
+            </p>
+
             {/* Tres fatos VERIFICAVEIS. A versao anterior anunciava
                 "atendimentos concluidos" e "media de avaliacoes" tirados da
                 carga de demonstracao — numero de barbearia nenhuma. Numero
                 inventado em heroi e o que mais convence e o que menos se
                 confere depois. */}
             <dl
-              style={{ "--i": 4 } as React.CSSProperties}
+              style={{ "--i": 3 } as React.CSSProperties}
               className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/12 pt-8"
             >
               {/* Rotulos curtos de proposito: em tres linhas, o terceiro ficava
